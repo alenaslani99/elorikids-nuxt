@@ -12,8 +12,8 @@ const STORAGE_KEY = 'elorikids-auth'
 export function useAuth() {
   const auth = useState<AuthState>('auth', () => ({ user: null }))
 
-  // Hydrate from localStorage on client only
-  if (import.meta.client) {
+  // Hydrate from localStorage on client, after mount (avoids SSR hydration mismatch)
+  onMounted(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
@@ -30,7 +30,7 @@ export function useAuth() {
     watch(auth.value, (val) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     }, { deep: true })
-  }
+  })
 
   const isLoggedIn = computed(() => !!auth.value.user)
 
