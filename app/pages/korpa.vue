@@ -128,21 +128,21 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
                     </button>
                   </div>
 
-                  <div class="flex items-center justify-between gap-4">
+                  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                     <!-- Quantity -->
-                    <div class="flex items-center gap-1 rounded-full border-2 border-cloud/50 p-1">
+                    <div class="flex w-full items-center justify-between rounded-full border-2 border-cloud/50 p-1 sm:w-auto">
                       <button
                         type="button"
-                        class="flex size-8 items-center justify-center rounded-full text-navy transition-colors hover:bg-sky/40"
+                        class="flex size-8 shrink-0 items-center justify-center rounded-full text-navy transition-colors hover:bg-sky/40"
                         aria-label="Smanji količinu"
                         @click="decrement(item.slug)"
                       >
                         <Icon name="lucide:minus" class="size-4" />
                       </button>
-                      <span class="w-8 text-center font-bold text-navy">{{ item.quantity }}</span>
+                      <span class="flex-1 text-center font-bold text-navy sm:flex-none sm:px-2">{{ item.quantity }}</span>
                       <button
                         type="button"
-                        class="flex size-8 items-center justify-center rounded-full text-navy transition-colors hover:bg-sky/40"
+                        class="flex size-8 shrink-0 items-center justify-center rounded-full text-navy transition-colors hover:bg-sky/40"
                         aria-label="Povećaj količinu"
                         @click="increment(item.slug)"
                       >

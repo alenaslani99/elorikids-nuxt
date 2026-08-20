@@ -17,8 +17,9 @@ function handleLogout() {
     <div class="bg-navy-dark text-white">
       <div class="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-xs sm:px-6 lg:px-8">
         <p class="flex items-center gap-1.5 font-medium">
-          <span class="hidden sm:inline">🚚</span>
-          Besplatna dostava za porudžbine preko 5.000 RSD
+          <span>🚚</span>
+          <span class="hidden sm:inline">Besplatna dostava za porudžbine preko 5.000 RSD</span>
+          <span class="sm:hidden">Besplatna dostava preko 5.000 RSD</span>
         </p>
         <nav class="flex items-center gap-4">
           <template v-if="isLoggedIn">
@@ -42,10 +43,6 @@ function handleLogout() {
     <!-- Layer 2: site name + search + icons -->
     <div class="bg-navy">
       <div class="mx-auto flex h-20 max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
-        <!-- Mobile menu button -->
-        <button aria-label="Meni" class="flex h-10 w-10 items-center justify-center rounded-lg text-white transition-colors hover:bg-white/10 md:hidden">
-          <Icon name="lucide:menu" class="size-5" />
-        </button>
 
         <!-- Site name -->
         <NuxtLink to="/" class="shrink-0 font-unbounded text-2xl font-extrabold tracking-tight text-white">
