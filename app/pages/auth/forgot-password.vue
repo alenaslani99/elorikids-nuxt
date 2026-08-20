@@ -129,7 +129,7 @@ watch(form, () => {
           <!-- Back to login -->
           <p class="mt-6 text-center text-sm text-navy/60">
             Setili ste se lozinke?
-            <NuxtLink to="/prijava" class="font-semibold text-blue transition-colors hover:text-navy">
+            <NuxtLink to="/auth/login" class="font-semibold text-blue transition-colors hover:text-navy">
               Nazad na prijavu
             </NuxtLink>
           </p>

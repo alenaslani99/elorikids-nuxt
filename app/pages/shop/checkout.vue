@@ -15,7 +15,7 @@ const router = useRouter()
 // Redirect to cart if empty
 onMounted(() => {
   if (items.value.length === 0) {
-    router.replace('/korpa')
+    router.replace('/shop/cart')
   }
 })
 
@@ -96,7 +96,7 @@ async function handleSubmit() {
     if (res.ok) {
       clear()
       status.value = 'success'
-      router.push(`/hvala?id=${res.orderId ?? ''}`)
+      router.push(`/shop/thank-you?id=${res.orderId ?? ''}`)
     }
     else {
       throw new Error('Nepoznata greška')
@@ -114,7 +114,7 @@ async function handleSubmit() {
     <!-- Page header -->
     <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Korpa', to: '/korpa' }, { label: 'Porudžbina' }]" nav-class="mb-4" />
+        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Korpa', to: '/shop/cart' }, { label: 'Porudžbina' }]" nav-class="mb-4" />
         <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
           Podaci za dostavu
         </h1>

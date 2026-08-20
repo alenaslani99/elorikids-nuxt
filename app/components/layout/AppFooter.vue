@@ -14,17 +14,17 @@ const columns = [
   {
     title: 'Kompanija',
     links: [
-      { label: 'O nama', to: '/kontakt' },
-      { label: 'Kontakt', to: '/kontakt' },
-      { label: 'Poslovi', to: '/kontakt' },
-      { label: 'Blog', to: '/kontakt' },
+      { label: 'O nama', to: '/legal/contact' },
+      { label: 'Kontakt', to: '/legal/contact' },
+      { label: 'Poslovi', to: '/legal/contact' },
+      { label: 'Blog', to: '/legal/contact' },
     ],
   },
   {
     title: 'Podrška',
     links: [
-      { label: 'Dostava', to: '/prijava' },
-      { label: 'Povrat robe', to: '/registracija' },
+      { label: 'Dostava', to: '/auth/login' },
+      { label: 'Povrat robe', to: '/auth/register' },
       { label: 'Česta pitanja', to: '/#categories' },
       { label: 'Pratite porudžbinu', to: '/#categories' },
     ],
@@ -72,8 +72,8 @@ const columns = [
           © {{ year }} elorikids. Sva prava zadržana.
         </p>
         <div class="flex gap-6">
-          <NuxtLink to="/politika-privatnosti" class="text-sm text-cloud/60 transition-colors hover:text-sky">Politika privatnosti</NuxtLink>
-          <NuxtLink to="/uslovi-koriscenja" class="text-sm text-cloud/60 transition-colors hover:text-sky">Uslovi korišćenja</NuxtLink>
+          <NuxtLink to="/legal/privacy-policy" class="text-sm text-cloud/60 transition-colors hover:text-sky">Politika privatnosti</NuxtLink>
+          <NuxtLink to="/legal/terms" class="text-sm text-cloud/60 transition-colors hover:text-sky">Uslovi korišćenja</NuxtLink>
         </div>
       </div>
     </div>

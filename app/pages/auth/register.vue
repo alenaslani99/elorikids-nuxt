@@ -67,7 +67,7 @@ async function handleSubmit() {
 
     if (res.ok && res.user) {
       setUser(res.user)
-      router.push('/nalog')
+      router.push('/auth/account')
     }
     else {
       throw new Error('Registracija nije uspela.')
@@ -239,9 +239,9 @@ const passwordStrength = computed(() => {
               >
               <span>
                 Prihvatam
-                <NuxtLink to="/uslovi-koriscenja" class="font-medium text-blue hover:text-navy">uslove korišćenja</NuxtLink>
+                <NuxtLink to="/legal/terms" class="font-medium text-blue hover:text-navy">uslove korišćenja</NuxtLink>
                 i
-                <NuxtLink to="/politika-privatnosti" class="font-medium text-blue hover:text-navy">politiku privatnosti</NuxtLink>.
+                <NuxtLink to="/legal/privacy-policy" class="font-medium text-blue hover:text-navy">politiku privatnosti</NuxtLink>.
               </span>
             </label>
 
@@ -264,7 +264,7 @@ const passwordStrength = computed(() => {
           <!-- Login link -->
           <p class="mt-6 text-center text-sm text-navy/60">
             Već imate nalog?
-            <NuxtLink to="/prijava" class="font-semibold text-blue transition-colors hover:text-navy">
+            <NuxtLink to="/auth/login" class="font-semibold text-blue transition-colors hover:text-navy">
               Prijavite se
             </NuxtLink>
           </p>

@@ -412,7 +412,7 @@ onMounted(() => {
                     </div>
                   </a>
                   <NuxtLink
-                    to="/kontakt"
+                    to="/legal/contact"
                     class="flex items-center gap-3 rounded-2xl border-2 border-cloud/40 bg-cream p-4 transition-colors hover:border-blue"
                   >
                     <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-mint/15">

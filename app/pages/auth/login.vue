@@ -50,7 +50,7 @@ async function handleSubmit() {
     if (res.ok && res.user) {
       setUser(res.user)
       // Redirect to intended page or account
-      const redirect = (route.query.redirect as string) || '/nalog'
+      const redirect = (route.query.redirect as string) || '/auth/account'
       router.push(redirect)
     }
     else {
@@ -147,7 +147,7 @@ if (route.query.email) {
                 <input type="checkbox" class="size-4 rounded border-cloud text-blue focus:ring-blue/20">
                 Zapamti me
               </label>
-              <NuxtLink to="/zaboravljena-lozinka" class="font-medium text-blue transition-colors hover:text-navy">
+              <NuxtLink to="/auth/forgot-password" class="font-medium text-blue transition-colors hover:text-navy">
                 Zaboravili ste lozinku?
               </NuxtLink>
             </div>
@@ -171,7 +171,7 @@ if (route.query.email) {
           <!-- Register link -->
           <p class="mt-6 text-center text-sm text-navy/60">
             Nemate nalog?
-            <NuxtLink to="/registracija" class="font-semibold text-blue transition-colors hover:text-navy">
+            <NuxtLink to="/auth/register" class="font-semibold text-blue transition-colors hover:text-navy">
               Registrujte se
             </NuxtLink>
           </p>

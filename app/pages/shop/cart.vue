@@ -201,7 +201,7 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
                 </div>
 
                 <NuxtLink
-                  to="/poruci"
+                  to="/shop/checkout"
                   class="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98]"
                 >
                   Naruči

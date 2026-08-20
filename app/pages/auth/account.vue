@@ -44,8 +44,8 @@ const statusStyles: Record<string, { bg: string, text: string, icon: string }> =
 }
 
 const quickLinks = [
-  { label: 'Sačuvane knjige', desc: `${savedCount.value} knjiga`, to: '/sacuvano', icon: 'lucide:heart', accent: 'bg-coral/10 text-coral' },
-  { label: 'Korpa', desc: `${cartCount.value} artikala`, to: '/korpa', icon: 'lucide:shopping-bag', accent: 'bg-blue/10 text-blue' },
+  { label: 'Sačuvane knjige', desc: `${savedCount.value} knjiga`, to: '/shop/saved', icon: 'lucide:heart', accent: 'bg-coral/10 text-coral' },
+  { label: 'Korpa', desc: `${cartCount.value} artikala`, to: '/shop/cart', icon: 'lucide:shopping-bag', accent: 'bg-blue/10 text-blue' },
   { label: 'Početna', desc: 'Nazad na prodavnicu', to: '/', icon: 'lucide:home', accent: 'bg-mint/15 text-mint' },
 ]
 </script>
@@ -199,7 +199,7 @@ const quickLinks = [
                     Potrebna pomoć?
                   </p>
                   <p class="text-sm text-cloud/80">
-                    <NuxtLink to="/kontakt" class="underline transition-colors hover:text-sky">Kontaktirajte nas</NuxtLink> za pitanja o porudžbinama.
+                    <NuxtLink to="/legal/contact" class="underline transition-colors hover:text-sky">Kontaktirajte nas</NuxtLink> za pitanja o porudžbinama.
                   </p>
                 </div>
               </div>

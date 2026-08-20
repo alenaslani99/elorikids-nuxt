@@ -100,7 +100,7 @@ function toggle(index: number) {
           Niste našli odgovor na svoje pitanje?
         </p>
         <NuxtLink
-          to="/kontakt"
+          to="/legal/contact"
           class="mt-3 inline-flex items-center gap-2 font-semibold text-navy transition-colors hover:text-blue"
         >
           Kontaktirajte nas
