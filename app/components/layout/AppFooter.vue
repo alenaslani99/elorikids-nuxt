@@ -5,10 +5,9 @@ const columns = [
   {
     title: 'Kupovina',
     links: [
-      { label: 'Slikovnice', to: '/#categories' },
-      { label: 'Aktivne knjige', to: '/#categories' },
-      { label: 'Školski pribor', to: '/#categories' },
-      { label: 'Likovna oprema', to: '/#categories' },
+      { label: 'Prvi Koraci', to: '/books/prvi-koraci' },
+      { label: 'Učimo kroz igru', to: '/books/ucimo-kroz-igru' },
+      { label: 'Priprema za školu', to: '/books/priprema-za-skolu' },
     ],
   },
   {
@@ -16,17 +15,14 @@ const columns = [
     links: [
       { label: 'O nama', to: '/about-us' },
       { label: 'Kontakt', to: '/legal/contact' },
-      { label: 'Poslovi', to: '/legal/contact' },
-      { label: 'Blog', to: '/legal/contact' },
+      { label: 'Blog', to: '/blog' },
     ],
   },
   {
     title: 'Podrška',
     links: [
-      { label: 'Dostava', to: '/auth/login' },
-      { label: 'Povrat robe', to: '/auth/register' },
-      { label: 'Česta pitanja', to: '/#categories' },
-      { label: 'Pratite porudžbinu', to: '/#categories' },
+      { label: 'Česta pitanja', to: '/faq' },
+      { label: 'Pratite porudžbinu', to: '/pratite-porudzbinu' },
     ],
   },
 ]

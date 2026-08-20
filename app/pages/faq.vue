@@ -1,0 +1,82 @@
+<script setup lang="ts">
+useHead({
+  title: 'Česta pitanja - elorikids',
+  meta: [
+    { name: 'description', content: 'Odgovori na najčešća pitanja o elorikids knjigama — piši-briši sistem, uzrasti, bezbednost, dostava i povrat robe.' },
+    { name: 'og:title', content: 'Česta pitanja | elorikids' },
+    { name: 'og:description', content: 'Odgovori na najčešća pitanja o elorikids knjigama.' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://elorikids.rs/faq' },
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(f => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: { '@type': 'Answer', text: f.answer },
+        })),
+      }),
+    },
+  ],
+})
+</script>
+
+<template>
+  <div>
+    <!-- Page header -->
+    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Česta pitanja' }]" nav-class="mb-4" />
+        <div class="max-w-3xl">
+          <span class="inline-block rounded-full bg-sky/40 px-4 py-1.5 text-sm font-semibold text-navy">
+            Česta pitanja
+          </span>
+          <h1 class="font-unbounded mt-4 text-4xl font-extrabold text-navy md:text-5xl">
+            Odgovori na vaša pitanja
+          </h1>
+          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy/70">
+            Sve što treba da znate o našim knjigama, načinu upotrebe i dostavi.
+            Ako ne pronađete odgovor, tu smo da pomognemo.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Accordion -->
+    <section class="bg-cream py-12 lg:py-16">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <AppFaqAccordion :items="faqs" />
+
+        <!-- Contact CTA -->
+        <div class="mt-10 rounded-3xl border-2 border-cloud/40 bg-white p-8 text-center shadow-sm">
+          <h2 class="font-unbounded text-2xl font-extrabold text-navy">
+            Niste našli odgovor?
+          </h2>
+          <p class="mt-3 text-navy/70">
+            Rado ćemo odgovoriti na sva vaša pitanja.
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-4">
+            <NuxtLink
+              to="/legal/contact"
+              class="inline-flex items-center gap-2 rounded-full bg-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
+            >
+              Kontaktirajte nas
+              <Icon name="lucide:arrow-right" class="size-5" />
+            </NuxtLink>
+            <NuxtLink
+              to="/pratite-porudzbinu"
+              class="inline-flex items-center gap-2 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
+            >
+              Pratite porudžbinu
+            </NuxtLink>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
