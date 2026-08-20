@@ -123,7 +123,7 @@ const passwordStrength = computed(() => {
               Kreirajte nalog
             </h2>
             <p class="mt-2 text-navy/60">
-              Brza registracija — bez čekanja, bez potvrde emailom.
+              Brza registracija - bez čekanja, bez potvrde emailom.
             </p>
           </div>
 

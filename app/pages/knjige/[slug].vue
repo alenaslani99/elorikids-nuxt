@@ -57,7 +57,7 @@ function decQty() {
 
 // --- SEO + structured data ---
 useHead({
-  title: `${book.value!.title} — ${book.value!.ageRange} | elorikids`,
+  title: `${book.value!.title} - ${book.value!.ageRange} | elorikids`,
   meta: [
     { name: 'description', content: book.value!.description },
     { name: 'og:title', content: `${book.value!.title} | elorikids` },
@@ -106,7 +106,7 @@ useHead({
   <div v-if="book" class="bg-cream">
     <!-- Breadcrumbs -->
     <AppBreadcrumb
-      :items="[{ label: 'Početna', to: '/' }, { label: 'Knjige', to: '/knjige' }, { label: book.title }]"
+      :items="[{ label: 'Početna', to: '/' }, { label: 'Knjige', to: '/#categories' }, { label: book.title }]"
       nav-class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8"
     />
 
@@ -119,7 +119,7 @@ useHead({
           <div class="relative overflow-hidden rounded-3xl shadow-lg">
             <NuxtImg
               :src="`/${book.img}`"
-              :alt="`Naslovna strana — ${book.title}, interaktivna piši-briši knjiga za uzrast ${book.ageRange}`"
+              :alt="`Naslovna strana - ${book.title}, interaktivna piši-briši knjiga za uzrast ${book.ageRange}`"
               class="aspect-[4/5] w-full object-cover"
               width="400"
               height="500"
@@ -400,7 +400,7 @@ useHead({
           Još interaktivnih knjiga
         </h2>
         <p class="mx-auto mt-3 max-w-xl text-center text-navy/60">
-          Upotpunite kolekciju — sve knjige prate razvoj deteta korak po korak.
+          Upotpunite kolekciju - sve knjige prate razvoj deteta korak po korak.
         </p>
 
         <div class="mt-10 grid gap-6 sm:grid-cols-2">

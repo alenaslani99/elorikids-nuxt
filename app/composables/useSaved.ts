@@ -16,8 +16,8 @@ const STORAGE_KEY = 'elorikids-saved'
 export function useSaved() {
   const saved = useState<SavedState>('saved', () => ({ items: [] }))
 
-  // Hydrate from localStorage on client only
-  if (import.meta.client) {
+  // Hydrate from localStorage on client, after mount (avoids SSR hydration mismatch)
+  onMounted(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
@@ -28,7 +28,7 @@ export function useSaved() {
       }
     }
     catch {
-      // Corrupt storage — start fresh
+      // Corrupt storage - start fresh
       saved.value.items = []
     }
 
@@ -36,7 +36,7 @@ export function useSaved() {
     watch(saved.value, (val) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     }, { deep: true })
-  }
+  })
 
   const items = computed(() => saved.value.items)
   const count = computed(() => saved.value.items.length)

@@ -2,7 +2,7 @@
 useHead({
   title: 'Korpa - elorikids',
   meta: [
-    { name: 'description', content: 'Pregled vaše korpe — interaktivne piši-briši knjige za decu. Besplatna dostava za porudžbine preko 5.000 RSD.' },
+    { name: 'description', content: 'Pregled vaše korpe - interaktivne piši-briši knjige za decu. Besplatna dostava za porudžbine preko 5.000 RSD.' },
   ],
 })
 
@@ -220,7 +220,7 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
                   </div>
                   <div class="flex items-center gap-3 text-sm text-navy/60">
                     <Icon name="lucide:shield-check" class="size-5 shrink-0 text-blue" />
-                    Porudžbina se šalje na email — bez plaćanja unapred
+                    Porudžbina se šalje na email - bez plaćanja unapred
                   </div>
                 </div>
               </div>

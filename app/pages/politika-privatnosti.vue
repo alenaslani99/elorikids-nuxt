@@ -2,7 +2,7 @@
 useHead({
   title: 'Politika privatnosti - elorikids',
   meta: [
-    { name: 'description', content: 'Politika privatnosti elorikids — kako prikupljamo, koristimo i štitimo vaše lične podatke.' },
+    { name: 'description', content: 'Politika privatnosti elorikids - kako prikupljamo, koristimo i štitimo vaše lične podatke.' },
   ],
 })
 
@@ -119,19 +119,19 @@ onMounted(() => {
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Podaci o kupcu</strong> — ime i prezime, adresa e-pošte i broj telefona, prilikom registracije i poručivanja.</span>
+                    <span><strong class="text-navy">Podaci o kupcu</strong> - ime i prezime, adresa e-pošte i broj telefona, prilikom registracije i poručivanja.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Podaci o dostavi</strong> — adresa, grad i poštanski broj za isporuku porudžbine.</span>
+                    <span><strong class="text-navy">Podaci o dostavi</strong> - adresa, grad i poštanski broj za isporuku porudžbine.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Podaci o porudžbini</strong> — koje knjige ste naručili, količina, iznos i način plaćanja.</span>
+                    <span><strong class="text-navy">Podaci o porudžbini</strong> - koje knjige ste naručili, količina, iznos i način plaćanja.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Tehnički podaci</strong> — IP adresa, vrsta pregledača i jezik, prilikom posete sajtu.</span>
+                    <span><strong class="text-navy">Tehnički podaci</strong> - IP adresa, vrsta pregledača i jezik, prilikom posete sajtu.</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">
@@ -187,19 +187,19 @@ onMounted(() => {
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Saglasnost</strong> — za slanje newslettera i marketinških poruka.</span>
+                    <span><strong class="text-navy">Saglasnost</strong> - za slanje newslettera i marketinških poruka.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Izvršenje ugovora</strong> — za obradu porudžbina i isporuku robe.</span>
+                    <span><strong class="text-navy">Izvršenje ugovora</strong> - za obradu porudžbina i isporuku robe.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Zakonska obaveza</strong> — za čuvanje računa i poreskih evidencija.</span>
+                    <span><strong class="text-navy">Zakonska obaveza</strong> - za čuvanje računa i poreskih evidencija.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Legitimni interes</strong> — za poboljšanje usluga i sprečavanje prevare.</span>
+                    <span><strong class="text-navy">Legitimni interes</strong> - za poboljšanje usluga i sprečavanje prevare.</span>
                   </li>
                 </ul>
               </div>
@@ -216,15 +216,15 @@ onMounted(() => {
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:truck" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Kurirske službe</strong> — za isporuku porudžbina (ime, adresa, telefon).</span>
+                    <span><strong class="text-navy">Kurirske službe</strong> - za isporuku porudžbina (ime, adresa, telefon).</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:mail" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Provajderi e-pošte</strong> — za slanje newslettera i potvrda porudžbina.</span>
+                    <span><strong class="text-navy">Provajderi e-pošte</strong> - za slanje newslettera i potvrda porudžbina.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:landmark" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Državni organi</strong> — isključivo na zakonski zahtev (poreske evidencije).</span>
+                    <span><strong class="text-navy">Državni organi</strong> - isključivo na zakonski zahtev (poreske evidencije).</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">
@@ -244,15 +244,15 @@ onMounted(() => {
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:check" class="mt-0.5 size-5 shrink-0 text-mint" />
-                    <span><strong class="text-navy">Podaci o porudžbini</strong> — 5 godina radi poreskih obaveza.</span>
+                    <span><strong class="text-navy">Podaci o porudžbini</strong> - 5 godina radi poreskih obaveza.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:check" class="mt-0.5 size-5 shrink-0 text-mint" />
-                    <span><strong class="text-navy">Podaci o nalogu</strong> — dok je nalog aktivan, ili do zahteva za brisanjem.</span>
+                    <span><strong class="text-navy">Podaci o nalogu</strong> - dok je nalog aktivan, ili do zahteva za brisanjem.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:check" class="mt-0.5 size-5 shrink-0 text-mint" />
-                    <span><strong class="text-navy">Newsletter</strong> — do odjave, koju možete izvršiti u svakom trenutku.</span>
+                    <span><strong class="text-navy">Newsletter</strong> - do odjave, koju možete izvršiti u svakom trenutku.</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">
@@ -359,15 +359,15 @@ onMounted(() => {
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:settings" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Neophodni kolačići</strong> — omogućuju osnovne funkcije (korpa, prijava).</span>
+                    <span><strong class="text-navy">Neophodni kolačići</strong> - omogućuju osnovne funkcije (korpa, prijava).</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:bar-chart-3" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Analitički kolačići</strong> — anonimno prikupljaju podatke o korišćenju sajta.</span>
+                    <span><strong class="text-navy">Analitički kolačići</strong> - anonimno prikupljaju podatke o korišćenju sajta.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:megaphone" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Marketinški kolačići</strong> — omogućuju prikazivanje relevantnih oglasa.</span>
+                    <span><strong class="text-navy">Marketinški kolačići</strong> - omogućuju prikazivanje relevantnih oglasa.</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">

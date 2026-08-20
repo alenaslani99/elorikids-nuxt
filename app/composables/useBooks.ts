@@ -40,8 +40,8 @@ export const books: Book[] = [
     ],
     sellingPoints: [
       { title: 'Piši-briši sistem', text: 'Laminirane, vodootporne stranice omogućavaju višestruko korišćenje. Dete može da vežba isti zadatak bezbroj puta, bez straha od greške. Jednostavno obrišite i počnite ispočetka!' },
-      { title: 'Originalni sadržaj', text: 'Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala — sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.' },
-      { title: 'Učenje kroz igru', text: 'Zabava je na prvom mestu — učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.' },
+      { title: 'Originalni sadržaj', text: 'Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala - sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.' },
+      { title: 'Učenje kroz igru', text: 'Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.' },
       { title: '32 stranice', text: 'Raznovrsni zadaci koji podstiču kreativnost i radoznalost.' },
     ],
     accent: 'mint',
@@ -66,8 +66,8 @@ export const books: Book[] = [
     ],
     sellingPoints: [
       { title: 'Piši-briši sistem', text: 'Laminirane, vodootporne stranice omogućavaju višestruko korišćenje. Dete može da vežba isti zadatak bezbroj puta, bez straha od greške. Jednostavno obrišite i počnite ispočetka!' },
-      { title: 'Originalni sadržaj', text: 'Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala — sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.' },
-      { title: 'Učenje kroz igru', text: 'Zabava je na prvom mestu — učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.' },
+      { title: 'Originalni sadržaj', text: 'Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala - sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.' },
+      { title: 'Učenje kroz igru', text: 'Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.' },
       { title: '32 stranice', text: 'Raznovrsni zadaci koji podstiču kreativnost i radoznalost.' },
     ],
     accent: 'purple',
@@ -82,7 +82,7 @@ export const books: Book[] = [
     ageSlug: '4-6-godine',
     category: '4–6 godine',
     price: 2000,
-    description: 'Poslednja knjiga u seriji — priprema za polazak u školu. Lavirinti, pronalaženje razlika i asocijacije razvijaju strpljenje, pažnju i logičko razmišljanje. Sve što dete treba da savlada pre prvog školskog zvona.',
+    description: 'Poslednja knjiga u seriji - priprema za polazak u školu. Lavirinti, pronalaženje razlika i asocijacije razvijaju strpljenje, pažnju i logičko razmišljanje. Sve što dete treba da savlada pre prvog školskog zvona.',
     features: ['32 stranice', 'Laminirano', 'Vodootporno', 'Piši-briši'],
     activities: [
       { title: 'Lavirinti', description: 'Pronalaženje pravog puta razvija strpljenje i logičko razmišljanje.' },
@@ -92,8 +92,8 @@ export const books: Book[] = [
     ],
     sellingPoints: [
       { title: 'Piši-briši sistem', text: 'Laminirane, vodootporne stranice omogućavaju višestruko korišćenje. Dete može da vežba isti zadatak bezbroj puta, bez straha od greške. Jednostavno obrišite i počnite ispočetka!' },
-      { title: 'Originalni sadržaj', text: 'Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala — sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.' },
-      { title: 'Učenje kroz igru', text: 'Zabava je na prvom mestu — učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.' },
+      { title: 'Originalni sadržaj', text: 'Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala - sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.' },
+      { title: 'Učenje kroz igru', text: 'Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.' },
       { title: '32 stranice', text: 'Raznovrsni zadaci koji podstiču kreativnost i radoznalost.' },
     ],
     accent: 'coral',

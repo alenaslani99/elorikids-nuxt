@@ -14,8 +14,8 @@ const STORAGE_KEY = 'elorikids-cart'
 export function useCart() {
   const cart = useState<CartState>('cart', () => ({ items: [] }))
 
-  // Hydrate from localStorage on client only
-  if (import.meta.client) {
+  // Hydrate from localStorage on client, after mount (avoids SSR hydration mismatch)
+  onMounted(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
@@ -26,7 +26,7 @@ export function useCart() {
       }
     }
     catch {
-      // Corrupt storage — start fresh
+      // Corrupt storage - start fresh
       cart.value.items = []
     }
 
@@ -34,7 +34,7 @@ export function useCart() {
     watch(cart.value, (val) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     }, { deep: true })
-  }
+  })
 
   const count = computed(() => cart.value.items.reduce((sum, i) => sum + i.quantity, 0))
   const total = computed(() => cart.value.items.reduce((sum, i) => sum + i.price * i.quantity, 0))

@@ -2,7 +2,7 @@
 useHead({
   title: 'Kontakt - elorikids',
   meta: [
-    { name: 'description', content: 'Stupite u kontakt sa elorikids timom. Pitanja o knjigama, porudžbinama ili dostavi? Pišite nam — odgovaramo u roku od 24h.' },
+    { name: 'description', content: 'Stupite u kontakt sa elorikids timom. Pitanja o knjigama, porudžbinama ili dostavi? Pišite nam - odgovaramo u roku od 24h.' },
   ],
 })
 

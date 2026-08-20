@@ -2,7 +2,7 @@
 useHead({
   title: 'Uslovi korišćenja - elorikids',
   meta: [
-    { name: 'description', content: 'Uslovi korišćenja elorikids sajta i usluga — pravila kupovine, poručivanja, dostave i povraćaja.' },
+    { name: 'description', content: 'Uslovi korišćenja elorikids sajta i usluga - pravila kupovine, poručivanja, dostave i povraćaja.' },
   ],
 })
 
@@ -153,15 +153,15 @@ onMounted(() => {
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Odgovornost</strong> — vi ste odgovorni za čuvanje svojih pristupnih podataka i za sve aktivnosti pod vašim nalogom.</span>
+                    <span><strong class="text-navy">Odgovornost</strong> - vi ste odgovorni za čuvanje svojih pristupnih podataka i za sve aktivnosti pod vašim nalogom.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Tačnost podataka</strong> — obavezni ste da ažurirate svoje podatke u slučaju promene.</span>
+                    <span><strong class="text-navy">Tačnost podataka</strong> - obavezni ste da ažurirate svoje podatke u slučaju promene.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Brisanje naloga</strong> — možete zatražiti brisanje naloga u svakom trenutku.</span>
+                    <span><strong class="text-navy">Brisanje naloga</strong> - možete zatražiti brisanje naloga u svakom trenutku.</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">
@@ -218,7 +218,7 @@ onMounted(() => {
                       </p>
                       <p class="mt-1 text-sm text-navy/60">
                         Plaćanje se vrši u gotovini kuriru prilikom preuzimanja porudžbine.
-                        Iznos koji plaćate je tačno onoliko koliko je prikazano u rezimeu porudžbine —
+                        Iznos koji plaćate je tačno onoliko koliko je prikazano u rezimeu porudžbine -
                         bez skrivenih troškova.
                       </p>
                     </div>
@@ -317,7 +317,7 @@ onMounted(() => {
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:alert-triangle" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span>Ukoliko primite oštećenu ili neispravnu knjigu, javite nam se u roku od 3 dana od prijema — besplatno ćemo je zameniti.</span>
+                    <span>Ukoliko primite oštećenu ili neispravnu knjigu, javite nam se u roku od 3 dana od prijema - besplatno ćemo je zameniti.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:eraser" class="mt-0.5 size-5 shrink-0 text-blue" />
@@ -332,21 +332,21 @@ onMounted(() => {
                   9. Intelektualna svojina
                 </h2>
                 <p class="mt-3 leading-relaxed text-navy/70">
-                  Sav sadržaj na sajtu — uključujući tekstove, ilustracije, dizajn, logo i brend elorikids —
+                  Sav sadržaj na sajtu - uključujući tekstove, ilustracije, dizajn, logo i brend elorikids -
                   zaštićen je zakonom o autorskom i srodnim pravima.
                 </p>
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Zabranjeno</strong> — kopiranje, distribucija i korišćenje sadržaja bez pisanog odobrenja.</span>
+                    <span><strong class="text-navy">Zabranjeno</strong> - kopiranje, distribucija i korišćenje sadržaja bez pisanog odobrenja.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Dozvoljeno</strong> — korišćenje u lične svrhe (pregled, poručivanje).</span>
+                    <span><strong class="text-navy">Dozvoljeno</strong> - korišćenje u lične svrhe (pregled, poručivanje).</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Originalni sadržaj</strong> — svi zadaci i ilustracije su ručno kreirani, bez kopiranih materijala.</span>
+                    <span><strong class="text-navy">Originalni sadržaj</strong> - svi zadaci i ilustracije su ručno kreirani, bez kopiranih materijala.</span>
                   </li>
                 </ul>
               </div>

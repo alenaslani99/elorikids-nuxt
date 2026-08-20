@@ -2,7 +2,7 @@
 useHead({
   title: 'Porudžbina - elorikids',
   meta: [
-    { name: 'description', content: 'Završite porudžbinu — unesite podatke za dostavu i pošaljite porudžbinu. Plaćanje se vrši pri preuzimanju.' },
+    { name: 'description', content: 'Završite porudžbinu - unesite podatke za dostavu i pošaljite porudžbinu. Plaćanje se vrši pri preuzimanju.' },
     { name: 'robots', content: 'noindex, nofollow' },
   ],
 })
