@@ -1,75 +1,58 @@
-# Nuxt Minimal Starter
+# elorikids
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Marketing-first online shop for interactive laminated write-wipe activity books for children aged 2–6. Built with Nuxt 4, Tailwind CSS v4, and Nuxt UI components.
 
-## Setup
+## Stack
 
-Make sure to install dependencies:
+- **Nuxt 4** — SSR framework
+- **Tailwind CSS v4** — styling (via `@tailwindcss/vite`)
+- **@nuxt/icon** + `@iconify-json/lucide` — icons
+- **@nuxt/image** — optimized responsive images (IPX)
+- **@nuxt/fonts** — self-hosted fonts (Google: Unbounded)
+
+## Getting started
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Dev server runs on `http://localhost:3000`.
 
-Build the application for production:
+## Scripts
 
-```bash
-# npm
-npm run build
+| Command             | Description                |
+| ------------------- | -------------------------- |
+| `npm run dev`       | Start dev server           |
+| `npm run build`     | Build for production       |
+| `npm run generate`  | Static site generation     |
+| `npm run preview`   | Preview production build   |
 
-# pnpm
-pnpm build
+## Project structure
 
-# yarn
-yarn build
-
-# bun
-bun run build
+```
+app/
+├── assets/css/         # Tailwind entry + custom styles
+├── components/
+│   ├── layout/         # AppHeader, AppFooter
+│   └── sections/       # Landing page sections
+├── composables/        # useAuth, useBooks, useCart, ...
+├── layouts/            # default layout
+└── pages/              # file-based routes
 ```
 
-Locally preview production build:
+## Pages
 
-```bash
-# npm
-npm run preview
+- `/` — landing
+- `/knjige/[slug]` — book details
+- `/korpa` — cart
+- `/poruci` — checkout
+- `/prijava` · `/registracija` — auth
+- `/sacuvano` — saved items
+- `/kontakt` — contact
+- `/politika-privatnosti` · `/uslovi-koriscenja` — legal
+- `/hvala` — order confirmation
 
-# pnpm
-pnpm preview
+## Language
 
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+All UI copy is in Serbian (Latin script, `sr-Latn`).
