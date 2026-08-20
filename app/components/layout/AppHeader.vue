@@ -68,7 +68,7 @@ function handleLogout() {
             <Icon name="lucide:heart" class="size-5" />
             <span v-if="savedCount > 0" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[10px] font-bold text-white">{{ savedCount }}</span>
           </NuxtLink>
-          <NuxtLink to="/prijava" aria-label="Nalog" class="hidden h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:flex">
+          <NuxtLink to="/nalog" aria-label="Nalog" class="hidden h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:flex">
             <Icon name="lucide:user" class="size-5" />
           </NuxtLink>
           <NuxtLink to="/korpa" aria-label="Korpa" class="relative flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10">
