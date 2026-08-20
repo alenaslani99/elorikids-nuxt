@@ -26,13 +26,20 @@ async function handleSubmit() {
       body: { email: email.value },
     })
     status.value = 'success'
-    email.value = ''
   }
   catch {
     status.value = 'error'
     errorMessage.value = 'Došlo je do greške. Pokušajte ponovo.'
   }
 }
+
+// Clear stale status as soon as the user edits the email
+watch(email, () => {
+  if (status.value === 'error' || status.value === 'success') {
+    status.value = 'idle'
+    errorMessage.value = ''
+  }
+})
 </script>
 
 <template>
@@ -56,7 +63,6 @@ async function handleSubmit() {
 
       <!-- Form -->
       <form
-        v-if="status !== 'success'"
         class="mx-auto mt-8 flex max-w-md flex-col gap-3 sm:flex-row"
         @submit.prevent="handleSubmit"
       >
@@ -81,24 +87,18 @@ async function handleSubmit() {
         </button>
       </form>
 
-      <!-- Error -->
-      <p v-if="status === 'error'" class="mt-3 text-sm text-coral" role="alert">
-        {{ errorMessage }}
-      </p>
-
-      <!-- Success -->
-      <div
-        v-if="status === 'success'"
-        class="mx-auto mt-8 flex max-w-md items-center justify-center gap-3 rounded-2xl bg-mint/15 px-6 py-4 text-mint"
-      >
-        <Icon name="lucide:check-circle" class="size-6 shrink-0" />
-        <p class="text-sm font-medium">
+      <!-- Status message (reserved height prevents layout shift) -->
+      <div class="min-h-8">
+        <p v-if="status === 'error'" class="mt-3 text-sm text-coral" role="alert">
+          {{ errorMessage }}
+        </p>
+        <p v-else-if="status === 'success'" class="mt-3 text-sm font-medium text-mint" role="status">
           Hvala! Proverite vašu e-poštu da potvrdite prijavu.
         </p>
       </div>
 
       <!-- Privacy note -->
-      <p v-if="status !== 'success'" class="mt-4 text-xs text-cloud/50">
+      <p class="mt-4 text-xs text-cloud/50">
         Bez spama. Odjava u svakom trenutku. Poštujemo vašu privatnost.
       </p>
     </div>

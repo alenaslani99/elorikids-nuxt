@@ -62,15 +62,20 @@ async function handleSubmit() {
       },
     })
     status.value = 'success'
-    form.name = ''
-    form.email = ''
-    form.message = ''
   }
   catch {
     status.value = 'error'
     errorMessage.value = 'Došlo je do greške. Pokušajte ponovo.'
   }
 }
+
+// Clear stale status/success message as soon as the user edits any field
+watch(form, () => {
+  if (status.value === 'error' || status.value === 'success') {
+    status.value = 'idle'
+    errorMessage.value = ''
+  }
+})
 
 const contactInfo = [
   {
@@ -134,25 +139,8 @@ const contactInfo = [
                 Popunite formu ispod i javićemo vam se što pre.
               </p>
 
-              <!-- Success -->
-              <div
-                v-if="status === 'success'"
-                class="flex items-center gap-3 rounded-2xl bg-mint/15 px-6 py-5 text-mint"
-              >
-                <Icon name="lucide:check-circle" class="size-7 shrink-0" />
-                <div>
-                  <p class="font-semibold">
-                    Hvala na poruci!
-                  </p>
-                  <p class="text-sm">
-                    Javićemo vam se na navedenu e-poštu u roku od 24h.
-                  </p>
-                </div>
-              </div>
-
               <!-- Form -->
               <form
-                v-else
                 class="space-y-5"
                 @submit.prevent="handleSubmit"
               >
@@ -207,10 +195,15 @@ const contactInfo = [
                   />
                 </div>
 
-                <!-- Error -->
-                <p v-if="status === 'error'" class="text-sm text-coral" role="alert">
-                  {{ errorMessage }}
-                </p>
+                <!-- Status message (reserved height prevents layout shift) -->
+                <div class="min-h-8">
+                  <p v-if="status === 'error'" class="py-1 text-sm font-medium text-coral" role="alert">
+                    {{ errorMessage }}
+                  </p>
+                  <p v-else-if="status === 'success'" class="py-1 text-sm font-medium text-mint" role="status">
+                    Hvala na poruci! Javićemo vam se na navedenu e-poštu u roku od 24h.
+                  </p>
+                </div>
 
                 <!-- Submit -->
                 <button
