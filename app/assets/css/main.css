@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+/* Color system - elorikids (source of truth per AGENT.MD) */
+@theme {
+  --color-navy: #123F73;
+  --color-navy-dark: #0A315E;
+  --color-blue: #2587E8;
+  --color-sky: #B9E3F8;
+  --color-cloud: #C7D9EA;
+  --color-cream: #FFFDF7;
+  --color-coral: #F06A3A;
+  --color-yellow: #FFC83D;
+  --color-mint: #75D6B1;
+  --color-purple: #A997E8;
+
+  /* Fonts */
+  --font-unbounded: 'Unbounded', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-cream);
+  color: var(--color-navy);
+  font-family: var(--font-unbounded);
+}

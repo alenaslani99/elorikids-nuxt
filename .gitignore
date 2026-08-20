@@ -24,5 +24,4 @@ logs
 !.env.example
 
 # AGENT MD
-.AGENT.MD
 AGENT.MD
