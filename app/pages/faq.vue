@@ -29,23 +29,12 @@ useHead({
 <template>
   <div>
     <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Česta pitanja' }]" nav-class="mb-4" />
-        <div class="max-w-3xl">
-          <span class="inline-block rounded-full bg-sky/40 px-4 py-1.5 text-sm font-semibold text-navy">
-            Česta pitanja
-          </span>
-          <h1 class="font-unbounded mt-4 text-4xl font-extrabold text-navy md:text-5xl">
-            Odgovori na vaša pitanja
-          </h1>
-          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy/70">
-            Sve što treba da znate o našim knjigama, načinu upotrebe i dostavi.
-            Ako ne pronađete odgovor, tu smo da pomognemo.
-          </p>
-        </div>
-      </div>
-    </section>
+    <AppPageHeader
+      title="Odgovori na vaša pitanja"
+      badge="Česta pitanja"
+      subtitle="Sve što treba da znate o našim knjigama, načinu upotrebe i dostavi. Ako ne pronađete odgovor, tu smo da pomognemo."
+      :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Česta pitanja' }]"
+    />
 
     <!-- Accordion -->
     <section class="bg-cream py-12 lg:py-16">

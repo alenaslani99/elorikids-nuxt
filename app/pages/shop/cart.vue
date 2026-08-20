@@ -13,47 +13,19 @@ const FREE_SHIPPING_THRESHOLD = 5000
 const remainingForFreeShipping = computed(() => Math.max(0, FREE_SHIPPING_THRESHOLD - total.value))
 const hasFreeShipping = computed(() => total.value >= FREE_SHIPPING_THRESHOLD)
 const shippingProgress = computed(() => Math.min(100, (total.value / FREE_SHIPPING_THRESHOLD) * 100))
-
-const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shipping.value.toLocaleString('sr-RS')} RSD`))
 </script>
 
 <template>
   <div class="bg-cream">
-    <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Korpa' }]" nav-class="mb-4" />
-        <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
-          Vaša korpa
-        </h1>
-        <p class="mt-3 text-lg text-navy/70">
-          Pregledajte knjige koje ste izabrali i nastavite ka porudžbini.
-        </p>
-      </div>
-    </section>
+    <AppPageHeader title="Vaša korpa" subtitle="Pregledajte knjige koje ste izabrali i nastavite ka porudžbini." :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Korpa' }]" />
 
     <!-- Empty state -->
-    <section v-if="items.length === 0" class="py-16 lg:py-24">
-      <div class="mx-auto max-w-xl px-4 text-center sm:px-6 lg:px-8">
-        <div class="mx-auto flex size-24 items-center justify-center rounded-full bg-sky/30">
-          <Icon name="lucide:shopping-bag" class="size-12 text-navy/40" />
-        </div>
-        <h2 class="font-unbounded mt-6 text-2xl font-bold text-navy">
-          Vaša korpa je prazna
-        </h2>
-        <p class="mt-3 text-navy/60">
-          Još uvek niste dodali nijednu knjigu. Pogledajte našu ponudu interaktivnih
-          piši-briši knjiga za decu uzrasta 2-6 godina.
-        </p>
-        <NuxtLink
-          to="/#categories"
-          class="mt-8 inline-flex items-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98]"
-        >
-          Pogledaj knjige
-          <Icon name="lucide:arrow-right" class="size-5" />
-        </NuxtLink>
-      </div>
-    </section>
+    <AppEmptyState
+      v-if="items.length === 0"
+      icon="lucide:shopping-bag"
+      title="Vaša korpa je prazna"
+      description="Još uvek niste dodali nijednu knjigu. Pogledajte našu ponudu interaktivnih piši-briši knjiga za decu uzrasta 2-6 godina."
+    />
 
     <!-- Cart with items -->
     <section v-else class="py-12 lg:py-16">
@@ -178,27 +150,7 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
                   Rezime porudžbine
                 </h2>
 
-                <dl class="space-y-3 text-navy/70">
-                  <div class="flex justify-between">
-                    <dt>Knjige ({{ items.length }})</dt>
-                    <dd class="font-medium text-navy">{{ total.toLocaleString('sr-RS') }} RSD</dd>
-                  </div>
-                  <div class="flex justify-between">
-                    <dt>Dostava</dt>
-                    <dd class="font-medium" :class="shipping === 0 ? 'text-mint' : 'text-navy'">
-                      {{ shippingCost }}
-                    </dd>
-                  </div>
-                </dl>
-
-                <div class="my-5 border-t border-cloud/40" />
-
-                <div class="flex items-baseline justify-between">
-                  <span class="font-semibold text-navy">Ukupno</span>
-                  <span class="font-unbounded text-2xl font-extrabold text-navy">
-                    {{ grandTotal.toLocaleString('sr-RS') }} RSD
-                  </span>
-                </div>
+                <AppOrderTotals :total="total" :shipping="shipping" :grand-total="grandTotal" :items-count="items.length" show-count />
 
                 <NuxtLink
                   to="/shop/checkout"

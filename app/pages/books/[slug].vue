@@ -17,14 +17,6 @@ const relatedBooks = computed(() => getRelatedBooks(slug.value))
 const quantity = ref(1)
 const activeTab = ref<'activities' | 'selling' | 'specs'>('activities')
 
-const accentClasses: Record<string, { bg: string, text: string, soft: string, ring: string }> = {
-  mint: { bg: 'bg-mint', text: 'text-mint', soft: 'bg-mint/15', ring: 'ring-mint' },
-  purple: { bg: 'bg-purple', text: 'text-purple', soft: 'bg-purple/15', ring: 'ring-purple' },
-  coral: { bg: 'bg-coral', text: 'text-coral', soft: 'bg-coral/15', ring: 'ring-coral' },
-  sky: { bg: 'bg-sky', text: 'text-sky', soft: 'bg-sky/40', ring: 'ring-sky' },
-  yellow: { bg: 'bg-yellow', text: 'text-yellow', soft: 'bg-yellow/15', ring: 'ring-yellow' },
-}
-
 const a = computed(() => accentClasses[book.value!.accent] ?? accentClasses.mint)
 
 const saved = computed(() => isSaved(slug.value))

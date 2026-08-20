@@ -7,14 +7,6 @@ useHead({
 })
 
 const { items, remove, clear } = useSaved()
-
-const accentClasses: Record<string, { soft: string, text: string }> = {
-  mint: { soft: 'bg-mint/15', text: 'text-mint' },
-  purple: { soft: 'bg-purple/15', text: 'text-purple' },
-  coral: { soft: 'bg-coral/15', text: 'text-coral' },
-  sky: { soft: 'bg-sky/40', text: 'text-sky' },
-  yellow: { soft: 'bg-yellow/15', text: 'text-yellow' },
-}
 </script>
 
 <template>
@@ -46,26 +38,12 @@ const accentClasses: Record<string, { soft: string, text: string }> = {
     </section>
 
     <!-- Empty state -->
-    <section v-if="items.length === 0" class="py-16 lg:py-24">
-      <div class="mx-auto max-w-xl px-4 text-center sm:px-6 lg:px-8">
-        <div class="mx-auto flex size-24 items-center justify-center rounded-full bg-sky/30">
-          <Icon name="lucide:heart" class="size-12 text-navy/40" />
-        </div>
-        <h2 class="font-unbounded mt-6 text-2xl font-bold text-navy">
-          Nemate sačuvanih knjiga
-        </h2>
-        <p class="mt-3 text-navy/60">
-          Pritisnite srce na bilo kojoj knjizi da je sačuvate ovde za kasnije.
-        </p>
-        <NuxtLink
-          to="/#categories"
-          class="mt-8 inline-flex items-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98]"
-        >
-          Pogledaj knjige
-          <Icon name="lucide:arrow-right" class="size-5" />
-        </NuxtLink>
-      </div>
-    </section>
+    <AppEmptyState
+      v-if="items.length === 0"
+      icon="lucide:heart"
+      title="Nemate sačuvanih knjiga"
+      description="Pritisnite srce na bilo kojoj knjizi da je sačuvate ovde za kasnije."
+    />
 
     <!-- Saved grid -->
     <section v-else class="py-12 lg:py-16">

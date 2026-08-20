@@ -12,8 +12,7 @@ const form = reactive({
   message: '',
 })
 
-const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
-const errorMessage = ref('')
+const { status, errorMessage, setError, clearStale } = useFormStatus()
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -21,32 +20,27 @@ async function handleSubmit() {
   errorMessage.value = ''
 
   if (!form.name.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite vaše ime.'
+    setError('Unesite vaše ime.')
     return
   }
 
   if (!form.email.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite adresu e-pošte.'
+    setError('Unesite adresu e-pošte.')
     return
   }
 
   if (!emailRegex.test(form.email)) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ispravnu adresu e-pošte.'
+    setError('Unesite ispravnu adresu e-pošte.')
     return
   }
 
   if (!form.message.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite poruku.'
+    setError('Unesite poruku.')
     return
   }
 
   if (form.message.trim().length < 10) {
-    status.value = 'error'
-    errorMessage.value = 'Poruka je prekratka (minimum 10 karaktera).'
+    setError('Poruka je prekratka (minimum 10 karaktera).')
     return
   }
 
@@ -64,18 +58,12 @@ async function handleSubmit() {
     status.value = 'success'
   }
   catch {
-    status.value = 'error'
-    errorMessage.value = 'Došlo je do greške. Pokušajte ponovo.'
+    setError('Došlo je do greške. Pokušajte ponovo.')
   }
 }
 
 // Clear stale status/success message as soon as the user edits any field
-watch(form, () => {
-  if (status.value === 'error' || status.value === 'success') {
-    status.value = 'idle'
-    errorMessage.value = ''
-  }
-})
+watch(form, () => clearStale())
 
 const contactInfo = [
   {
@@ -139,61 +127,42 @@ const contactInfo = [
                 Popunite formu ispod i javićemo vam se što pre.
               </p>
 
-              <!-- Form -->
-              <form
-                class="space-y-5"
-                @submit.prevent="handleSubmit"
-              >
+              <form class="space-y-5" @submit.prevent="handleSubmit">
                 <!-- Name -->
-                <div>
-                  <label for="name" class="mb-1.5 block text-sm font-semibold text-navy">
-                    Ime i prezime
-                  </label>
-                  <input
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    autocomplete="name"
-                    required
-                    placeholder="Marko Marković"
-                    class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                    :disabled="status === 'loading'"
-                  >
-                </div>
+                <AppInput
+                  id="name"
+                  v-model="form.name"
+                  label="Ime i prezime"
+                  type="text"
+                  autocomplete="name"
+                  required
+                  placeholder="Marko Marković"
+                  :disabled="status === 'loading'"
+                />
 
                 <!-- Email -->
-                <div>
-                  <label for="email" class="mb-1.5 block text-sm font-semibold text-navy">
-                    Adresa e-pošte
-                  </label>
-                  <input
-                    id="email"
-                    v-model="form.email"
-                    type="email"
-                    inputmode="email"
-                    autocomplete="email"
-                    required
-                    placeholder="marko@primer.rs"
-                    class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                    :disabled="status === 'loading'"
-                  >
-                </div>
+                <AppInput
+                  id="email"
+                  v-model="form.email"
+                  label="Adresa e-pošte"
+                  type="email"
+                  inputmode="email"
+                  autocomplete="email"
+                  required
+                  placeholder="marko@primer.rs"
+                  :disabled="status === 'loading'"
+                />
 
                 <!-- Message -->
-                <div>
-                  <label for="message" class="mb-1.5 block text-sm font-semibold text-navy">
-                    Poruka
-                  </label>
-                  <textarea
-                    id="message"
-                    v-model="form.message"
-                    rows="5"
-                    required
-                    placeholder="Kako možemo da vam pomognemo?"
-                    class="w-full resize-y rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                    :disabled="status === 'loading'"
-                  />
-                </div>
+                <AppTextarea
+                  id="message"
+                  v-model="form.message"
+                  label="Poruka"
+                  :rows="5"
+                  required
+                  placeholder="Kako možemo da vam pomognemo?"
+                  :disabled="status === 'loading'"
+                />
 
                 <!-- Status message (reserved height prevents layout shift) -->
                 <div class="min-h-8">
@@ -205,16 +174,14 @@ const contactInfo = [
                   </p>
                 </div>
 
-                <!-- Submit -->
-                <button
-                  type="submit"
-                  class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-6 py-3.5 font-semibold text-white transition-colors hover:bg-navy-dark disabled:opacity-60 sm:w-auto"
-                  :disabled="status === 'loading'"
-                >
-                  <Icon v-if="status === 'loading'" name="lucide:loader-2" class="size-5 animate-spin" />
-                  <span>{{ status === 'loading' ? 'Slanje...' : 'Pošalji poruku' }}</span>
-                  <Icon v-if="status !== 'loading'" name="lucide:send" class="size-5" />
-                </button>
+                <AppSubmitButton
+                  :loading="status === 'loading'"
+                  label="Pošalji poruku"
+                  loading-label="Slanje..."
+                  color="navy"
+                  :full="false"
+                  icon="lucide:send"
+                />
               </form>
             </div>
           </div>

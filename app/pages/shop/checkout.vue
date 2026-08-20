@@ -29,8 +29,7 @@ const form = reactive({
   note: '',
 })
 
-const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
-const errorMessage = ref('')
+const { status, errorMessage, setError } = useFormStatus()
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
@@ -39,33 +38,27 @@ async function handleSubmit() {
   errorMessage.value = ''
 
   if (!form.name.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ime i prezime.'
+    setError('Unesite ime i prezime.')
     return
   }
   if (!form.phone.trim() || !phoneRegex.test(form.phone.trim())) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ispravan broj telefona.'
+    setError('Unesite ispravan broj telefona.')
     return
   }
   if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ispravnu adresu e-pošte.'
+    setError('Unesite ispravnu adresu e-pošte.')
     return
   }
   if (!form.address.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite adresu dostave.'
+    setError('Unesite adresu dostave.')
     return
   }
   if (!form.city.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite grad.'
+    setError('Unesite grad.')
     return
   }
   if (!form.postal.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite poštanski broj.'
+    setError('Unesite poštanski broj.')
     return
   }
 
@@ -103,27 +96,18 @@ async function handleSubmit() {
     }
   }
   catch (e: any) {
-    status.value = 'error'
-    errorMessage.value = e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    setError(e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.')
   }
 }
 </script>
 
 <template>
   <div class="bg-cream">
-    <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Korpa', to: '/shop/cart' }, { label: 'Porudžbina' }]" nav-class="mb-4" />
-        <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
-          Podaci za dostavu
-        </h1>
-        <p class="mt-3 text-lg text-navy/70">
-          Popunite podatke ispod i mi ćemo vas kontaktirati radi potvrde porudžbine.
-          Plaćanje se vrši pri preuzimanju.
-        </p>
-      </div>
-    </section>
+    <AppPageHeader
+      title="Podaci za dostavu"
+      subtitle="Popunite podatke ispod i mi ćemo vas kontaktirati radi potvrde porudžbine. Plaćanje se vrši pri preuzimanju."
+      :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Korpa', to: '/shop/cart' }, { label: 'Porudžbina' }]"
+    />
 
     <section class="py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -140,132 +124,93 @@ async function handleSubmit() {
 
               <form class="space-y-5" @submit.prevent="handleSubmit">
                 <!-- Name -->
-                <div>
-                  <label for="name" class="mb-1.5 block text-sm font-semibold text-navy">
-                    Ime i prezime *
-                  </label>
-                  <input
-                    id="name"
-                    v-model="form.name"
-                    type="text"
-                    autocomplete="name"
-                    placeholder="Marko Marković"
-                    class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                    :disabled="status === 'loading'"
-                  >
-                </div>
+                <AppInput
+                  id="name"
+                  v-model="form.name"
+                  label="Ime i prezime *"
+                  type="text"
+                  autocomplete="name"
+                  placeholder="Marko Marković"
+                  :disabled="status === 'loading'"
+                />
 
                 <!-- Phone + Email -->
                 <div class="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label for="phone" class="mb-1.5 block text-sm font-semibold text-navy">
-                      Telefon *
-                    </label>
-                    <input
-                      id="phone"
-                      v-model="form.phone"
-                      type="tel"
-                      inputmode="tel"
-                      autocomplete="tel"
-                      placeholder="+381 60 123 4567"
-                      class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                      :disabled="status === 'loading'"
-                    >
-                  </div>
-                  <div>
-                    <label for="email" class="mb-1.5 block text-sm font-semibold text-navy">
-                      E-pošta *
-                    </label>
-                    <input
-                      id="email"
-                      v-model="form.email"
-                      type="email"
-                      inputmode="email"
-                      autocomplete="email"
-                      placeholder="marko@primer.rs"
-                      class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                      :disabled="status === 'loading'"
-                    >
-                  </div>
-                </div>
-
-                <!-- Address -->
-                <div>
-                  <label for="address" class="mb-1.5 block text-sm font-semibold text-navy">
-                    Adresa *
-                  </label>
-                  <input
-                    id="address"
-                    v-model="form.address"
-                    type="text"
-                    autocomplete="street-address"
-                    placeholder="Bulevar oslobođenja 12"
-                    class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
+                  <AppInput
+                    id="phone"
+                    v-model="form.phone"
+                    label="Telefon *"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="+381 60 123 4567"
                     :disabled="status === 'loading'"
-                  >
-                </div>
-
-                <!-- City + Postal -->
-                <div class="grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <label for="city" class="mb-1.5 block text-sm font-semibold text-navy">
-                      Grad *
-                    </label>
-                    <input
-                      id="city"
-                      v-model="form.city"
-                      type="text"
-                      autocomplete="address-level2"
-                      placeholder="Novi Sad"
-                      class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                      :disabled="status === 'loading'"
-                    >
-                  </div>
-                  <div>
-                    <label for="postal" class="mb-1.5 block text-sm font-semibold text-navy">
-                      Poštanski broj *
-                    </label>
-                    <input
-                      id="postal"
-                      v-model="form.postal"
-                      type="text"
-                      inputmode="numeric"
-                      autocomplete="address-level3"
-                      placeholder="21000"
-                      class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                    >
-                  </div>
-                </div>
-
-                <!-- Note -->
-                <div>
-                  <label for="note" class="mb-1.5 block text-sm font-semibold text-navy">
-                    Napomena (opciono)
-                  </label>
-                  <textarea
-                    id="note"
-                    v-model="form.note"
-                    rows="3"
-                    placeholder="Npr. pozvoni pre dostave, podatci o detetu..."
-                    class="w-full resize-y rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
+                  />
+                  <AppInput
+                    id="email"
+                    v-model="form.email"
+                    label="E-pošta *"
+                    type="email"
+                    inputmode="email"
+                    autocomplete="email"
+                    placeholder="marko@primer.rs"
                     :disabled="status === 'loading'"
                   />
                 </div>
+
+                <!-- Address -->
+                <AppInput
+                  id="address"
+                  v-model="form.address"
+                  label="Adresa *"
+                  type="text"
+                  autocomplete="street-address"
+                  placeholder="Bulevar oslobođenja 12"
+                  :disabled="status === 'loading'"
+                />
+
+                <!-- City + Postal -->
+                <div class="grid gap-5 sm:grid-cols-2">
+                  <AppInput
+                    id="city"
+                    v-model="form.city"
+                    label="Grad *"
+                    type="text"
+                    autocomplete="address-level2"
+                    placeholder="Novi Sad"
+                    :disabled="status === 'loading'"
+                  />
+                  <AppInput
+                    id="postal"
+                    v-model="form.postal"
+                    label="Poštanski broj *"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="address-level3"
+                    placeholder="21000"
+                  />
+                </div>
+
+                <!-- Note -->
+                <AppTextarea
+                  id="note"
+                  v-model="form.note"
+                  label="Napomena (opciono)"
+                  :rows="3"
+                  placeholder="Npr. pozvoni pre dostave, podatci o detetu..."
+                  :disabled="status === 'loading'"
+                />
 
                 <!-- Error -->
                 <p v-if="status === 'error'" class="text-sm text-coral" role="alert">
                   {{ errorMessage }}
                 </p>
 
-                <!-- Submit -->
-                <button
-                  type="submit"
-                  class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
-                  :disabled="status === 'loading'"
-                >
-                  <Icon v-if="status === 'loading'" name="lucide:loader-2" class="size-5 animate-spin" />
-                  <span>{{ status === 'loading' ? 'Slanje porudžbine...' : 'Naruči' }}</span>
-                </button>
+                <AppSubmitButton
+                  :loading="status === 'loading'"
+                  label="Naruči"
+                  loading-label="Slanje porudžbine..."
+                />
 
                 <p class="text-center text-sm text-navy/50">
                   Plaćanje se vrši pouzećem (pouzeće) pri preuzimanju.
@@ -319,27 +264,7 @@ async function handleSubmit() {
                 <div class="my-5 border-t border-cloud/40" />
 
                 <!-- Totals -->
-                <dl class="space-y-3 text-navy/70">
-                  <div class="flex justify-between">
-                    <dt>Knjige</dt>
-                    <dd class="font-medium text-navy">{{ total.toLocaleString('sr-RS') }} RSD</dd>
-                  </div>
-                  <div class="flex justify-between">
-                    <dt>Dostava</dt>
-                    <dd class="font-medium" :class="shipping === 0 ? 'text-mint' : 'text-navy'">
-                      {{ shipping === 0 ? 'Besplatno' : `${shipping.toLocaleString('sr-RS')} RSD` }}
-                    </dd>
-                  </div>
-                </dl>
-
-                <div class="my-5 border-t border-cloud/40" />
-
-                <div class="flex items-baseline justify-between">
-                  <span class="font-semibold text-navy">Ukupno</span>
-                  <span class="font-unbounded text-2xl font-extrabold text-navy">
-                    {{ grandTotal.toLocaleString('sr-RS') }} RSD
-                  </span>
-                </div>
+                <AppOrderTotals :total="total" :shipping="shipping" :grand-total="grandTotal" />
 
                 <div class="mt-6 flex items-start gap-3 rounded-2xl bg-sky/20 p-4 text-sm text-navy/70">
                   <Icon name="lucide:info" class="size-5 shrink-0 text-blue" />

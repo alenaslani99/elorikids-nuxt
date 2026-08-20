@@ -17,8 +17,7 @@ const form = reactive({
   passwordConfirm: '',
 })
 
-const status = ref<'idle' | 'loading' | 'error'>('idle')
-const errorMessage = ref('')
+const { status, errorMessage, setError } = useFormStatus()
 const showPassword = ref(false)
 const agree = ref(false)
 
@@ -28,28 +27,23 @@ async function handleSubmit() {
   errorMessage.value = ''
 
   if (!form.name.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ime i prezime.'
+    setError('Unesite ime i prezime.')
     return
   }
   if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ispravnu adresu e-pošte.'
+    setError('Unesite ispravnu adresu e-pošte.')
     return
   }
   if (!form.password || form.password.length < 6) {
-    status.value = 'error'
-    errorMessage.value = 'Lozinka mora imati najmanje 6 karaktera.'
+    setError('Lozinka mora imati najmanje 6 karaktera.')
     return
   }
   if (form.password !== form.passwordConfirm) {
-    status.value = 'error'
-    errorMessage.value = 'Lozinke se ne poklapaju.'
+    setError('Lozinke se ne poklapaju.')
     return
   }
   if (!agree.value) {
-    status.value = 'error'
-    errorMessage.value = 'Morate prihvatiti uslove korišćenja.'
+    setError('Morate prihvatiti uslove korišćenja.')
     return
   }
 
@@ -74,8 +68,7 @@ async function handleSubmit() {
     }
   }
   catch (e: any) {
-    status.value = 'error'
-    errorMessage.value = e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    setError(e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.')
   }
 }
 
@@ -103,14 +96,7 @@ const passwordStrength = computed(() => {
 
 <template>
   <div class="bg-cream">
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Registracija' }]" nav-class="mb-4" />
-        <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
-          Registracija
-        </h1>
-      </div>
-    </section>
+    <AppPageHeader title="Registracija" :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Registracija' }]" />
 
     <section class="py-12 lg:py-16">
       <div class="mx-auto max-w-md px-4 sm:px-6 lg:px-8">
@@ -129,65 +115,43 @@ const passwordStrength = computed(() => {
 
           <form class="space-y-5" @submit.prevent="handleSubmit">
             <!-- Name -->
-            <div>
-              <label for="name" class="mb-1.5 block text-sm font-semibold text-navy">
-                Ime i prezime
-              </label>
-              <input
-                id="name"
-                v-model="form.name"
-                type="text"
-                autocomplete="name"
-                required
-                placeholder="Marko Marković"
-                class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                :disabled="status === 'loading'"
-              >
-            </div>
+            <AppInput
+              id="name"
+              v-model="form.name"
+              label="Ime i prezime"
+              type="text"
+              autocomplete="name"
+              required
+              placeholder="Marko Marković"
+              :disabled="status === 'loading'"
+            />
 
             <!-- Email -->
-            <div>
-              <label for="email" class="mb-1.5 block text-sm font-semibold text-navy">
-                Adresa e-pošte
-              </label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                inputmode="email"
-                autocomplete="email"
-                required
-                placeholder="marko@primer.rs"
-                class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                :disabled="status === 'loading'"
-              >
-            </div>
+            <AppInput
+              id="email"
+              v-model="form.email"
+              label="Adresa e-pošte"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              required
+              placeholder="marko@primer.rs"
+              :disabled="status === 'loading'"
+            />
 
             <!-- Password -->
             <div>
-              <label for="password" class="mb-1.5 block text-sm font-semibold text-navy">
-                Lozinka
-              </label>
-              <div class="relative">
-                <input
-                  id="password"
-                  v-model="form.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="new-password"
-                  required
-                  placeholder="••••••••"
-                  class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 pr-12 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                  :disabled="status === 'loading'"
-                >
-                <button
-                  type="button"
-                  :aria-label="showPassword ? 'Sakrij lozinku' : 'Prikaži lozinku'"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-navy/40 transition-colors hover:text-navy"
-                  @click="showPassword = !showPassword"
-                >
-                  <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="size-5" />
-                </button>
-              </div>
+              <AppInput
+                id="password"
+                v-model="form.password"
+                label="Lozinka"
+                type="password"
+                show-password-toggle
+                autocomplete="new-password"
+                required
+                placeholder="••••••••"
+                :disabled="status === 'loading'"
+              />
 
               <!-- Strength meter -->
               <div v-if="form.password" class="mt-2">
@@ -207,19 +171,16 @@ const passwordStrength = computed(() => {
 
             <!-- Confirm password -->
             <div>
-              <label for="passwordConfirm" class="mb-1.5 block text-sm font-semibold text-navy">
-                Potvrdite lozinku
-              </label>
-              <input
+              <AppInput
                 id="passwordConfirm"
                 v-model="form.passwordConfirm"
+                label="Potvrdite lozinku"
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="new-password"
                 required
                 placeholder="••••••••"
-                class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
                 :disabled="status === 'loading'"
-              >
+              />
               <p
                 v-if="form.passwordConfirm && form.password !== form.passwordConfirm"
                 class="mt-1.5 flex items-center gap-1 text-xs text-coral"
@@ -250,15 +211,11 @@ const passwordStrength = computed(() => {
               {{ errorMessage }}
             </p>
 
-            <!-- Submit -->
-            <button
-              type="submit"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
-              :disabled="status === 'loading'"
-            >
-              <Icon v-if="status === 'loading'" name="lucide:loader-2" class="size-5 animate-spin" />
-              <span>{{ status === 'loading' ? 'Registracija...' : 'Registruj se' }}</span>
-            </button>
+            <AppSubmitButton
+              :loading="status === 'loading'"
+              label="Registruj se"
+              loading-label="Registracija..."
+            />
           </form>
 
           <!-- Login link -->
@@ -270,6 +227,6 @@ const passwordStrength = computed(() => {
           </p>
         </div>
       </div>
-      </section>
+    </section>
   </div>
 </template>

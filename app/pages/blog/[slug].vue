@@ -12,12 +12,6 @@ if (!post.value) {
 
 const relatedPosts = computed(() => getRelatedPosts(slug.value))
 
-const accentClasses: Record<string, { badge: string, text: string, soft: string, ring: string }> = {
-  mint: { badge: 'bg-mint/20 text-navy', text: 'text-mint', soft: 'bg-mint/15', ring: 'ring-mint/30' },
-  purple: { badge: 'bg-purple/20 text-navy', text: 'text-purple', soft: 'bg-purple/15', ring: 'ring-purple/30' },
-  coral: { badge: 'bg-coral/20 text-navy', text: 'text-coral', soft: 'bg-coral/15', ring: 'ring-coral/30' },
-}
-
 const a = computed(() => accentClasses[post.value!.accent] ?? accentClasses.mint)
 
 // --- SEO + structured data ---
@@ -226,30 +220,9 @@ useHead({
     </section>
 
     <!-- CTA -->
-    <section class="bg-cream py-16 lg:py-24">
-      <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 class="font-unbounded text-3xl font-extrabold text-navy md:text-4xl">
-          Spremni za učenje kroz igru?
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-lg text-navy/70">
-          Pogledajte naše knjige i pronađite onu koja je prava za vaše dete.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-4">
-          <NuxtLink
-            to="/#categories"
-            class="inline-flex items-center gap-2 rounded-full bg-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
-          >
-            Pogledaj knjige
-            <Icon name="lucide:arrow-right" class="size-5" />
-          </NuxtLink>
-          <NuxtLink
-            to="/legal/contact"
-            class="inline-flex items-center gap-2 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
-          >
-            Kontaktirajte nas
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <AppCtaSection
+      title="Spremni za učenje kroz igru?"
+      subtitle="Pogledajte naše knjige i pronađite onu koja je prava za vaše dete."
+    />
   </div>
 </template>

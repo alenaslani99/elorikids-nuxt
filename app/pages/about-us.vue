@@ -33,13 +33,6 @@ const values = [
   },
 ]
 
-const accentClasses: Record<string, { bg: string, text: string }> = {
-  blue: { bg: 'bg-blue/10', text: 'text-blue' },
-  purple: { bg: 'bg-purple/10', text: 'text-purple' },
-  coral: { bg: 'bg-coral/10', text: 'text-coral' },
-  mint: { bg: 'bg-mint/15', text: 'text-mint' },
-}
-
 const stats = [
   { value: '500+', label: 'Zadovoljnih porodica' },
   { value: '3', label: 'Knjige po uzrastu' },
@@ -78,23 +71,13 @@ const milestoneAccent: Record<string, string> = {
 <template>
   <div>
     <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'O nama' }]" nav-class="mb-4" />
-        <div class="max-w-3xl">
-          <span class="inline-block rounded-full bg-coral/20 px-4 py-1.5 text-sm font-semibold text-coral">
-            O nama
-          </span>
-          <h1 class="font-unbounded mt-4 text-4xl font-extrabold text-navy md:text-5xl">
-            Priča koja počinje decom
-          </h1>
-          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy/70">
-            elorikids je rođen iz jednostavne želje — da deci ponudimo nešto lepše od ekrana.
-            Interaktivne piši-briši knjige koje budu radoznalost, razvijaju veštine i čine učenje zabavnim.
-          </p>
-        </div>
-      </div>
-    </section>
+    <AppPageHeader
+      title="Priča koja počinje decom"
+      badge="O nama"
+      badge-class="bg-coral/20 text-coral"
+      subtitle="elorikids je rođen iz jednostavne želje — da deci ponudimo nešto lepše od ekrana. Interaktivne piši-briši knjige koje budu radoznalost, razvijaju veštine i čine učenje zabavnim."
+      :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'O nama' }]"
+    />
 
     <!-- Brand story -->
     <section class="bg-cream py-16 lg:py-24">
@@ -171,7 +154,7 @@ const milestoneAccent: Record<string, string> = {
           >
             <div
               class="mb-6 flex size-14 items-center justify-center rounded-2xl"
-              :class="accentClasses[value.accent].bg"
+              :class="accentClasses[value.accent].soft"
             >
               <Icon
                 :name="value.icon"
@@ -245,30 +228,10 @@ const milestoneAccent: Record<string, string> = {
     </section>
 
     <!-- CTA -->
-    <section class="bg-gradient-to-b from-sky/20 to-cream py-16 lg:py-24">
-      <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 class="font-unbounded text-3xl font-extrabold text-navy md:text-4xl">
-          Spremni za učenje kroz igru?
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-lg text-navy/70">
-          Pogledajte naše knjige i pronađite onu koja je prava za vaše dete.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-4">
-          <NuxtLink
-            to="/#categories"
-            class="inline-flex items-center gap-2 rounded-full bg-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
-          >
-            Pogledaj knjige
-            <Icon name="lucide:arrow-right" class="size-5" />
-          </NuxtLink>
-          <NuxtLink
-            to="/legal/contact"
-            class="inline-flex items-center gap-2 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
-          >
-            Kontaktirajte nas
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <AppCtaSection
+      title="Spremni za učenje kroz igru?"
+      subtitle="Pogledajte naše knjige i pronađite onu koja je prava za vaše dete."
+      section-class="bg-gradient-to-b from-sky/20 to-cream py-16 lg:py-24"
+    />
   </div>
 </template>

@@ -16,9 +16,7 @@ const form = reactive({
   password: '',
 })
 
-const status = ref<'idle' | 'loading' | 'error'>('idle')
-const errorMessage = ref('')
-const showPassword = ref(false)
+const { status, errorMessage, setError } = useFormStatus()
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -26,13 +24,11 @@ async function handleSubmit() {
   errorMessage.value = ''
 
   if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ispravnu adresu e-pošte.'
+    setError('Unesite ispravnu adresu e-pošte.')
     return
   }
   if (!form.password || form.password.length < 6) {
-    status.value = 'error'
-    errorMessage.value = 'Lozinka mora imati najmanje 6 karaktera.'
+    setError('Lozinka mora imati najmanje 6 karaktera.')
     return
   }
 
@@ -58,8 +54,7 @@ async function handleSubmit() {
     }
   }
   catch (e: any) {
-    status.value = 'error'
-    errorMessage.value = e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    setError(e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.')
   }
 }
 
@@ -71,14 +66,7 @@ if (route.query.email) {
 
 <template>
   <div class="bg-cream">
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Prijava' }]" nav-class="mb-4" />
-        <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
-          Prijava
-        </h1>
-      </div>
-    </section>
+    <AppPageHeader title="Prijava" :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Prijava' }]" />
 
     <section class="py-12 lg:py-16">
       <div class="mx-auto max-w-md px-4 sm:px-6 lg:px-8">
@@ -97,49 +85,30 @@ if (route.query.email) {
 
           <form class="space-y-5" @submit.prevent="handleSubmit">
             <!-- Email -->
-            <div>
-              <label for="email" class="mb-1.5 block text-sm font-semibold text-navy">
-                Adresa e-pošte
-              </label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                inputmode="email"
-                autocomplete="email"
-                required
-                placeholder="marko@primer.rs"
-                class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                :disabled="status === 'loading'"
-              >
-            </div>
+            <AppInput
+              id="email"
+              v-model="form.email"
+              label="Adresa e-pošte"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              required
+              placeholder="marko@primer.rs"
+              :disabled="status === 'loading'"
+            />
 
             <!-- Password -->
-            <div>
-              <label for="password" class="mb-1.5 block text-sm font-semibold text-navy">
-                Lozinka
-              </label>
-              <div class="relative">
-                <input
-                  id="password"
-                  v-model="form.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="current-password"
-                  required
-                  placeholder="••••••••"
-                  class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 pr-12 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                  :disabled="status === 'loading'"
-                >
-                <button
-                  type="button"
-                  :aria-label="showPassword ? 'Sakrij lozinku' : 'Prikaži lozinku'"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 text-navy/40 transition-colors hover:text-navy"
-                  @click="showPassword = !showPassword"
-                >
-                  <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="size-5" />
-                </button>
-              </div>
-            </div>
+            <AppInput
+              id="password"
+              v-model="form.password"
+              label="Lozinka"
+              type="password"
+              show-password-toggle
+              autocomplete="current-password"
+              required
+              placeholder="••••••••"
+              :disabled="status === 'loading'"
+            />
 
             <!-- Forgot password -->
             <div class="flex items-center justify-between text-sm">
@@ -157,15 +126,11 @@ if (route.query.email) {
               {{ errorMessage }}
             </p>
 
-            <!-- Submit -->
-            <button
-              type="submit"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
-              :disabled="status === 'loading'"
-            >
-              <Icon v-if="status === 'loading'" name="lucide:loader-2" class="size-5 animate-spin" />
-              <span>{{ status === 'loading' ? 'Prijava...' : 'Prijavi se' }}</span>
-            </button>
+            <AppSubmitButton
+              :loading="status === 'loading'"
+              label="Prijavi se"
+              loading-label="Prijava..."
+            />
           </form>
 
           <!-- Register link -->

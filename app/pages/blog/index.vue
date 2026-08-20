@@ -14,38 +14,18 @@ useHead({
 
 const featured = computed(() => posts.find(p => p.featured) ?? posts[0])
 const rest = computed(() => posts.filter(p => p.slug !== featured.value.slug))
-
-const accentClasses: Record<string, { badge: string, text: string, ring: string }> = {
-  mint: { badge: 'bg-mint/20 text-navy', text: 'text-mint', ring: 'ring-mint/30' },
-  purple: { badge: 'bg-purple/20 text-navy', text: 'text-purple', ring: 'ring-purple/30' },
-  coral: { badge: 'bg-coral/20 text-navy', text: 'text-coral', ring: 'ring-coral/30' },
-}
-
-function classesFor(post: BlogPost) {
-  return accentClasses[post.accent] ?? accentClasses.mint
-}
 </script>
 
 <template>
   <div>
     <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Blog' }]" nav-class="mb-4" />
-        <div class="max-w-3xl">
-          <span class="inline-block rounded-full bg-coral/20 px-4 py-1.5 text-sm font-semibold text-coral">
-            Blog
-          </span>
-          <h1 class="font-unbounded mt-4 text-4xl font-extrabold text-navy md:text-5xl">
-            Učenje, igra i odrastanje
-          </h1>
-          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy/70">
-            Saveti, priče i uvidi o razvoju deteta, piši-briši knjigama i učenju
-            kroz igru — od onih koji to svakodnevno rade.
-          </p>
-        </div>
-      </div>
-    </section>
+    <AppPageHeader
+      title="Učenje, igra i odrastanje"
+      badge="Blog"
+      badge-class="bg-coral/20 text-coral"
+      subtitle="Saveti, priče i uvidi o razvoju deteta, piši-briši knjigama i učenju kroz igru — od onih koji to svakodnevno rade."
+      :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Blog' }]"
+    />
 
     <!-- Featured post -->
     <section class="bg-cream py-12 lg:py-16">
@@ -69,7 +49,7 @@ function classesFor(post: BlogPost) {
             <div class="flex flex-wrap items-center gap-3 text-sm text-navy/50">
               <span
                 class="rounded-full px-3 py-1 text-xs font-semibold"
-                :class="classesFor(featured).badge"
+                :class="accentClasses[featured.accent]?.badge ?? accentClasses.mint.badge"
               >
                 {{ featured.category }}
               </span>
@@ -134,7 +114,7 @@ function classesFor(post: BlogPost) {
               <div class="flex flex-wrap items-center gap-3 text-sm text-navy/50">
                 <span
                   class="rounded-full px-3 py-1 text-xs font-semibold"
-                  :class="classesFor(post).badge"
+                  :class="accentClasses[post.accent]?.badge ?? accentClasses.mint.badge"
                 >
                   {{ post.category }}
                 </span>
@@ -157,30 +137,9 @@ function classesFor(post: BlogPost) {
     </section>
 
     <!-- Newsletter / CTA -->
-    <section class="bg-cream py-16 lg:py-24">
-      <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 class="font-unbounded text-3xl font-extrabold text-navy md:text-4xl">
-          Pratite nove članke
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-lg text-navy/70">
-          Pogledajte naše knjige i pronađite onu koja je prava za vaše dete.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-4">
-          <NuxtLink
-            to="/#categories"
-            class="inline-flex items-center gap-2 rounded-full bg-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
-          >
-            Pogledaj knjige
-            <Icon name="lucide:arrow-right" class="size-5" />
-          </NuxtLink>
-          <NuxtLink
-            to="/legal/contact"
-            class="inline-flex items-center gap-2 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
-          >
-            Kontaktirajte nas
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <AppCtaSection
+      title="Pratite nove članke"
+      subtitle="Pogledajte naše knjige i pronađite onu koja je prava za vaše dete."
+    />
   </div>
 </template>

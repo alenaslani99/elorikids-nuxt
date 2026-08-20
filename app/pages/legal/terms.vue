@@ -23,27 +23,7 @@ const sections = [
   { id: 'kontakt', title: '12. Kontakt' },
 ]
 
-const activeSection = ref(sections[0].id)
-
-onMounted(() => {
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          activeSection.value = entry.target.id
-        }
-      })
-    },
-    { rootMargin: '-100px 0px -60% 0px' },
-  )
-
-  sections.forEach((s) => {
-    const el = document.getElementById(s.id)
-    if (el) observer.observe(el)
-  })
-
-  onBeforeUnmount(() => observer.disconnect())
-})
+const { activeSection } = useScrollspy(sections)
 </script>
 
 <template>

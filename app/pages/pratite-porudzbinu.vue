@@ -55,8 +55,7 @@ const dummyOrders: DummyOrder[] = [
 
 // --- Form state ---
 const orderId = ref('')
-const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
-const errorMessage = ref('')
+const { status, errorMessage, setError } = useFormStatus()
 const foundOrder = ref<DummyOrder | null>(null)
 
 // Which steps are "completed" = those with a date set
@@ -86,8 +85,7 @@ async function handleSubmit() {
 
   const trimmed = orderId.value.trim().toUpperCase()
   if (!trimmed) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite broj porudžbine.'
+    setError('Unesite broj porudžbine.')
     return
   }
 
@@ -96,8 +94,7 @@ async function handleSubmit() {
     foundOrder.value = match
     status.value = 'success'
   } else {
-    status.value = 'error'
-    errorMessage.value = `Porudžbina "${trimmed}" nije pronađena. Proverite broj i pokušajte ponovo.`
+    setError(`Porudžbina "${trimmed}" nije pronađena. Proverite broj i pokušajte ponovo.`)
   }
 }
 </script>
@@ -105,23 +102,13 @@ async function handleSubmit() {
 <template>
   <div class="bg-cream">
     <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Pratite porudžbinu' }]" nav-class="mb-4" />
-        <div class="max-w-3xl">
-          <span class="inline-block rounded-full bg-blue/10 px-4 py-1.5 text-sm font-semibold text-blue">
-            Pratite porudžbinu
-          </span>
-          <h1 class="font-unbounded mt-4 text-4xl font-extrabold text-navy md:text-5xl">
-            Gde je moja porudžbina?
-          </h1>
-          <p class="mt-4 max-w-2xl text-lg leading-relaxed text-navy/70">
-            Unesite broj vaše porudžbine koji ste dobili u potvrdi e-pošte
-            i pratite status isporuke u realnom vremenu.
-          </p>
-        </div>
-      </div>
-    </section>
+    <AppPageHeader
+      title="Gde je moja porudžbina?"
+      badge="Pratite porudžbinu"
+      badge-class="bg-blue/10 text-blue"
+      subtitle="Unesite broj vaše porudžbine koji ste dobili u potvrdi e-pošte i pratite status isporuke u realnom vremenu."
+      :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Pratite porudžbinu' }]"
+    />
 
     <!-- Tracking form -->
     <section class="py-12 lg:py-16">
@@ -140,36 +127,28 @@ async function handleSubmit() {
           </div>
 
           <form class="space-y-5" @submit.prevent="handleSubmit">
-            <div>
-              <label for="orderId" class="mb-1.5 block text-sm font-semibold text-navy">
-                Broj porudžbine
-              </label>
-              <input
-                id="orderId"
-                v-model="orderId"
-                type="text"
-                inputmode="text"
-                autocomplete="off"
-                required
-                placeholder="EK-2025-00142"
-                class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                :disabled="status === 'loading'"
-              >
-            </div>
+            <AppInput
+              id="orderId"
+              v-model="orderId"
+              label="Broj porudžbine"
+              type="text"
+              inputmode="text"
+              autocomplete="off"
+              required
+              placeholder="EK-2025-00142"
+              :disabled="status === 'loading'"
+            />
 
             <!-- Error -->
             <p v-if="status === 'error'" class="text-sm text-coral" role="alert">
               {{ errorMessage }}
             </p>
 
-            <button
-              type="submit"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
-              :disabled="status === 'loading'"
-            >
-              <Icon v-if="status === 'loading'" name="lucide:loader-2" class="size-5 animate-spin" />
-              <span>{{ status === 'loading' ? 'Pretraga...' : 'Prati porudžbinu' }}</span>
-            </button>
+            <AppSubmitButton
+              :loading="status === 'loading'"
+              label="Prati porudžbinu"
+              loading-label="Pretraga..."
+            />
           </form>
 
           <!-- Hint -->
@@ -270,30 +249,13 @@ async function handleSubmit() {
     </section>
 
     <!-- CTA -->
-    <section class="py-16 lg:py-24">
-      <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-        <h2 class="font-unbounded text-3xl font-extrabold text-navy md:text-4xl">
-          Problem sa porudžbinom?
-        </h2>
-        <p class="mx-auto mt-4 max-w-xl text-lg text-navy/70">
-          Naš tim podrške je tu da pomogne. Kontaktirajte nas i rešićemo sve nedoumice.
-        </p>
-        <div class="mt-8 flex flex-wrap justify-center gap-4">
-          <NuxtLink
-            to="/legal/contact"
-            class="inline-flex items-center gap-2 rounded-full bg-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
-          >
-            Kontaktirajte nas
-            <Icon name="lucide:arrow-right" class="size-5" />
-          </NuxtLink>
-          <NuxtLink
-            to="/faq"
-            class="inline-flex items-center gap-2 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
-          >
-            Česta pitanja
-          </NuxtLink>
-        </div>
-      </div>
-    </section>
+    <AppCtaSection
+      title="Problem sa porudžbinom?"
+      subtitle="Naš tim podrške je tu da pomogne. Kontaktirajte nas i rešićemo sve nedoumice."
+      primary-label="Kontaktirajte nas"
+      primary-to="/legal/contact"
+      secondary-label="Česta pitanja"
+      secondary-to="/faq"
+    />
   </div>
 </template>

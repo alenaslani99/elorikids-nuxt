@@ -11,8 +11,7 @@ const form = reactive({
   email: '',
 })
 
-const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
-const errorMessage = ref('')
+const { status, errorMessage, setError, clearStale } = useFormStatus()
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -20,14 +19,12 @@ async function handleSubmit() {
   errorMessage.value = ''
 
   if (!form.email.trim()) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite adresu e-pošte.'
+    setError('Unesite adresu e-pošte.')
     return
   }
 
   if (!emailRegex.test(form.email.trim())) {
-    status.value = 'error'
-    errorMessage.value = 'Unesite ispravnu adresu e-pošte.'
+    setError('Unesite ispravnu adresu e-pošte.')
     return
   }
 
@@ -45,31 +42,17 @@ async function handleSubmit() {
     status.value = 'success'
   }
   catch {
-    status.value = 'error'
-    errorMessage.value = 'Došlo je do greške. Pokušajte ponovo.'
+    setError('Došlo je do greške. Pokušajte ponovo.')
   }
 }
 
 // Clear stale status as soon as the user edits the email
-watch(form, () => {
-  if (status.value === 'error' || status.value === 'success') {
-    status.value = 'idle'
-    errorMessage.value = ''
-  }
-})
+watch(form, () => clearStale())
 </script>
 
 <template>
   <div class="bg-cream">
-    <!-- Page header -->
-    <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Zaboravljena lozinka' }]" nav-class="mb-4" />
-        <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
-          Zaboravljena lozinka
-        </h1>
-      </div>
-    </section>
+    <AppPageHeader title="Zaboravljena lozinka" :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Zaboravljena lozinka' }]" />
 
     <section class="py-12 lg:py-16">
       <div class="mx-auto max-w-md px-4 sm:px-6 lg:px-8">
@@ -88,22 +71,17 @@ watch(form, () => {
 
           <form class="space-y-5" @submit.prevent="handleSubmit">
             <!-- Email -->
-            <div>
-              <label for="email" class="mb-1.5 block text-sm font-semibold text-navy">
-                Adresa e-pošte
-              </label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                inputmode="email"
-                autocomplete="email"
-                required
-                placeholder="marko@primer.rs"
-                class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
-                :disabled="status === 'loading'"
-              >
-            </div>
+            <AppInput
+              id="email"
+              v-model="form.email"
+              label="Adresa e-pošte"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              required
+              placeholder="marko@primer.rs"
+              :disabled="status === 'loading'"
+            />
 
             <!-- Status message (reserved height prevents layout shift) -->
             <div class="min-h-8">
@@ -115,15 +93,11 @@ watch(form, () => {
               </p>
             </div>
 
-            <!-- Submit -->
-            <button
-              type="submit"
-              class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-navy hover:shadow-lg active:scale-[0.98] disabled:opacity-60"
-              :disabled="status === 'loading'"
-            >
-              <Icon v-if="status === 'loading'" name="lucide:loader-2" class="size-5 animate-spin" />
-              <span>{{ status === 'loading' ? 'Slanje...' : 'Pošalji link' }}</span>
-            </button>
+            <AppSubmitButton
+              :loading="status === 'loading'"
+              label="Pošalji link"
+              loading-label="Slanje..."
+            />
           </form>
 
           <!-- Back to login -->
