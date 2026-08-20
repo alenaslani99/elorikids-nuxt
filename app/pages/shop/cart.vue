@@ -89,7 +89,7 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
                 class="flex flex-col gap-4 rounded-2xl border-2 border-cloud/40 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:gap-6"
               >
                 <!-- Image -->
-                <NuxtLink :to="`/knjige/${item.slug}`" class="shrink-0">
+                <NuxtLink :to="`/books/${item.slug}`" class="shrink-0">
                   <div class="overflow-hidden rounded-xl">
                     <NuxtImg
                       :src="`/${getBook(item.slug)?.img ?? ''}`"
@@ -107,7 +107,7 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
                 <div class="flex flex-1 flex-col gap-2">
                   <div class="flex items-start justify-between gap-3">
                     <div>
-                      <NuxtLink :to="`/knjige/${item.slug}`" class="font-bold text-navy transition-colors hover:text-blue">
+                      <NuxtLink :to="`/books/${item.slug}`" class="font-bold text-navy transition-colors hover:text-blue">
                         {{ item.title }}
                       </NuxtLink>
                       <p v-if="getBook(item.slug)" class="mt-0.5 text-sm text-navy/50">

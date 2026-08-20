@@ -44,7 +44,7 @@ app/
 ## Pages
 
 - `/` — landing
-- `/knjige/[slug]` — book details
+- `/books/[slug]` — book details
 - `/korpa` — cart
 - `/poruci` — checkout
 - `/prijava` · `/registracija` — auth

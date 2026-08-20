@@ -14,7 +14,7 @@ const columns = [
   {
     title: 'Kompanija',
     links: [
-      { label: 'O nama', to: '/legal/contact' },
+      { label: 'O nama', to: '/about-us' },
       { label: 'Kontakt', to: '/legal/contact' },
       { label: 'Poslovi', to: '/legal/contact' },
       { label: 'Blog', to: '/legal/contact' },

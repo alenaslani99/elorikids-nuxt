@@ -82,7 +82,7 @@ function toggle(index: number) {
           </button>
 
           <div
-            class="grid transition-all duration-300 ease-in-out"
+            class="grid will-change-[grid-template-rows] transition-[grid-template-rows,opacity] duration-200 ease-in-out"
             :class="openIndex === index ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'"
           >
             <div class="overflow-hidden">

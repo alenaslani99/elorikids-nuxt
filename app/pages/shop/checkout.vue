@@ -289,7 +289,7 @@ async function handleSubmit() {
                     :key="item.slug"
                     class="flex items-center gap-4"
                   >
-                    <NuxtLink :to="`/knjige/${item.slug}`" class="shrink-0">
+                    <NuxtLink :to="`/books/${item.slug}`" class="shrink-0">
                       <div class="overflow-hidden rounded-lg">
                         <NuxtImg
                           :src="`/${getBook(item.slug)?.img ?? ''}`"

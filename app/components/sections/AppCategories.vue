@@ -108,7 +108,7 @@ const accentClasses: Record<BookCard['accent'], {
         <NuxtLink
           v-for="book in books"
           :key="book.slug"
-          :to="`/knjige/${book.slug}`"
+          :to="`/books/${book.slug}`"
           class="group flex flex-col rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
           :class="accentClasses[book.accent].hover"
         >

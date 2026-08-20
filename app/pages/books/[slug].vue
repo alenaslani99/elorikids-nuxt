@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const route = useRoute()
 const { getBook, getRelatedBooks } = useBooks()
-const { addItem } = useCart()
 const { isSaved, toggle } = useSaved()
 
 const slug = computed(() => route.params.slug as string)
@@ -17,7 +16,6 @@ const relatedBooks = computed(() => getRelatedBooks(slug.value))
 // --- Interactive state ---
 const quantity = ref(1)
 const activeTab = ref<'activities' | 'selling' | 'specs'>('activities')
-const justAdded = ref(false)
 
 const accentClasses: Record<string, { bg: string, text: string, soft: string, ring: string }> = {
   mint: { bg: 'bg-mint', text: 'text-mint', soft: 'bg-mint/15', ring: 'ring-mint' },
@@ -42,12 +40,6 @@ function toggleSave() {
   })
 }
 
-function addToCart() {
-  addItem(book.value!.slug, book.value!.title, book.value!.price, quantity.value)
-  justAdded.value = true
-  setTimeout(() => (justAdded.value = false), 2000)
-}
-
 function incQty() {
   quantity.value++
 }
@@ -65,7 +57,7 @@ useHead({
     { name: 'og:type', content: 'product' },
   ],
   link: [
-    { rel: 'canonical', href: `https://elorikids.rs/knjige/${book.value!.slug}` },
+    { rel: 'canonical', href: `https://elorikids.rs/books/${book.value!.slug}` },
   ],
   script: [
     {
@@ -82,7 +74,7 @@ useHead({
           price: book.value!.price,
           priceCurrency: 'RSD',
           availability: 'https://schema.org/InStock',
-          url: `https://elorikids.rs/knjige/${book.value!.slug}`,
+          url: `https://elorikids.rs/books/${book.value!.slug}`,
         },
       }),
     },
@@ -93,8 +85,8 @@ useHead({
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Početna', item: 'https://elorikids.rs/' },
-          { '@type': 'ListItem', position: 2, name: 'Knjige', item: 'https://elorikids.rs/knjige' },
-          { '@type': 'ListItem', position: 3, name: book.value!.title, item: `https://elorikids.rs/knjige/${book.value!.slug}` },
+          { '@type': 'ListItem', position: 2, name: 'Knjige', item: 'https://elorikids.rs/books' },
+          { '@type': 'ListItem', position: 3, name: book.value!.title, item: `https://elorikids.rs/books/${book.value!.slug}` },
         ],
       }),
     },
@@ -207,15 +199,12 @@ useHead({
             <!-- Add to cart + Save (side by side on mobile, inline with qty on desktop) -->
             <div class="flex items-center gap-3 sm:contents">
               <!-- Add to cart button -->
-              <button
-                type="button"
-                class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-blue/90 hover:shadow-lg active:scale-[0.98]"
-                @click="addToCart"
-              >
-                <Icon v-if="justAdded" name="lucide:check" class="size-5" />
-                <Icon v-else name="lucide:shopping-bag" class="size-5" />
-                <span>{{ justAdded ? 'Dodato u korpu!' : 'Dodaj u korpu' }}</span>
-              </button>
+              <AddToCartButton
+                :slug="book.slug"
+                :title="book.title"
+                :price="book.price"
+                :quantity="quantity"
+              />
 
               <!-- Save / heart toggle -->
               <button
@@ -407,7 +396,7 @@ useHead({
           <NuxtLink
             v-for="related in relatedBooks"
             :key="related.slug"
-            :to="`/knjige/${related.slug}`"
+            :to="`/books/${related.slug}`"
             class="group flex gap-4 rounded-2xl border-2 border-cloud/40 bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-lg"
           >
             <div class="flex aspect-[3/4] w-24 shrink-0 items-center justify-center rounded-xl" :class="{

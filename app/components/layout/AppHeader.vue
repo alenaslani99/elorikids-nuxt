@@ -83,6 +83,7 @@ function handleLogout() {
     <nav class="border-b border-cloud/30">
       <div class="mx-auto flex h-12 max-w-7xl items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
         <NuxtLink to="/" exact-active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40  hover:text-navy">Početna</NuxtLink>
+        <NuxtLink to="/about-us" active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40 hover:text-navy">O nama</NuxtLink>
         <NuxtLink to="/legal/contact" active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40 hover:text-navy">Kontakt</NuxtLink>
         <NuxtLink to="/#categories" class="ml-auto flex items-center gap-1 whitespace-nowrap rounded-lg bg-coral px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral/90">
           Interaktivne knjige

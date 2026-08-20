@@ -7,7 +7,6 @@ useHead({
 })
 
 const { items, remove, clear } = useSaved()
-const { addItem } = useCart()
 
 const accentClasses: Record<string, { soft: string, text: string }> = {
   mint: { soft: 'bg-mint/15', text: 'text-mint' },
@@ -15,17 +14,6 @@ const accentClasses: Record<string, { soft: string, text: string }> = {
   coral: { soft: 'bg-coral/15', text: 'text-coral' },
   sky: { soft: 'bg-sky/40', text: 'text-sky' },
   yellow: { soft: 'bg-yellow/15', text: 'text-yellow' },
-}
-
-// Per-card "added" feedback state (mirrors the effect on the product page)
-const justAddedSlug = ref<string | null>(null)
-
-function addToCart(item: { slug: string, title: string, price: number }) {
-  addItem(item.slug, item.title, item.price, 1)
-  justAddedSlug.value = item.slug
-  setTimeout(() => {
-    if (justAddedSlug.value === item.slug) justAddedSlug.value = null
-  }, 2000)
 }
 </script>
 
@@ -90,7 +78,7 @@ function addToCart(item: { slug: string, title: string, price: number }) {
           >
             <!-- Image + remove -->
             <div class="relative mb-5 overflow-hidden rounded-2xl">
-              <NuxtLink :to="`/knjige/${item.slug}`">
+              <NuxtLink :to="`/books/${item.slug}`">
                 <NuxtImg
                   :src="`/${item.img}`"
                   :alt="item.title"
@@ -120,7 +108,7 @@ function addToCart(item: { slug: string, title: string, price: number }) {
             </span>
 
             <!-- Title + price -->
-            <NuxtLink :to="`/knjige/${item.slug}`" class="font-unbounded text-xl font-extrabold text-navy transition-colors hover:text-blue">
+            <NuxtLink :to="`/books/${item.slug}`" class="font-unbounded text-xl font-extrabold text-navy transition-colors hover:text-blue">
               {{ item.title }}
             </NuxtLink>
             <p class="mt-1 text-lg font-bold text-navy">
@@ -128,19 +116,16 @@ function addToCart(item: { slug: string, title: string, price: number }) {
             </p>
 
             <!-- Actions -->
-            <div class="mt-auto flex gap-3 pt-6">
-              <button
-                type="button"
-                class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-blue px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-navy active:scale-[0.98]"
-                @click="addToCart(item)"
-              >
-                <Icon v-if="justAddedSlug === item.slug" name="lucide:check" class="size-4" />
-                <Icon v-else name="lucide:shopping-bag" class="size-4" />
-                {{ justAddedSlug === item.slug ? 'Dodato u korpu!' : 'Dodaj u korpu' }}
-              </button>
+            <div class="mt-auto flex flex-col gap-3 pt-6">
+              <AddToCartButton
+                :slug="item.slug"
+                :title="item.title"
+                :price="item.price"
+                compact
+              />
               <NuxtLink
-                :to="`/knjige/${item.slug}`"
-                class="inline-flex items-center justify-center rounded-full border-2 border-cloud px-5 py-3 text-sm font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
+                :to="`/books/${item.slug}`"
+                class="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border-2 border-cloud px-5 py-3 text-sm font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
               >
                 Pogledaj
               </NuxtLink>
