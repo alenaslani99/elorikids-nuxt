@@ -1,0 +1,11 @@
+{
+  "name": "elorikids - Interaktivne knjige za decu",
+  "short_name": "elorikids",
+  "icons": [
+    { "src": "/favicon_io/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/favicon_io/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#123F73",
+  "background_color": "#FFFDF7",
+  "display": "standalone"
+}

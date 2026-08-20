@@ -105,19 +105,10 @@ useHead({
 <template>
   <div v-if="book" class="bg-cream">
     <!-- Breadcrumbs -->
-    <nav class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-2 text-sm text-navy/50">
-        <li>
-          <NuxtLink to="/" class="transition-colors hover:text-blue">Početna</NuxtLink>
-        </li>
-        <li aria-hidden="true">›</li>
-        <li>
-          <NuxtLink to="/knjige" class="transition-colors hover:text-blue">Knjige</NuxtLink>
-        </li>
-        <li aria-hidden="true">›</li>
-        <li class="font-medium text-navy">{{ book.title }}</li>
-      </ol>
-    </nav>
+    <AppBreadcrumb
+      :items="[{ label: 'Početna', to: '/' }, { label: 'Knjige', to: '/knjige' }, { label: book.title }]"
+      nav-class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8"
+    />
 
     <!-- Product main -->
     <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -192,7 +183,7 @@ useHead({
           <!-- Quantity + Add to cart -->
           <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
             <!-- Quantity selector -->
-            <div class="flex items-center gap-1 rounded-full border-2 border-cloud/50 bg-white p-1">
+            <div class="flex items-center justify-between gap-1 rounded-full border-2 border-cloud/50 bg-white p-1">
               <button
                 type="button"
                 class="flex size-10 items-center justify-center rounded-full text-navy transition-colors hover:bg-sky/40 disabled:opacity-40"
@@ -213,28 +204,31 @@ useHead({
               </button>
             </div>
 
-            <!-- Add to cart button -->
-            <button
-              type="button"
-              class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-blue/90 hover:shadow-lg active:scale-[0.98]"
-              @click="addToCart"
-            >
-              <Icon v-if="justAdded" name="lucide:check" class="size-5" />
-              <Icon v-else name="lucide:shopping-bag" class="size-5" />
-              <span>{{ justAdded ? 'Dodato u korpu!' : 'Dodaj u korpu' }}</span>
-            </button>
+            <!-- Add to cart + Save (side by side on mobile, inline with qty on desktop) -->
+            <div class="flex items-center gap-3 sm:contents">
+              <!-- Add to cart button -->
+              <button
+                type="button"
+                class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-blue px-8 py-3.5 font-semibold text-white shadow-md transition-all hover:bg-blue/90 hover:shadow-lg active:scale-[0.98]"
+                @click="addToCart"
+              >
+                <Icon v-if="justAdded" name="lucide:check" class="size-5" />
+                <Icon v-else name="lucide:shopping-bag" class="size-5" />
+                <span>{{ justAdded ? 'Dodato u korpu!' : 'Dodaj u korpu' }}</span>
+              </button>
 
-            <!-- Save / heart toggle -->
-            <button
-              type="button"
-              class="flex size-[52px] shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-[0.98]"
-              :class="saved ? 'border-coral bg-coral/10 text-coral' : 'border-cloud/50 bg-white text-navy hover:border-coral hover:text-coral'"
-              :aria-pressed="saved"
-              :aria-label="saved ? 'Ukloni iz sačuvanih' : 'Sačuvaj knjigu'"
-              @click="toggleSave"
-            >
-              <Icon :name="saved ? 'lucide:heart' : 'lucide:heart'" class="size-5" :class="saved ? 'fill-coral' : ''" />
-            </button>
+              <!-- Save / heart toggle -->
+              <button
+                type="button"
+                class="flex size-[52px] shrink-0 items-center justify-center rounded-full border-2 transition-all active:scale-[0.98]"
+                :class="saved ? 'border-coral bg-coral/10 text-coral' : 'border-cloud/50 bg-white text-navy hover:border-coral hover:text-coral'"
+                :aria-pressed="saved"
+                :aria-label="saved ? 'Ukloni iz sačuvanih' : 'Sačuvaj knjigu'"
+                @click="toggleSave"
+              >
+                <Icon :name="saved ? 'lucide:heart' : 'lucide:heart'" class="size-5" :class="saved ? 'fill-coral' : ''" />
+              </button>
+            </div>
           </div>
 
           <!-- Subtotal line -->

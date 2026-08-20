@@ -21,6 +21,14 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: 'Interaktivne piši-briši knjige za decu uzrasta 2-6 godina. Laminirane, vodootporne stranice, originalni ručno ilustrovani sadržaj. Učenje kroz igru.' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { name: 'theme-color', content: '#123F73' },
+      ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon_io/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon_io/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon_io/favicon-16x16.png' },
+        { rel: 'apple-touch-icon', href: '/favicon_io/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/favicon_io/site.webmanifest' },
       ],
     },
   },

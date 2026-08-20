@@ -17,8 +17,15 @@ const accentClasses: Record<string, { soft: string, text: string }> = {
   yellow: { soft: 'bg-yellow/15', text: 'text-yellow' },
 }
 
+// Per-card "added" feedback state (mirrors the effect on the product page)
+const justAddedSlug = ref<string | null>(null)
+
 function addToCart(item: { slug: string, title: string, price: number }) {
   addItem(item.slug, item.title, item.price, 1)
+  justAddedSlug.value = item.slug
+  setTimeout(() => {
+    if (justAddedSlug.value === item.slug) justAddedSlug.value = null
+  }, 2000)
 }
 </script>
 
@@ -27,11 +34,7 @@ function addToCart(item: { slug: string, title: string, price: number }) {
     <!-- Page header -->
     <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav class="mb-4 flex items-center gap-2 text-sm text-navy/50" aria-label="Breadcrumb">
-          <NuxtLink to="/" class="transition-colors hover:text-blue">Početna</NuxtLink>
-          <span aria-hidden="true">›</span>
-          <span class="font-medium text-navy">Sačuvano</span>
-        </nav>
+        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Sačuvano' }]" nav-class="mb-4" />
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
@@ -131,8 +134,9 @@ function addToCart(item: { slug: string, title: string, price: number }) {
                 class="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-blue px-5 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-navy active:scale-[0.98]"
                 @click="addToCart(item)"
               >
-                <Icon name="lucide:shopping-bag" class="size-4" />
-                Dodaj u korpu
+                <Icon v-if="justAddedSlug === item.slug" name="lucide:check" class="size-4" />
+                <Icon v-else name="lucide:shopping-bag" class="size-4" />
+                {{ justAddedSlug === item.slug ? 'Dodato u korpu!' : 'Dodaj u korpu' }}
               </button>
               <NuxtLink
                 :to="`/knjige/${item.slug}`"

@@ -51,11 +51,7 @@ onMounted(() => {
     <!-- Page header -->
     <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav class="mb-4 flex items-center gap-2 text-sm text-navy/50" aria-label="Breadcrumb">
-          <NuxtLink to="/" class="transition-colors hover:text-blue">Početna</NuxtLink>
-          <span aria-hidden="true">›</span>
-          <span class="font-medium text-navy">Uslovi korišćenja</span>
-        </nav>
+        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Uslovi korišćenja' }]" nav-class="mb-4" />
         <div class="flex items-center gap-3">
           <div class="flex size-12 items-center justify-center rounded-2xl bg-coral/10">
             <Icon name="lucide:file-text" class="size-6 text-coral" />

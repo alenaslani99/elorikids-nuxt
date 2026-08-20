@@ -22,11 +22,7 @@ const shippingCost = computed(() => (shipping.value === 0 ? 'Besplatno' : `${shi
     <!-- Page header -->
     <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <nav class="mb-4 flex items-center gap-2 text-sm text-navy/50" aria-label="Breadcrumb">
-          <NuxtLink to="/" class="transition-colors hover:text-blue">Početna</NuxtLink>
-          <span aria-hidden="true">›</span>
-          <span class="font-medium text-navy">Korpa</span>
-        </nav>
+        <AppBreadcrumb :items="[{ label: 'Početna', to: '/' }, { label: 'Korpa' }]" nav-class="mb-4" />
         <h1 class="font-unbounded text-4xl font-extrabold text-navy md:text-5xl">
           Vaša korpa
         </h1>
