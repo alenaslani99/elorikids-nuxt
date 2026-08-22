@@ -1,10 +1,12 @@
 import { createError, defineEventHandler, readBody } from 'h3'
+import { useDb } from '../utils/db'
 
 interface NewsletterBody {
   email?: string
 }
 
 export default defineEventHandler(async (event) => {
+  const db = useDb(event)
   const body = await readBody<NewsletterBody>(event)
   const email = body?.email?.trim().toLowerCase()
 
@@ -17,8 +19,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Neispravna adresa e-pošte.' })
   }
 
-  // TODO: wire a real provider (Resend / Mailgun / Postmark) before launch.
-  // For now we just log the subscription so the flow works end-to-end.
+  // Insert OR IGNORE — duplicate emails are silently accepted (idempotent)
+  await db
+    .prepare('INSERT OR IGNORE INTO newsletter_subscribers (email) VALUES (?)')
+    .bind(email)
+    .run()
+
   console.log(`[newsletter] New subscription: ${email}`)
 
   return { ok: true, message: 'Hvala na prijavi!' }

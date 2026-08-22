@@ -1,4 +1,7 @@
 import { createError, defineEventHandler, readBody } from 'h3'
+import { useDb } from '../utils/db'
+import { verifyPassword } from '../utils/crypto'
+import { createSession } from '../utils/session'
 
 interface LoginBody {
   email?: string
@@ -8,6 +11,7 @@ interface LoginBody {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default defineEventHandler(async (event) => {
+  const db = useDb(event)
   const body = await readBody<LoginBody>(event)
 
   const email = body?.email?.trim().toLowerCase()
@@ -20,19 +24,29 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Lozinka mora imati najmanje 6 karaktera.' })
   }
 
-  // TODO: wire a real auth provider (nuxt-auth, Supabase, Auth.js) before launch.
-  // For now we derive a user from the email so the flow works end-to-end.
-  const name = email.split('@')[0]
-    .replace(/[._-]+/g, ' ')
-    .replace(/\b\w/g, c => c.toUpperCase())
+  const user = await db
+    .prepare('SELECT id, name, email, password_hash FROM users WHERE email = ?')
+    .bind(email)
+    .first<{ id: number, name: string, email: string, password_hash: string }>()
 
-  console.log(`[login] ${email}`)
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'Neispravan email ili lozinka.' })
+  }
+
+  const valid = await verifyPassword(password, user.password_hash)
+  if (!valid) {
+    throw createError({ statusCode: 401, statusMessage: 'Neispravan email ili lozinka.' })
+  }
+
+  await createSession(event, db, user.id)
+
+  console.log(`[login] #${user.id} ${user.name} <${user.email}>`)
 
   return {
     ok: true,
     user: {
-      name,
-      email,
+      name: user.name,
+      email: user.email,
     },
   }
 })

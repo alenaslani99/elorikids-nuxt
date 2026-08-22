@@ -1,0 +1,18 @@
+name = "elorikids-nuxt"
+main = ".output/server/index.mjs"
+compatibility_date = "2025-07-15"
+assets = { directory = ".output/public", binding = "ASSETS" }
+
+# ─── D1 Database ───────────────────────────────────────────────
+# 1. Create the database:
+#      npx wrangler d1 create elorikids-db
+# 2. Paste the database_id below (from the command output).
+# 3. Apply the schema:
+#      npx wrangler d1 execute elorikids-db --remote --file server/db/schema.sql
+#    For local dev:
+#      npx wrangler d1 execute elorikids-db --local --file server/db/schema.sql
+# ──────────────────────────────────────────────────────────────
+[[d1_databases]]
+binding = "DB"
+database_name = "elorikids-db"
+database_id = "6031f579-f2d6-42b1-a927-f420f2918550"

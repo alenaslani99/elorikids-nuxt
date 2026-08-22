@@ -5,40 +5,46 @@ export interface User {
 
 interface AuthState {
   user: User | null
+  /** Prevents flash of logged-out state while validating session */
+  initialized: boolean
 }
 
-const STORAGE_KEY = 'elorikids-auth'
-
 export function useAuth() {
-  const auth = useState<AuthState>('auth', () => ({ user: null }))
+  const auth = useState<AuthState>('auth', () => ({ user: null, initialized: false }))
 
-  // Hydrate from localStorage on client, after mount (avoids SSR hydration mismatch)
-  onMounted(() => {
+  const isLoggedIn = computed(() => !!auth.value.user)
+  const isReady = computed(() => auth.value.initialized)
+
+  /**
+   * Validate the existing session cookie against the server.
+   * Called once on app init (plugin). No localStorage — the
+   * httpOnly cookie is the single source of truth.
+   */
+  async function init() {
+    if (auth.value.initialized) return
     try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        if (parsed?.user) {
-          auth.value.user = parsed.user
-        }
-      }
+      const res = await $fetch<{ user: User | null }>('/api/me')
+      auth.value.user = res.user ?? null
     }
     catch {
       auth.value.user = null
     }
-
-    watch(auth.value, (val) => {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
-    }, { deep: true })
-  })
-
-  const isLoggedIn = computed(() => !!auth.value.user)
+    finally {
+      auth.value.initialized = true
+    }
+  }
 
   function setUser(user: User) {
     auth.value.user = user
   }
 
-  function logout() {
+  async function logout() {
+    try {
+      await $fetch('/api/logout', { method: 'POST' })
+    }
+    catch {
+      // ignore network errors — cookie may already be invalid
+    }
     auth.value.user = null
   }
 
@@ -46,6 +52,8 @@ export function useAuth() {
     auth,
     user: computed(() => auth.value.user),
     isLoggedIn,
+    isReady,
+    init,
     setUser,
     logout,
   }

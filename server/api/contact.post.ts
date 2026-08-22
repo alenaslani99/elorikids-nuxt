@@ -1,4 +1,5 @@
 import { createError, defineEventHandler, readBody } from 'h3'
+import { useDb } from '../utils/db'
 
 interface ContactBody {
   name?: string
@@ -7,6 +8,7 @@ interface ContactBody {
 }
 
 export default defineEventHandler(async (event) => {
+  const db = useDb(event)
   const body = await readBody<ContactBody>(event)
 
   const name = body?.name?.trim()
@@ -34,8 +36,11 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Poruka je prekratka (minimum 10 karaktera).' })
   }
 
-  // TODO: wire a real provider (Resend / Mailgun / Postmark) before launch.
-  // For now we just log the submission so the flow works end-to-end.
+  await db
+    .prepare('INSERT INTO contact_messages (name, email, message) VALUES (?, ?, ?)')
+    .bind(name, email, message)
+    .run()
+
   console.log(`[contact] From: ${name} <${email}> — ${message}`)
 
   return { ok: true, message: 'Hvala na poruci! Javićemo se uskoro.' }

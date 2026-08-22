@@ -29,6 +29,9 @@ const orderId = computed(() => (route.query.id as string) || '')
 
       <p v-if="orderId" class="mt-4 text-sm text-navy/50">
         Broj porudžbine: <strong class="text-navy">{{ orderId }}</strong>
+        <NuxtLink :to="`/pratite-porudzbinu?id=${orderId}`" class="ml-2 font-medium text-blue underline-offset-2 hover:underline">
+          Pratite porudžbinu →
+        </NuxtLink>
       </p>
 
       <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

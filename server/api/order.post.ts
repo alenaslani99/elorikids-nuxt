@@ -1,4 +1,7 @@
 import { createError, defineEventHandler, readBody } from 'h3'
+import type { D1Database } from '@cloudflare/workers-types'
+import { useDb } from '../utils/db'
+import { getSessionUser } from '../utils/session'
 
 interface OrderItem {
   slug: string
@@ -30,7 +33,11 @@ interface OrderBody {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
 
+const FREE_SHIPPING_THRESHOLD = 5000
+const SHIPPING_FEE = 350
+
 export default defineEventHandler(async (event) => {
+  const db = useDb(event)
   const body = await readBody<OrderBody>(event)
 
   // --- Validate customer ---
@@ -40,7 +47,7 @@ export default defineEventHandler(async (event) => {
   const address = body?.customer?.address?.trim()
   const city = body?.customer?.city?.trim()
   const postal = body?.customer?.postal?.trim()
-  const note = body?.customer?.note?.trim()
+  const note = body?.customer?.note?.trim() || null
 
   if (!name) {
     throw createError({ statusCode: 400, statusMessage: 'Ime i prezime je obavezno.' })
@@ -69,49 +76,70 @@ export default defineEventHandler(async (event) => {
 
   // --- Recompute totals server-side (trust but verify) ---
   const subtotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const FREE_SHIPPING_THRESHOLD = 5000
-  const SHIPPING_FEE = 350
   const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE
   const grandTotal = subtotal + shipping
 
-  // Sanity check against client-sent total (allow rounding tolerance)
   if (body?.totals && Math.abs(body.totals.grandTotal - grandTotal) > 1) {
     throw createError({ statusCode: 400, statusMessage: 'Ukupan iznos se ne slaže. Osvežite stranicu i pokušajte ponovo.' })
   }
 
-  // --- Generate order id ---
-  const orderId = `EK-${Date.now().toString().slice(-6)}`
+  // --- Determine if user is logged in ---
+  const sessionUser = await getSessionUser(event, db)
+  const userId = sessionUser?.id ?? null
 
-  // --- Compose readable order email ---
-  const itemList = items
-    .map(i => `  • ${i.title} — ${i.quantity} × ${i.price.toLocaleString('sr-RS')} RSD = ${(i.price * i.quantity).toLocaleString('sr-RS')} RSD`)
-    .join('\n')
+  // --- Generate order ID: EK-YYYY-NNNNNN ---
+  const year = new Date().getFullYear()
+  const orderId = await generateOrderId(db, year)
 
-  const mailBody = [
-    `Nova porudžbina — ${orderId}`,
-    ``,
-    `Kupac:`,
-    `  Ime: ${name}`,
-    `  Telefon: ${phone}`,
-    `  E-pošta: ${email}`,
-    `  Adresa: ${address}`,
-    `  ${postal} ${city}`,
-    note ? `\nNapomena: ${note}` : '',
-    ``,
-    `Stavke:`,
-    itemList,
-    ``,
-    `Rezime:`,
-    `  Knjige: ${subtotal.toLocaleString('sr-RS')} RSD`,
-    `  Dostava: ${shipping === 0 ? 'Besplatno' : `${shipping.toLocaleString('sr-RS')} RSD`}`,
-    `  UKUPNO: ${grandTotal.toLocaleString('sr-RS')} RSD`,
-    ``,
-    `Plaćanje: Pouzeće (prijem robe)`,
-  ].filter(Boolean).join('\n')
+  // --- Persist order + items + initial event (single transaction) ---
+  const stmts = [
+    db
+      .prepare(
+        `INSERT INTO orders (id, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'processed')`,
+      )
+      .bind(
+        orderId, userId, name, phone, email, address, city, postal, note,
+        subtotal, shipping, grandTotal,
+      ),
+    // Order items
+    ...items.map((item) =>
+      db
+        .prepare('INSERT INTO order_items (order_id, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?)')
+        .bind(orderId, item.slug, item.title, item.price, item.quantity),
+    ),
+    // Initial tracking event
+    db
+      .prepare(
+        `INSERT INTO order_events (order_id, status, label, description) VALUES (?, 'received', ?, ?)`,
+      )
+      .bind(
+        orderId,
+        'Porudžbina primljena',
+        'Vaša porudžbina je uspešno kreirana i čeka obradu.',
+      ),
+  ]
 
-  // TODO: wire a real provider (Resend / Mailgun / Postmark) before launch.
-  // For now we log the order so the flow works end-to-end.
-  console.log(`[order] ${orderId}\n${mailBody}`)
+  await db.batch(stmts)
+
+  console.log(`[order] ${orderId} — ${name} <${email}> — ${grandTotal} RSD (${items.length} items)`)
 
   return { ok: true, orderId }
 })
+
+/**
+ * Generate a sequential order ID within the current year.
+ * Format: EK-2026-000001
+ * Counts existing orders for the year, then +1.
+ */
+async function generateOrderId(db: D1Database, year: number): Promise<string> {
+  const result = await db
+    .prepare(
+      `SELECT COUNT(*) as count FROM orders WHERE id LIKE ?`,
+    )
+    .bind(`EK-${year}-%`)
+    .first<{ count: number }>()
+
+  const seq = (result?.count ?? 0) + 1
+  return `EK-${year}-${String(seq).padStart(6, '0')}`
+}

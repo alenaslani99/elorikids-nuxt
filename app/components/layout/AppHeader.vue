@@ -5,8 +5,8 @@ const { count: savedCount } = useSaved()
 const { isLoggedIn, user, logout } = useAuth()
 const router = useRouter()
 
-function handleLogout() {
-  logout()
+async function handleLogout() {
+  await logout()
   router.push('/')
 }
 </script>

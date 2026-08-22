@@ -37,6 +37,9 @@ export default defineNuxtConfig({
       tailwindcss(),
     ],
   },
+  nitro: {
+    preset: 'cloudflare-module',
+  },
   icon: {
     clientBundle: {
       scan: true

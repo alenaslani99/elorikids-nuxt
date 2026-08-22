@@ -23,5 +23,8 @@ logs
 .env.*
 !.env.example
 
+# Cloudflare Wrangler local state
+.wrangler/
+
 # AGENT MD
 AGENT.MD

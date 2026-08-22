@@ -7,72 +7,55 @@ useHead({
   ],
 })
 
-// --- Dummy order database (simulated) ---
-interface OrderStep {
+// --- Types matching the /api/order/[id] response ---
+interface OrderEvent {
+  status: string
   label: string
   description: string
-  date?: string
+  createdAt: string
 }
 
-interface DummyOrder {
+interface FoundOrder {
   id: string
-  status: 'processed' | 'shipped' | 'delivered'
-  steps: OrderStep[]
+  status: string
+  createdAt: string
+  customer: { name: string, city: string }
+  totals: { subtotal: number, shipping: number, grandTotal: number }
+  items: { slug: string, title: string, price: number, quantity: number }[]
+  events: OrderEvent[]
 }
-
-const dummyOrders: DummyOrder[] = [
-  {
-    id: 'EK-2025-00142',
-    status: 'shipped',
-    steps: [
-      { label: 'Porudžbina primljena', description: 'Vaša porudžbina je uspešno kreirana.', date: '15. avgust 2025.' },
-      { label: 'Priprema za slanje', description: 'Knjige su spakovane i predate kuriru.', date: '16. avgust 2025.' },
-      { label: 'U transportu', description: 'Pošiljka je na putu do vas.', date: '17. avgust 2025.' },
-      { label: 'Isporuka', description: 'Očekivana isporuka 19. avgust 2025.' },
-    ],
-  },
-  {
-    id: 'EK-2025-00098',
-    status: 'delivered',
-    steps: [
-      { label: 'Porudžbina primljena', description: 'Vaša porudžbina je uspešno kreirana.', date: '8. avgust 2025.' },
-      { label: 'Priprema za slanje', description: 'Knjige su spakovane i predate kuriru.', date: '9. avgust 2025.' },
-      { label: 'U transportu', description: 'Pošiljka je na putu do vas.', date: '10. avgust 2025.' },
-      { label: 'Isporučeno', description: 'Pošiljka je uspešno isporučena.', date: '12. avgust 2025.' },
-    ],
-  },
-  {
-    id: 'EK-2025-00150',
-    status: 'processed',
-    steps: [
-      { label: 'Porudžbina primljena', description: 'Vaša porudžbina je uspešno kreirana.', date: '18. avgust 2025.' },
-      { label: 'Priprema za slanje', description: 'Knjige se trenutno pakuju.', date: '18. avgust 2025.' },
-      { label: 'U transportu', description: 'Čeka preuzimanje od strane kurira.' },
-      { label: 'Isporuka', description: 'Očekivana isporuka 20. avgust 2025.' },
-    ],
-  },
-]
 
 // --- Form state ---
 const orderId = ref('')
 const { status, errorMessage, setError } = useFormStatus()
-const foundOrder = ref<DummyOrder | null>(null)
+const foundOrder = ref<FoundOrder | null>(null)
 
-// Which steps are "completed" = those with a date set
-function stepState(order: DummyOrder): ('done' | 'current' | 'pending')[] {
-  return order.steps.map((step, i) => {
-    if (step.date) return 'done'
-    // First step without a date = current (in-progress)
-    const firstPending = order.steps.findIndex(s => !s.date)
-    return i === firstPending ? 'current' : 'pending'
+// A step is "done" if it has an event row; the last event is "current"
+function stepState(order: FoundOrder): ('done' | 'current' | 'pending')[] {
+  return order.events.map((_step, i) => {
+    if (i < order.events.length - 1) return 'done'
+    if (order.status === 'delivered') return 'done'
+    return 'current'
   })
 }
 
-// Status badge styling
-const statusConfig: Record<DummyOrder['status'], { label: string, class: string }> = {
+// Map DB status to the Serbian label + badge class
+const statusConfig: Record<string, { label: string, class: string }> = {
   processed: { label: 'U obradi', class: 'bg-yellow/20 text-navy' },
   shipped: { label: 'U transportu', class: 'bg-blue/10 text-blue' },
   delivered: { label: 'Isporučeno', class: 'bg-mint/20 text-navy' },
+  cancelled: { label: 'Otkazano', class: 'bg-coral/20 text-coral' },
+}
+
+// Format ISO date → "15. avgust 2025."
+const months = [
+  'januar', 'februar', 'mart', 'april', 'maj', 'jun',
+  'jul', 'avgust', 'septembar', 'oktobar', 'novembar', 'decembar',
+]
+function formatDate(iso: string): string {
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}.`
 }
 
 async function handleSubmit() {
@@ -80,23 +63,31 @@ async function handleSubmit() {
   foundOrder.value = null
   status.value = 'loading'
 
-  // Simulate network delay
-  await new Promise(r => setTimeout(r, 700))
-
   const trimmed = orderId.value.trim().toUpperCase()
   if (!trimmed) {
     setError('Unesite broj porudžbine.')
     return
   }
 
-  const match = dummyOrders.find(o => o.id === trimmed)
-  if (match) {
-    foundOrder.value = match
+  try {
+    const res = await $fetch<FoundOrder>(`/api/order/${trimmed}`)
+    foundOrder.value = res
     status.value = 'success'
-  } else {
-    setError(`Porudžbina "${trimmed}" nije pronađena. Proverite broj i pokušajte ponovo.`)
+  }
+  catch (e: any) {
+    setError(e?.data?.statusMessage || 'Porudžbina nije pronađena. Proverite broj i pokušajte ponovo.')
   }
 }
+
+// Auto-search if order ID is in the URL query (?id=EK-...)
+const route = useRoute()
+onMounted(() => {
+  const queryId = route.query.id as string
+  if (queryId) {
+    orderId.value = queryId
+    handleSubmit()
+  }
+})
 </script>
 
 <template>
@@ -122,7 +113,7 @@ async function handleSubmit() {
               Pronađite vašu porudžbinu
             </h2>
             <p class="mt-2 text-navy/60">
-              Broj porudžbine izgleda kao "EK-2025-00142".
+              Broj porudžbine izgleda kao "EK-2026-000001".
             </p>
           </div>
 
@@ -135,7 +126,7 @@ async function handleSubmit() {
               inputmode="text"
               autocomplete="off"
               required
-              placeholder="EK-2025-00142"
+              placeholder="EK-2026-000001"
               :disabled="status === 'loading'"
             />
 
@@ -156,16 +147,7 @@ async function handleSubmit() {
             <p class="flex items-start gap-2">
               <Icon name="lucide:info" class="mt-0.5 size-4 shrink-0 text-blue" />
               <span>
-                Za testiranje probajte:
-                <button type="button" class="font-semibold text-blue underline-offset-2 hover:underline" @click="orderId = 'EK-2025-00142'; handleSubmit()">
-                  EK-2025-00142
-                </button>,
-                <button type="button" class="font-semibold text-blue underline-offset-2 hover:underline" @click="orderId = 'EK-2025-00098'; handleSubmit()">
-                  EK-2025-00098
-                </button>,
-                <button type="button" class="font-semibold text-blue underline-offset-2 hover:underline" @click="orderId = 'EK-2025-00150'; handleSubmit()">
-                  EK-2025-00150
-                </button>
+                Broj porudžbine ste dobili u potvrdi e-pošte nakon naručivanja. Format: EK-YYYY-NNNNNN.
               </span>
             </p>
           </div>
@@ -185,16 +167,45 @@ async function handleSubmit() {
             </div>
             <span
               class="rounded-full px-4 py-1.5 text-sm font-semibold"
-              :class="statusConfig[foundOrder.status].class"
+              :class="statusConfig[foundOrder.status]?.class ?? 'bg-cloud/40 text-navy'"
             >
-              {{ statusConfig[foundOrder.status].label }}
+              {{ statusConfig[foundOrder.status]?.label ?? foundOrder.status }}
             </span>
+          </div>
+
+          <!-- Order details: items + totals -->
+          <div class="mb-8 rounded-2xl bg-cream p-5">
+            <p class="mb-3 text-sm font-semibold text-navy">Stavke porudžbine</p>
+            <ul class="space-y-2">
+              <li
+                v-for="item in foundOrder.items"
+                :key="item.slug"
+                class="flex items-center justify-between text-sm text-navy/70"
+              >
+                <span>{{ item.title }} <span class="text-navy/40">× {{ item.quantity }}</span></span>
+                <span class="font-medium">{{ (item.price * item.quantity).toLocaleString('sr-RS') }} RSD</span>
+              </li>
+            </ul>
+            <div class="mt-3 border-t border-cloud/40 pt-3 text-sm">
+              <div class="flex justify-between text-navy/60">
+                <span>Knjige</span>
+                <span>{{ foundOrder.totals.subtotal.toLocaleString('sr-RS') }} RSD</span>
+              </div>
+              <div class="flex justify-between text-navy/60">
+                <span>Dostava</span>
+                <span>{{ foundOrder.totals.shipping === 0 ? 'Besplatno' : `${foundOrder.totals.shipping.toLocaleString('sr-RS')} RSD` }}</span>
+              </div>
+              <div class="mt-1 flex justify-between font-bold text-navy">
+                <span>Ukupno</span>
+                <span>{{ foundOrder.totals.grandTotal.toLocaleString('sr-RS') }} RSD</span>
+              </div>
+            </div>
           </div>
 
           <!-- Timeline -->
           <ol class="mt-8 space-y-6">
             <li
-              v-for="(step, i) in foundOrder.steps"
+              v-for="(step, i) in foundOrder.events"
               :key="i"
               class="flex gap-4"
             >
@@ -222,7 +233,7 @@ async function handleSubmit() {
                 </div>
                 <!-- Connector line -->
                 <div
-                  v-if="i < foundOrder.steps.length - 1"
+                  v-if="i < foundOrder.events.length - 1"
                   class="mt-1 w-0.5 flex-1"
                   :class="stepState(foundOrder)[i] === 'done' ? 'bg-mint' : 'bg-cloud/40'"
                 />
@@ -240,7 +251,7 @@ async function handleSubmit() {
                   </span>
                 </div>
                 <p class="mt-1 text-sm text-navy/60">{{ step.description }}</p>
-                <p v-if="step.date" class="mt-1 text-xs text-navy/40">{{ step.date }}</p>
+                <p v-if="step.createdAt" class="mt-1 text-xs text-navy/40">{{ formatDate(step.createdAt) }}</p>
               </div>
             </li>
           </ol>

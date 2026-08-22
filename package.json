@@ -20,9 +20,10 @@
     "vue-router": "^5.2.0"
   },
   "allowScripts": {
-    "esbuild@0.27.7": true
+    "esbuild@0.28.2": true
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250821.0",
     "@iconify-json/lucide": "^1.2.124"
   }
 }

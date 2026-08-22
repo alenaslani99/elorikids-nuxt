@@ -7,13 +7,28 @@ useHead({
   ],
 })
 
-const { user, logout } = useAuth()
+const { user, logout, isLoggedIn, isReady } = useAuth()
 const { count: cartCount } = useCart()
 const { count: savedCount } = useSaved()
 const router = useRouter()
 
-// Dummy user shown when not logged in (UI preview)
-const displayUser = computed(() => user.value ?? { name: 'Marko Marković', email: 'marko@primer.rs' })
+// Redirect to login if not authenticated; fetch orders if logged in
+onMounted(async () => {
+  // The auth plugin validates the session on first load.
+  // If the user navigated here client-side, isReady is already true.
+  if (isReady.value && !isLoggedIn.value) {
+    router.replace('/auth/login?redirect=/auth/account')
+    return
+  }
+  if (isLoggedIn.value) {
+    fetchOrders()
+  }
+  else {
+    ordersLoading.value = false
+  }
+})
+
+const displayUser = computed(() => user.value ?? { name: '', email: '' })
 
 const initials = computed(() => {
   const name = displayUser.value?.name ?? ''
@@ -25,29 +40,62 @@ const initials = computed(() => {
     .toUpperCase() || '?'
 })
 
-function handleLogout() {
-  logout()
+async function handleLogout() {
+  await logout()
   router.push('/')
 }
 
-// --- Dummy data (UI preview) ---
-const dummyOrders = [
-  { id: '10234', date: '15. avg 2025.', total: 3490, status: 'isporučeno', items: 2 },
-  { id: '10198', date: '02. avg 2025.', total: 1750, status: 'u putu', items: 1 },
-  { id: '10156', date: '18. jul 2025.', total: 5180, status: 'isporučeno', items: 3 },
-]
-
-const statusStyles: Record<string, { bg: string, text: string, icon: string }> = {
-  isporučeno: { bg: 'bg-mint/15', text: 'text-mint', icon: 'lucide:check-circle' },
-  'u putu': { bg: 'bg-blue/15', text: 'text-blue', icon: 'lucide:truck' },
-  obrada: { bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
+// --- Fetch real orders for logged-in user ---
+interface OrderSummary {
+  id: string
+  status: string
+  grandTotal: number
+  itemCount: number
+  createdAt: string
 }
 
-const quickLinks = [
+const orders = ref<OrderSummary[]>([])
+const ordersLoading = ref(true)
+
+async function fetchOrders() {
+  if (!isLoggedIn.value) {
+    ordersLoading.value = false
+    return
+  }
+  try {
+    orders.value = await $fetch<OrderSummary[]>('/api/orders')
+  }
+  catch {
+    orders.value = []
+  }
+  finally {
+    ordersLoading.value = false
+  }
+}
+
+// Map DB status to Serbian label + styling
+const statusStyles: Record<string, { label: string, bg: string, text: string, icon: string }> = {
+  processed: { label: 'U obradi', bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
+  shipped: { label: 'U transportu', bg: 'bg-blue/15', text: 'text-blue', icon: 'lucide:truck' },
+  delivered: { label: 'Isporučeno', bg: 'bg-mint/15', text: 'text-mint', icon: 'lucide:check-circle' },
+  cancelled: { label: 'Otkazano', bg: 'bg-coral/15', text: 'text-coral', icon: 'lucide:x-circle' },
+}
+
+const months = [
+  'jan', 'feb', 'mar', 'apr', 'maj', 'jun',
+  'jul', 'avg', 'sep', 'okt', 'nov', 'dec',
+]
+function formatDate(iso: string): string {
+  const d = new Date(iso)
+  if (isNaN(d.getTime())) return iso
+  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}.`
+}
+
+const quickLinks = computed(() => [
   { label: 'Sačuvane knjige', desc: `${savedCount.value} knjiga`, to: '/shop/saved', icon: 'lucide:heart', accent: 'bg-coral/10 text-coral' },
   { label: 'Korpa', desc: `${cartCount.value} artikala`, to: '/shop/cart', icon: 'lucide:shopping-bag', accent: 'bg-blue/10 text-blue' },
   { label: 'Početna', desc: 'Nazad na prodavnicu', to: '/', icon: 'lucide:home', accent: 'bg-mint/15 text-mint' },
-]
+])
 </script>
 
 <template>
@@ -116,10 +164,24 @@ const quickLinks = [
               </div>
 
               <!-- Orders list -->
-              <div class="space-y-3">
-                <div
-                  v-for="order in dummyOrders"
+              <div v-if="ordersLoading" class="py-8 text-center text-navy/40">
+                <Icon name="lucide:loader-2" class="mx-auto mb-2 size-6 animate-spin" />
+                <p class="text-sm">Učitavanje porudžbina...</p>
+              </div>
+
+              <div v-else-if="orders.length === 0" class="rounded-2xl border border-dashed border-cloud/60 bg-cream p-8 text-center">
+                <Icon name="lucide:package-x" class="mx-auto mb-3 size-8 text-navy/30" />
+                <p class="text-navy/60">Nemate porudžbina još.</p>
+                <NuxtLink to="/knjige" class="mt-3 inline-block font-semibold text-blue hover:text-navy">
+                  Pogledajte knjige →
+                </NuxtLink>
+              </div>
+
+              <div v-else class="space-y-3">
+                <NuxtLink
+                  v-for="order in orders"
                   :key="order.id"
+                  :to="`/pratite-porudzbinu?id=${order.id}`"
                   class="flex flex-col gap-3 rounded-2xl border border-cloud/40 bg-cream p-5 transition-colors hover:border-blue/40 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <!-- Order info -->
@@ -129,10 +191,10 @@ const quickLinks = [
                     </div>
                     <div>
                       <p class="font-semibold text-navy">
-                        Porudžbina #{{ order.id }}
+                        {{ order.id }}
                       </p>
                       <p class="text-sm text-navy/50">
-                        {{ order.date }} · {{ order.items }} {{ order.items === 1 ? 'artikal' : 'artikla' }}
+                        {{ formatDate(order.createdAt) }} · {{ order.itemCount }} {{ order.itemCount === 1 ? 'artikal' : 'artikla' }}
                       </p>
                     </div>
                   </div>
@@ -140,17 +202,17 @@ const quickLinks = [
                   <!-- Total + status -->
                   <div class="flex items-center gap-4">
                     <p class="font-bold text-navy">
-                      {{ order.total.toLocaleString('sr-RS') }} RSD
+                      {{ order.grandTotal.toLocaleString('sr-RS') }} RSD
                     </p>
                     <span
                       class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold"
                       :class="statusStyles[order.status]?.bg ?? 'bg-cloud/40'"
                     >
                       <Icon :name="statusStyles[order.status]?.icon ?? 'lucide:circle'" class="size-3.5" :class="statusStyles[order.status]?.text" />
-                      <span :class="statusStyles[order.status]?.text">{{ order.status }}</span>
+                      <span :class="statusStyles[order.status]?.text">{{ statusStyles[order.status]?.label ?? order.status }}</span>
                     </span>
                   </div>
-                </div>
+                </NuxtLink>
               </div>
             </div>
           </div>
