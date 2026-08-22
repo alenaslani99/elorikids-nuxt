@@ -85,6 +85,11 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
       grandTotal: order.grand_total,
     },
     items: itemsResult.results ?? [],
-    events: eventsResult.results ?? [],
+    events: (eventsResult.results ?? []).map(e => ({
+      status: e.status,
+      label: e.label,
+      description: e.description,
+      createdAt: e.created_at,
+    })),
   }
 })

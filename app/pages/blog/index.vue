@@ -13,7 +13,7 @@ useHead({
 })
 
 const featured = computed(() => posts.find(p => p.featured) ?? posts[0])
-const rest = computed(() => posts.filter(p => p.slug !== featured.value.slug))
+const rest = computed(() => posts.filter(p => p.slug !== (featured.value?.slug ?? '')))
 </script>
 
 <template>
@@ -31,6 +31,7 @@ const rest = computed(() => posts.filter(p => p.slug !== featured.value.slug))
     <section class="bg-cream py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <NuxtLink
+          v-if="featured"
           :to="`/blog/${featured.slug}`"
           class="group grid items-center gap-8 rounded-3xl border-2 border-cloud/40 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl lg:grid-cols-2 lg:p-8"
         >
@@ -49,7 +50,7 @@ const rest = computed(() => posts.filter(p => p.slug !== featured.value.slug))
             <div class="flex flex-wrap items-center gap-3 text-sm text-navy/50">
               <span
                 class="rounded-full px-3 py-1 text-xs font-semibold"
-                :class="accentClasses[featured.accent]?.badge ?? accentClasses.mint.badge"
+                :class="getAccent(featured.accent).badge"
               >
                 {{ featured.category }}
               </span>
@@ -114,7 +115,7 @@ const rest = computed(() => posts.filter(p => p.slug !== featured.value.slug))
               <div class="flex flex-wrap items-center gap-3 text-sm text-navy/50">
                 <span
                   class="rounded-full px-3 py-1 text-xs font-semibold"
-                  :class="accentClasses[post.accent]?.badge ?? accentClasses.mint.badge"
+                  :class="getAccent(post.accent).badge"
                 >
                   {{ post.category }}
                 </span>

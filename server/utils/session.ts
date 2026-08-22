@@ -3,6 +3,7 @@
  * Enables immediate server-side revocation (logout).
  */
 import type { D1Database } from '@cloudflare/workers-types'
+import type { H3Event } from 'h3'
 import { generateSessionToken } from './crypto'
 
 export interface SessionUser {

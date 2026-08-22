@@ -12,7 +12,7 @@ if (!post.value) {
 
 const relatedPosts = computed(() => getRelatedPosts(slug.value))
 
-const a = computed(() => accentClasses[post.value!.accent] ?? accentClasses.mint)
+const a = computed(() => getAccent(post.value?.accent))
 
 // --- SEO + structured data ---
 useHead({
@@ -197,7 +197,7 @@ useHead({
               <div class="flex items-center gap-3 text-sm text-navy/50">
                 <span
                   class="rounded-full px-3 py-1 text-xs font-semibold"
-                  :class="accentClasses[related.accent]?.badge ?? accentClasses.mint.badge"
+                  :class="getAccent(related.accent).badge"
                 >
                   {{ related.category }}
                 </span>

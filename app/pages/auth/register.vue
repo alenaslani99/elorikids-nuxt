@@ -17,29 +17,42 @@ const form = reactive({
   passwordConfirm: '',
 })
 
-const { status, errorMessage, setError } = useFormStatus()
+const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
 const showPassword = ref(false)
 const agree = ref(false)
 
+const submitted = ref(false)
+
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-async function handleSubmit() {
-  errorMessage.value = ''
+const nameError = computed(() =>
+  submitted.value && !form.name.trim() ? 'Unesite ime i prezime.' : '',
+)
+const emailError = computed(() => {
+  if (!submitted.value) return ''
+  if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
+  return ''
+})
+const passwordError = computed(() =>
+  submitted.value && (!form.password || form.password.length < 6) ? 'Lozinka mora imati najmanje 6 karaktera.' : '',
+)
+const passwordConfirmError = computed(() => {
+  if (form.password === form.passwordConfirm) return ''
+  if (submitted.value || form.passwordConfirm) return 'Lozinke se ne poklapaju'
+  return ''
+})
 
-  if (!form.name.trim()) {
-    setError('Unesite ime i prezime.')
-    return
-  }
-  if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-    setError('Unesite ispravnu adresu e-pošte.')
-    return
-  }
-  if (!form.password || form.password.length < 6) {
-    setError('Lozinka mora imati najmanje 6 karaktera.')
-    return
-  }
-  if (form.password !== form.passwordConfirm) {
-    setError('Lozinke se ne poklapaju.')
+// Clear stale error state as soon as the user edits any field
+watch(form, () => {
+  if (submitted.value) submitted.value = false
+  clearStale()
+})
+
+async function handleSubmit() {
+  reset()
+  submitted.value = true
+
+  if (nameError.value || emailError.value || passwordError.value || passwordConfirmError.value) {
     return
   }
   if (!agree.value) {
@@ -124,6 +137,7 @@ const passwordStrength = computed(() => {
               required
               placeholder="Marko Marković"
               :disabled="status === 'loading'"
+              :error="nameError"
             />
 
             <!-- Email -->
@@ -137,6 +151,7 @@ const passwordStrength = computed(() => {
               required
               placeholder="marko@primer.rs"
               :disabled="status === 'loading'"
+              :error="emailError"
             />
 
             <!-- Password -->
@@ -151,6 +166,7 @@ const passwordStrength = computed(() => {
                 required
                 placeholder="••••••••"
                 :disabled="status === 'loading'"
+                :error="passwordError"
               />
 
               <!-- Strength meter -->
@@ -170,25 +186,17 @@ const passwordStrength = computed(() => {
             </div>
 
             <!-- Confirm password -->
-            <div>
-              <AppInput
-                id="passwordConfirm"
-                v-model="form.passwordConfirm"
-                label="Potvrdite lozinku"
-                :type="showPassword ? 'text' : 'password'"
-                autocomplete="new-password"
-                required
-                placeholder="••••••••"
-                :disabled="status === 'loading'"
-              />
-              <p
-                v-if="form.passwordConfirm && form.password !== form.passwordConfirm"
-                class="mt-1.5 flex items-center gap-1 text-xs text-coral"
-              >
-                <Icon name="lucide:alert-circle" class="size-3.5" />
-                Lozinke se ne poklapaju
-              </p>
-            </div>
+            <AppInput
+              id="passwordConfirm"
+              v-model="form.passwordConfirm"
+              label="Potvrdite lozinku"
+              :type="showPassword ? 'text' : 'password'"
+              autocomplete="new-password"
+              required
+              placeholder="••••••••"
+              :disabled="status === 'loading'"
+              :error="passwordConfirmError"
+            />
 
             <!-- Terms -->
             <label class="flex items-start gap-3 text-sm text-navy/70">
@@ -206,8 +214,12 @@ const passwordStrength = computed(() => {
               </span>
             </label>
 
-            <!-- Error -->
-            <p v-if="status === 'error'" class="text-sm text-coral" role="alert">
+            <!-- Error (always reserved to avoid CLS) -->
+            <p
+              class="min-h-5 text-sm text-coral transition-opacity duration-200"
+              :class="status === 'error' ? 'opacity-100' : 'opacity-0'"
+              role="alert"
+            >
               {{ errorMessage }}
             </p>
 

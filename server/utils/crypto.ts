@@ -12,11 +12,11 @@ const KEY_LENGTH = 32 // bytes
 function toBase64Url(bytes: ArrayBuffer | Uint8Array): string {
   const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)
   let str = ''
-  for (let i = 0; i < arr.length; i++) str += String.fromCharCode(arr[i])
+  for (const code of arr) str += String.fromCharCode(code)
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
-function fromBase64Url(b64url: string): Uint8Array {
+function fromBase64Url(b64url: string): Uint8Array<ArrayBuffer> {
   const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/')
   const pad = b64.length % 4 === 0 ? '' : '='.repeat(4 - (b64.length % 4))
   const binary = atob(b64 + pad)
@@ -54,8 +54,8 @@ export async function verifyPassword(password: string, stored: string): Promise<
   if (parts.length !== 4 || parts[0] !== 'pbkdf2') return false
 
   const iterations = Number(parts[1])
-  const salt = fromBase64Url(parts[2])
-  const expectedHash = parts[3]
+  const salt = fromBase64Url(parts[2] ?? '')
+  const expectedHash = parts[3] ?? ''
 
   const keyMaterial = await crypto.subtle.importKey(
     'raw',

@@ -16,19 +16,31 @@ const form = reactive({
   password: '',
 })
 
-const { status, errorMessage, setError } = useFormStatus()
+const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
+const submitted = ref(false)
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-async function handleSubmit() {
-  errorMessage.value = ''
+const emailError = computed(() => {
+  if (!submitted.value) return ''
+  if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
+  return ''
+})
+const passwordError = computed(() =>
+  submitted.value && (!form.password || form.password.length < 6) ? 'Lozinka mora imati najmanje 6 karaktera.' : '',
+)
 
-  if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-    setError('Unesite ispravnu adresu e-pošte.')
-    return
-  }
-  if (!form.password || form.password.length < 6) {
-    setError('Lozinka mora imati najmanje 6 karaktera.')
+// Clear stale error state as soon as the user edits any field
+watch(form, () => {
+  if (submitted.value) submitted.value = false
+  clearStale()
+})
+
+async function handleSubmit() {
+  reset()
+  submitted.value = true
+
+  if (emailError.value || passwordError.value) {
     return
   }
 
@@ -95,6 +107,7 @@ if (route.query.email) {
               required
               placeholder="marko@primer.rs"
               :disabled="status === 'loading'"
+              :error="emailError"
             />
 
             <!-- Password -->
@@ -108,6 +121,7 @@ if (route.query.email) {
               required
               placeholder="••••••••"
               :disabled="status === 'loading'"
+              :error="passwordError"
             />
 
             <!-- Forgot password -->
@@ -121,8 +135,12 @@ if (route.query.email) {
               </NuxtLink>
             </div>
 
-            <!-- Error -->
-            <p v-if="status === 'error'" class="text-sm text-coral" role="alert">
+            <!-- Error (always reserved to avoid CLS) -->
+            <p
+              class="min-h-5 text-sm text-coral transition-opacity duration-200"
+              :class="status === 'error' ? 'opacity-100' : 'opacity-0'"
+              role="alert"
+            >
               {{ errorMessage }}
             </p>
 

@@ -154,12 +154,12 @@ const milestoneAccent: Record<string, string> = {
           >
             <div
               class="mb-6 flex size-14 items-center justify-center rounded-2xl"
-              :class="accentClasses[value.accent].soft"
+              :class="getAccent(value.accent).soft"
             >
               <Icon
                 :name="value.icon"
                 class="size-7"
-                :class="accentClasses[value.accent].text"
+                :class="getAccent(value.accent).text"
               />
             </div>
             <h3 class="mb-3 text-xl font-bold text-navy">

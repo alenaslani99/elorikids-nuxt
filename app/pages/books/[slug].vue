@@ -17,7 +17,7 @@ const relatedBooks = computed(() => getRelatedBooks(slug.value))
 const quantity = ref(1)
 const activeTab = ref<'activities' | 'selling' | 'specs'>('activities')
 
-const a = computed(() => accentClasses[book.value!.accent] ?? accentClasses.mint)
+const a = computed(() => getAccent(book.value?.accent))
 
 const saved = computed(() => isSaved(slug.value))
 

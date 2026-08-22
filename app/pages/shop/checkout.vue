@@ -29,36 +29,49 @@ const form = reactive({
   note: '',
 })
 
-const { status, errorMessage, setError } = useFormStatus()
+const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
+const submitted = ref(false)
 
+const nameRegex = /^[a-zA-ZšđčćžŠĐČĆŽ]+(?:\s+[a-zA-ZšđčćžŠĐČĆŽ]+)+$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
+const phoneRegex = /^\+381\s?6[1-9](\s?\d){6,7}$/
+const postalRegex = /^[1-9]\d{5}$/
+
+const nameError = computed(() =>
+  submitted.value && (!form.name.trim() || !nameRegex.test(form.name.trim())) ? 'Unesite ime i prezime (najmanje dve reči).' : '',
+)
+const phoneError = computed(() =>
+  submitted.value && (!form.phone.trim() || !phoneRegex.test(form.phone.trim())) ? 'Format: +381 6X XXX XXXX' : '',
+)
+const emailError = computed(() => {
+  if (!submitted.value) return ''
+  if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
+  return ''
+})
+const addressError = computed(() =>
+  submitted.value && !form.address.trim() ? 'Unesite adresu dostave.' : '',
+)
+const cityError = computed(() =>
+  submitted.value && !form.city.trim() ? 'Unesite grad.' : '',
+)
+const postalError = computed(() =>
+  submitted.value && (!form.postal.trim() || !postalRegex.test(form.postal.trim())) ? '6 cifara, ne može početi nulom.' : '',
+)
+const noteError = computed(() =>
+  submitted.value && form.note.trim() && form.note.trim().length < 10 ? 'Napomena mora imati najmanje 10 karaktera.' : '',
+)
+
+// Clear stale error state as soon as the user edits any field
+watch(form, () => {
+  if (submitted.value) submitted.value = false
+  clearStale()
+})
 
 async function handleSubmit() {
-  errorMessage.value = ''
+  reset()
+  submitted.value = true
 
-  if (!form.name.trim()) {
-    setError('Unesite ime i prezime.')
-    return
-  }
-  if (!form.phone.trim() || !phoneRegex.test(form.phone.trim())) {
-    setError('Unesite ispravan broj telefona.')
-    return
-  }
-  if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-    setError('Unesite ispravnu adresu e-pošte.')
-    return
-  }
-  if (!form.address.trim()) {
-    setError('Unesite adresu dostave.')
-    return
-  }
-  if (!form.city.trim()) {
-    setError('Unesite grad.')
-    return
-  }
-  if (!form.postal.trim()) {
-    setError('Unesite poštanski broj.')
+  if (nameError.value || phoneError.value || emailError.value || addressError.value || cityError.value || postalError.value || noteError.value) {
     return
   }
 
@@ -132,6 +145,7 @@ async function handleSubmit() {
                   autocomplete="name"
                   placeholder="Marko Marković"
                   :disabled="status === 'loading'"
+                  :error="nameError"
                 />
 
                 <!-- Phone + Email -->
@@ -145,6 +159,7 @@ async function handleSubmit() {
                     autocomplete="tel"
                     placeholder="+381 60 123 4567"
                     :disabled="status === 'loading'"
+                    :error="phoneError"
                   />
                   <AppInput
                     id="email"
@@ -155,6 +170,7 @@ async function handleSubmit() {
                     autocomplete="email"
                     placeholder="marko@primer.rs"
                     :disabled="status === 'loading'"
+                    :error="emailError"
                   />
                 </div>
 
@@ -167,6 +183,7 @@ async function handleSubmit() {
                   autocomplete="street-address"
                   placeholder="Bulevar oslobođenja 12"
                   :disabled="status === 'loading'"
+                  :error="addressError"
                 />
 
                 <!-- City + Postal -->
@@ -179,6 +196,7 @@ async function handleSubmit() {
                     autocomplete="address-level2"
                     placeholder="Novi Sad"
                     :disabled="status === 'loading'"
+                    :error="cityError"
                   />
                   <AppInput
                     id="postal"
@@ -187,7 +205,8 @@ async function handleSubmit() {
                     type="text"
                     inputmode="numeric"
                     autocomplete="address-level3"
-                    placeholder="21000"
+                    placeholder="210000"
+                    :error="postalError"
                   />
                 </div>
 
@@ -199,18 +218,26 @@ async function handleSubmit() {
                   :rows="3"
                   placeholder="Npr. pozvoni pre dostave, podatci o detetu..."
                   :disabled="status === 'loading'"
+                  :error="noteError"
                 />
 
-                <!-- Error -->
-                <p v-if="status === 'error'" class="text-sm text-coral" role="alert">
-                  {{ errorMessage }}
-                </p>
-
-                <AppSubmitButton
-                  :loading="status === 'loading'"
-                  label="Naruči"
-                  loading-label="Slanje porudžbine..."
-                />
+                <!-- Error + submit: error overlays the gap so no extra reserved block is needed -->
+                <div class="relative">
+                  <AppSubmitButton
+                    :loading="status === 'loading'"
+                    label="Naruči"
+                    loading-label="Slanje porudžbine..."
+                  />
+                  <!-- Inline error (absolute so it overlays without taking flow space → no layout shift, no extra padding) -->
+                  <p
+                    class="absolute left-0 top-full flex items-center justify-center gap-1 pt-1 text-sm text-coral transition-opacity duration-200"
+                    :class="status === 'error' ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+                    role="alert"
+                  >
+                    <Icon name="lucide:alert-circle" class="size-4 shrink-0" />
+                    <span>{{ errorMessage || '\u00A0' }}</span>
+                  </p>
+                </div>
 
                 <p class="text-center text-sm text-navy/50">
                   Plaćanje se vrši pouzećem (pouzeće) pri preuzimanju.

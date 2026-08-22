@@ -16,7 +16,7 @@ withDefaults(defineProps<{
 </script>
 
 <template>
-  <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
+  <section class="bg-gradient-to-b from-sky/30 to-cream pt-12 lg:pt-16 pb-4 lg:pb-6">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <AppBreadcrumb v-if="breadcrumbItems" :items="breadcrumbItems" nav-class="mb-4" />
       <div class="max-w-3xl">

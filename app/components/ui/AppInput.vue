@@ -2,15 +2,17 @@
 const props = withDefaults(defineProps<{
   id: string
   label: string
-  modelValue: string
   type?: string
   placeholder?: string
   autocomplete?: string
-  inputmode?: string
+  inputmode?: 'none' | 'text' | 'tel' | 'url' | 'email' | 'numeric' | 'decimal' | 'search'
   required?: boolean
   disabled?: boolean
   /** Show a password visibility toggle (only relevant when type="password"). */
   showPasswordToggle?: boolean
+  /** Inline validation error shown below the input (reserved height avoids layout shift).
+   *  Pass an empty string to reserve space without showing a message; omit entirely to render no slot. */
+  error?: string
 }>(), {
   type: 'text',
   required: false,
@@ -18,7 +20,7 @@ const props = withDefaults(defineProps<{
   showPasswordToggle: false,
 })
 
-const emit = defineEmits<{ 'update:modelValue': [string] }>()
+const model = defineModel<string>({ default: '' })
 const showPassword = ref(false)
 
 const actualType = computed(() => {
@@ -27,21 +29,17 @@ const actualType = computed(() => {
   }
   return props.type
 })
-
-function onInput(e: Event) {
-  emit('update:modelValue', (e.target as HTMLInputElement).value)
-}
 </script>
 
 <template>
-  <div>
+  <div class="relative">
     <label :for="id" class="mb-1.5 block text-sm font-semibold text-navy">
       {{ label }}
     </label>
     <div :class="showPasswordToggle ? 'relative' : ''">
       <input
         :id="id"
-        :value="modelValue"
+        v-model="model"
         :type="actualType"
         :placeholder="placeholder"
         :autocomplete="autocomplete"
@@ -49,10 +47,12 @@ function onInput(e: Event) {
         :required="required"
         :disabled="disabled"
         :class="[
-          'w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20',
+          'w-full rounded-xl border-2 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:outline-none focus:ring-2',
+          error
+            ? 'border-coral focus:border-coral focus:ring-coral/20'
+            : 'border-cloud/50 focus:border-blue focus:ring-blue/20',
           showPasswordToggle ? 'pr-12' : '',
         ]"
-        @input="onInput"
       >
       <button
         v-if="showPasswordToggle"
@@ -64,5 +64,15 @@ function onInput(e: Event) {
         <Icon :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'" class="size-5" />
       </button>
     </div>
+
+    <!-- Inline error (absolute so it overlays without taking flow space → no layout shift, no extra padding) -->
+    <p
+      v-if="error !== undefined"
+      class="absolute left-0 top-full flex items-center gap-1 pt-0.5 text-xs text-coral transition-opacity duration-200"
+      :class="error ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+    >
+      <Icon name="lucide:alert-circle" class="size-3 shrink-0" />
+      <span>{{ error || '\u00A0' }}</span>
+    </p>
   </div>
 </template>

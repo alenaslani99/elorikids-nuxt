@@ -24,6 +24,15 @@ export const accentClasses: Record<string, AccentStyle> = {
   blue: { bg: 'bg-blue', text: 'text-blue', soft: 'bg-blue/10', ring: 'ring-blue', badge: 'bg-blue/10 text-blue' },
 }
 
+/**
+ * Resolve an accent key to its style, falling back to `mint` when the key is
+ * missing or undefined (which also satisfies `noUncheckedIndexedAccess`).
+ */
+export function getAccent(key: string | undefined): AccentStyle {
+  const style = accentClasses[key ?? 'mint']
+  return style ?? accentClasses.mint!
+}
+
 export function useAccent() {
-  return { accentClasses }
+  return { accentClasses, getAccent }
 }

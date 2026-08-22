@@ -27,7 +27,7 @@ async function handleLogout() {
               <span class="hidden sm:inline">Zdravo, </span>{{ user?.name?.split(' ')[0] }}
             </NuxtLink>
             <span class="text-cloud/50">|</span>
-            <button type="button" class="font-medium transition-colors hover:text-sky" @click="handleLogout">
+            <button type="button" class="font-medium text-coral transition-colors hover:text-coral/80" @click="handleLogout">
               Odjava
             </button>
           </template>

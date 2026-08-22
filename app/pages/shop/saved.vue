@@ -80,9 +80,9 @@ const { items, remove, clear } = useSaved()
             <!-- Age badge -->
             <span
               class="mb-3 w-fit rounded-full px-3 py-1 text-sm font-semibold"
-              :class="accentClasses[item.accent]?.soft ?? accentClasses.mint.soft"
+              :class="getAccent(item.accent).soft"
             >
-              <span :class="accentClasses[item.accent]?.text ?? accentClasses.mint.text">{{ item.ageRange }}</span>
+              <span :class="getAccent(item.accent).text">{{ item.ageRange }}</span>
             </span>
 
             <!-- Title + price -->
