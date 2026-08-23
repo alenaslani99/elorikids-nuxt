@@ -40,6 +40,22 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'cloudflare-module',
   },
+  routeRules: {
+    // ── SSR pages (left on by default — SEO-critical, public content) ──
+    //   /, /about-us, /faq, /legal/**, /books/**
+    //   /auth/login, /auth/register (form renders immediately, no flash)
+    //
+    // ── SPA-only pages (ssr: false) ────────────────────────────────────
+    //   No SEO value / requires client session / post-action flows.
+    //   The client auth plugin resolves the session before render, so
+    //   gating on isReady gives a clean state with no hydration mismatch.
+    '/admin/**': { ssr: false },
+    '/shop/**': { ssr: false },
+    '/blog/**': { ssr: false },
+    '/auth/account': { ssr: false },
+    '/auth/forgot-password': { ssr: false },
+    '/pratite-porudzbinu': { ssr: false },
+  },
   icon: {
     clientBundle: {
       scan: true

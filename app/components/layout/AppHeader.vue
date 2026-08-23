@@ -2,7 +2,7 @@
 const search = ref('');
 const { count: cartCount } = useCart()
 const { count: savedCount } = useSaved()
-const { isLoggedIn, user, logout } = useAuth()
+const { isLoggedIn, isReady, user, logout } = useAuth()
 const router = useRouter()
 
 async function handleLogout() {
@@ -22,7 +22,10 @@ async function handleLogout() {
           <span class="sm:hidden">Besplatna dostava preko 5.000 RSD</span>
         </p>
         <nav class="flex items-center gap-4">
-          <template v-if="isLoggedIn">
+          <!-- Auth-aware UI: render a stable logged-out state during SSR and
+               until the client-only auth plugin confirms the session. This
+               avoids hydration mismatches (server=logged-out, client=logged-in). -->
+          <template v-if="isLoggedIn && isReady">
             <NuxtLink to="/auth/account" class="font-medium transition-colors hover:text-sky">
               <span class="hidden sm:inline">Zdravo, </span>{{ user?.name?.split(' ')[0] }}
             </NuxtLink>

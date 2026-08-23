@@ -47,6 +47,7 @@ export default defineEventHandler(async (event) => {
     user: {
       name: user.name,
       email: user.email,
+      isOwner: isOwnerEmail(event, user.email),
     },
   }
 })

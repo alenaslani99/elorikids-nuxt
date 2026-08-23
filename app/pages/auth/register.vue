@@ -63,7 +63,7 @@ async function handleSubmit() {
   status.value = 'loading'
 
   try {
-    const res = await $fetch<{ ok: boolean, user?: { name: string, email: string } }>('/api/register', {
+    const res = await $fetch<{ ok: boolean, user?: { name: string, email: string, isOwner?: boolean } }>('/api/register', {
       method: 'POST',
       body: {
         name: form.name,

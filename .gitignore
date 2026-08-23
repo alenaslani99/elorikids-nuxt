@@ -23,8 +23,10 @@ logs
 .env.*
 !.env.example
 
-# Cloudflare Wrangler local state
+# Cloudflare Wrangler local state + secrets
 .wrangler/
+.dev.vars
+.dev.vars.*
 
 # AGENT MD
 AGENT.MD

@@ -2,6 +2,7 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../utils/db'
 import { hashPassword } from '../utils/crypto'
 import { createSession } from '../utils/session'
+import { isOwnerEmail } from '../utils/admin'
 
 interface RegisterBody {
   name?: string
@@ -58,6 +59,7 @@ export default defineEventHandler(async (event) => {
     user: {
       name,
       email,
+      isOwner: isOwnerEmail(event, email),
     },
   }
 })

@@ -1,6 +1,7 @@
 export interface User {
   name: string
   email: string
+  isOwner?: boolean
 }
 
 interface AuthState {
@@ -14,10 +15,11 @@ export function useAuth() {
 
   const isLoggedIn = computed(() => !!auth.value.user)
   const isReady = computed(() => auth.value.initialized)
+  const isOwner = computed(() => !!auth.value.user?.isOwner)
 
   /**
    * Validate the existing session cookie against the server.
-   * Called once on app init (plugin). No localStorage — the
+   * Called once on app init (client-only plugin). No localStorage — the
    * httpOnly cookie is the single source of truth.
    */
   async function init() {
@@ -53,6 +55,7 @@ export function useAuth() {
     user: computed(() => auth.value.user),
     isLoggedIn,
     isReady,
+    isOwner,
     init,
     setUser,
     logout,

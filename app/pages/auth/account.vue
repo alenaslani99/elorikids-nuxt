@@ -56,6 +56,12 @@ interface OrderSummary {
 
 const orders = ref<OrderSummary[]>([])
 const ordersLoading = ref(true)
+const ordersTotal = ref(0)
+const ordersPage = ref(1)
+const ordersPageSize = 5
+const loadingMore = ref(false)
+
+const hasMore = computed(() => orders.value.length < ordersTotal.value)
 
 async function fetchOrders() {
   if (!isLoggedIn.value) {
@@ -63,13 +69,37 @@ async function fetchOrders() {
     return
   }
   try {
-    orders.value = await $fetch<OrderSummary[]>('/api/orders')
+    ordersPage.value = 1
+    const data = await $fetch<{ orders: OrderSummary[], total: number }>('/api/orders', {
+      params: { page: 1, limit: ordersPageSize },
+    })
+    orders.value = data.orders
+    ordersTotal.value = data.total
   }
   catch {
     orders.value = []
+    ordersTotal.value = 0
   }
   finally {
     ordersLoading.value = false
+  }
+}
+
+async function loadMoreOrders() {
+  if (loadingMore.value || !hasMore.value) return
+  loadingMore.value = true
+  try {
+    ordersPage.value += 1
+    const data = await $fetch<{ orders: OrderSummary[], total: number }>('/api/orders', {
+      params: { page: ordersPage.value, limit: ordersPageSize },
+    })
+    orders.value = [...orders.value, ...data.orders]
+  }
+  catch {
+    ordersPage.value -= 1
+  }
+  finally {
+    loadingMore.value = false
   }
 }
 
@@ -173,7 +203,7 @@ const quickLinks = computed(() => [
               <div v-else-if="orders.length === 0" class="rounded-2xl border border-dashed border-cloud/60 bg-cream p-8 text-center">
                 <Icon name="lucide:package-x" class="mx-auto mb-3 size-8 text-navy/30" />
                 <p class="text-navy/60">Nemate porudžbina još.</p>
-                <NuxtLink to="/knjige" class="mt-3 inline-block font-semibold text-blue hover:text-navy">
+                <NuxtLink to="/#categories" class="mt-3 inline-block font-semibold text-blue hover:text-navy">
                   Pogledajte knjige →
                 </NuxtLink>
               </div>
@@ -214,6 +244,20 @@ const quickLinks = computed(() => [
                     </span>
                   </div>
                 </NuxtLink>
+
+                <!-- Load more -->
+                <div v-if="hasMore" class="pt-2 text-center">
+                  <button
+                    type="button"
+                    :disabled="loadingMore"
+                    class="inline-flex items-center gap-2 rounded-full border-2 border-cloud px-6 py-2.5 text-sm font-semibold text-navy/70 transition-colors hover:border-blue hover:text-blue disabled:opacity-50"
+                    @click="loadMoreOrders"
+                  >
+                    <Icon v-if="loadingMore" name="lucide:loader-2" class="size-4 animate-spin" />
+                    <Icon v-else name="lucide:chevrons-down" class="size-4" />
+                    {{ loadingMore ? 'Učitavanje...' : 'Učitaj još' }}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
