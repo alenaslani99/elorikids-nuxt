@@ -58,7 +58,7 @@ const orders = ref<OrderSummary[]>([])
 const ordersLoading = ref(true)
 const ordersTotal = ref(0)
 const ordersPage = ref(1)
-const ordersPageSize = 5
+const ordersPageSize = 3
 const loadingMore = ref(false)
 
 const hasMore = computed(() => orders.value.length < ordersTotal.value)
@@ -136,20 +136,20 @@ const quickLinks = computed(() => [
           <!-- Main column (3 cols) -->
           <div class="space-y-8 lg:col-span-3">
             <!-- Profile card -->
-            <div class="flex flex-col gap-6 rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm sm:flex-row sm:items-center">
+            <div class="flex flex-col gap-6 rounded-3xl border-2 border-cloud/40 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:p-8">
               <!-- Avatar -->
-              <div class="flex size-20 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy to-navy-dark text-2xl font-extrabold text-white">
+              <div class="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-navy to-navy-dark text-xl font-extrabold text-white sm:size-20 sm:text-2xl">
                 {{ initials }}
               </div>
 
               <!-- Info -->
               <div class="min-w-0 flex-1">
-                <h2 class="font-unbounded text-2xl font-bold text-navy">
+                <h2 class="font-unbounded text-xl font-bold text-navy sm:text-2xl">
                   {{ displayUser?.name }}
                 </h2>
                 <p class="mt-1 flex items-center gap-2 text-navy/60">
                   <Icon name="lucide:mail" class="size-4 shrink-0" />
-                  {{ displayUser?.email }}
+                  <span class="break-all">{{ displayUser?.email }}</span>
                 </p>
                 <p class="mt-1 flex items-center gap-2 text-sm text-navy/50">
                   <Icon name="lucide:calendar" class="size-4 shrink-0" />
@@ -169,7 +169,7 @@ const quickLinks = computed(() => [
             </div>
 
             <!-- Order history -->
-            <div class="rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm">
+            <div class="rounded-3xl border-2 border-cloud/40 bg-white p-6 shadow-sm sm:p-8">
               <div class="mb-6 flex items-center gap-3">
                 <div class="flex size-10 items-center justify-center rounded-xl bg-blue/10">
                   <Icon name="lucide:package" class="size-5 text-blue" />
@@ -198,14 +198,14 @@ const quickLinks = computed(() => [
                   v-for="order in orders"
                   :key="order.id"
                   :to="`/track-order?id=${order.id}`"
-                  class="flex flex-col gap-3 rounded-2xl border border-cloud/40 bg-cream p-5 transition-colors hover:border-blue/40 sm:flex-row sm:items-center sm:justify-between"
+                  class="flex flex-col gap-3 rounded-2xl border border-cloud/40 bg-cream p-4 transition-colors hover:border-blue/40 sm:flex-row sm:items-center sm:justify-between sm:p-5"
                 >
                   <!-- Order info -->
-                  <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-3 sm:gap-4">
                     <div class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy/5">
                       <Icon name="lucide:book-open" class="size-5 text-navy/60" />
                     </div>
-                    <div>
+                    <div class="min-w-0">
                       <p class="font-semibold text-navy">
                         {{ order.id }}
                       </p>
@@ -216,7 +216,7 @@ const quickLinks = computed(() => [
                   </div>
 
                   <!-- Total + status -->
-                  <div class="flex flex-nowrap items-center gap-4">
+                  <div class="flex items-center justify-between gap-3 sm:justify-end sm:gap-4">
                     <p class="whitespace-nowrap font-bold tabular-nums text-navy">
                       {{ order.grandTotal.toLocaleString('sr-RS') }} RSD
                     </p>
@@ -250,7 +250,7 @@ const quickLinks = computed(() => [
           <!-- Sidebar (2 cols) -->
           <div class="space-y-6 lg:col-span-2">
             <!-- Quick actions -->
-            <div class="rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm">
+            <div class="rounded-3xl border-2 border-cloud/40 bg-white p-6 shadow-sm sm:p-8">
               <h2 class="font-unbounded mb-6 text-xl font-bold text-navy">
                 Brze akcije
               </h2>
@@ -259,7 +259,7 @@ const quickLinks = computed(() => [
                   v-for="link in quickLinks"
                   :key="link.label"
                   :to="link.to"
-                  class="flex items-center gap-4 rounded-2xl border border-cloud/40 bg-cream p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue/40 hover:shadow-md"
+                  class="flex items-center gap-3 rounded-2xl border border-cloud/40 bg-cream p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-blue/40 hover:shadow-md sm:gap-4"
                 >
                   <div
                     class="flex size-11 shrink-0 items-center justify-center rounded-xl"
@@ -286,7 +286,7 @@ const quickLinks = computed(() => [
                 <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-yellow/20">
                   <Icon name="lucide:headset" class="size-5 text-yellow" />
                 </div>
-                <div>
+                <div class="min-w-0">
                   <p class="font-semibold">
                     Potrebna pomoć?
                   </p>

@@ -15,11 +15,11 @@ async function handleLogout() {
   <header class="sticky top-0 z-50 bg-white shadow-sm">
     <!-- Layer 1: announcement + login/register -->
     <div class="bg-navy-dark text-white">
-      <div class="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-xs sm:px-6 lg:px-8">
+      <div class="mx-auto flex min-h-9 max-w-7xl items-center justify-between px-4 py-1.5 text-xs sm:h-9 sm:px-6 sm:py-0 lg:px-8">
         <p class="flex items-center gap-1.5 font-medium">
           <span>🚚</span>
           <span class="hidden sm:inline">Besplatna dostava za porudžbine preko 5.000 RSD</span>
-          <span class="sm:hidden">Besplatna dostava preko 5.000 RSD</span>
+          <span class="sm:hidden">Besplatna dostava preko<br>5.000 RSD</span>
         </p>
         <nav class="flex items-center gap-4">
           <!-- Auth-aware UI: render a stable logged-out state during SSR and
