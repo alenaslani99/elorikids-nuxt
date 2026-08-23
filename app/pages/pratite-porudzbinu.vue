@@ -8,11 +8,9 @@ useHead({
 })
 
 // --- Types matching the /api/order/[id] response ---
-interface OrderEvent {
+interface TimelineStep {
   status: string
-  label: string
-  description: string
-  createdAt: string
+  at: string
 }
 
 interface FoundOrder {
@@ -22,7 +20,7 @@ interface FoundOrder {
   customer: { name: string, city: string }
   totals: { subtotal: number, shipping: number, grandTotal: number }
   items: { slug: string, title: string, price: number, quantity: number }[]
-  events: OrderEvent[]
+  timeline: TimelineStep[]
 }
 
 // --- Form state ---
@@ -30,21 +28,58 @@ const orderId = ref('')
 const { status, errorMessage, setError } = useFormStatus()
 const foundOrder = ref<FoundOrder | null>(null)
 
-// A step is "done" if it has an event row; the last event is "current"
-function stepState(order: FoundOrder): ('done' | 'current' | 'pending')[] {
-  return order.events.map((_step, i) => {
-    if (i < order.events.length - 1) return 'done'
-    if (order.status === 'delivered') return 'done'
-    return 'current'
-  })
+// --- Status metadata (label + description live on frontend, not in DB) ---
+const STATUS_META: Record<string, { label: string, description: string }> = {
+  received:   { label: 'Porudžbina primljena', description: 'Vaša porudžbina je uspešno kreirana i čeka obradu.' },
+  preparing:  { label: 'U pripremi',          description: 'Naš tim priprema vaše knjige za slanje.' },
+  in_transit: { label: 'U transportu',         description: 'Vaša porudžbina je predata kuriru i kreće ka vama.' },
+  delivered:  { label: 'Isporučeno',           description: 'Vaša porudžbina je uspešno isporučena. Hvala na poverenju!' },
+  cancelled:  { label: 'Otkazano',             description: 'Ova porudžbina je otkazana.' },
 }
 
-// Map DB status to the Serbian label + badge class
+const LIFECYCLE_STEPS = ['received', 'preparing', 'in_transit', 'delivered'] as const
+
+interface DisplayStep {
+  status: string
+  label: string
+  description: string
+  at: string | null
+  state: 'done' | 'current' | 'pending'
+}
+
+// Map DB status to the Serbian badge label + class
 const statusConfig: Record<string, { label: string, class: string }> = {
-  processed: { label: 'U obradi', class: 'bg-yellow/20 text-navy' },
-  shipped: { label: 'U transportu', class: 'bg-blue/10 text-blue' },
-  delivered: { label: 'Isporučeno', class: 'bg-mint/20 text-navy' },
-  cancelled: { label: 'Otkazano', class: 'bg-coral/20 text-coral' },
+  received:    { label: 'U obradi',     class: 'bg-yellow/20 text-navy' },
+  preparing:   { label: 'U pripremi',   class: 'bg-yellow/20 text-navy' },
+  in_transit:  { label: 'U transportu', class: 'bg-blue/10 text-blue' },
+  delivered:   { label: 'Isporučeno',    class: 'bg-mint/20 text-navy' },
+  cancelled:   { label: 'Otkazano',      class: 'bg-coral/20 text-coral' },
+}
+
+// Build display steps: all lifecycle phases shown, with state + timestamp
+function buildSteps(order: FoundOrder): DisplayStep[] {
+  const timelineMap = new Map(order.timeline.map(t => [t.status, t.at]))
+
+  if (order.status === 'cancelled') {
+    const steps: DisplayStep[] = LIFECYCLE_STEPS
+      .filter(s => timelineMap.has(s))
+      .map(s => ({ status: s, ...STATUS_META[s], at: timelineMap.get(s) ?? null, state: 'done' as const }))
+    steps.push({ status: 'cancelled', ...STATUS_META.cancelled, at: timelineMap.get('cancelled') ?? null, state: 'done' as const })
+    return steps
+  }
+
+  const lastReached = order.timeline[order.timeline.length - 1]?.status
+
+  return LIFECYCLE_STEPS.map((s) => {
+    const at = timelineMap.get(s) ?? null
+    if (at) {
+      if (s === lastReached && order.status !== 'delivered') {
+        return { status: s, ...STATUS_META[s], at, state: 'current' as const }
+      }
+      return { status: s, ...STATUS_META[s], at, state: 'done' as const }
+    }
+    return { status: s, ...STATUS_META[s], at: null, state: 'pending' as const }
+  })
 }
 
 // Format ISO date → "15. avgust 2025."
@@ -205,8 +240,8 @@ onMounted(() => {
           <!-- Timeline -->
           <ol class="mt-8 space-y-6">
             <li
-              v-for="(step, i) in foundOrder.events"
-              :key="i"
+              v-for="(step, i) in buildSteps(foundOrder)"
+              :key="step.status"
               class="flex gap-4"
             >
               <!-- Step indicator -->
@@ -214,18 +249,18 @@ onMounted(() => {
                 <div
                   class="flex size-10 shrink-0 items-center justify-center rounded-full border-2 transition-colors"
                   :class="[
-                    stepState(foundOrder)[i] === 'done' ? 'border-mint bg-mint text-white' : '',
-                    stepState(foundOrder)[i] === 'current' ? 'border-blue bg-blue text-white' : '',
-                    stepState(foundOrder)[i] === 'pending' ? 'border-cloud bg-cloud/30 text-navy/40' : '',
+                    step.state === 'done' ? 'border-mint bg-mint text-white' : '',
+                    step.state === 'current' ? 'border-blue bg-blue text-white' : '',
+                    step.state === 'pending' ? 'border-cloud bg-cloud/30 text-navy/40' : '',
                   ]"
                 >
                   <Icon
-                    v-if="stepState(foundOrder)[i] === 'done'"
+                    v-if="step.state === 'done'"
                     name="lucide:check"
                     class="size-5"
                   />
                   <Icon
-                    v-else-if="stepState(foundOrder)[i] === 'current'"
+                    v-else-if="step.state === 'current'"
                     name="lucide:loader-2"
                     class="size-5 animate-spin"
                   />
@@ -233,9 +268,9 @@ onMounted(() => {
                 </div>
                 <!-- Connector line -->
                 <div
-                  v-if="i < foundOrder.events.length - 1"
+                  v-if="i < buildSteps(foundOrder).length - 1"
                   class="mt-1 w-0.5 flex-1"
-                  :class="stepState(foundOrder)[i] === 'done' ? 'bg-mint' : 'bg-cloud/40'"
+                  :class="step.state === 'done' ? 'bg-mint' : 'bg-cloud/40'"
                 />
               </div>
 
@@ -244,14 +279,14 @@ onMounted(() => {
                 <div class="flex flex-wrap items-center gap-2">
                   <h3 class="font-semibold text-navy">{{ step.label }}</h3>
                   <span
-                    v-if="stepState(foundOrder)[i] === 'current'"
+                    v-if="step.state === 'current'"
                     class="rounded-full bg-blue/10 px-2 py-0.5 text-xs font-semibold text-blue"
                   >
                     U toku
                   </span>
                 </div>
                 <p class="mt-1 text-sm text-navy/60">{{ step.description }}</p>
-                <p v-if="step.createdAt" class="mt-1 text-xs text-navy/40">{{ formatDate(step.createdAt) }}</p>
+                <p v-if="step.at" class="mt-1 text-xs text-navy/40">{{ formatDate(step.at) }}</p>
               </div>
             </li>
           </ol>

@@ -20,11 +20,9 @@ export interface OrderTrackingResponse {
     price: number
     quantity: number
   }[]
-  events: {
+  timeline: {
     status: string
-    label: string
-    description: string
-    createdAt: string
+    at: string
   }[]
 }
 
@@ -38,7 +36,8 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
 
   const order = await db
     .prepare(
-      `SELECT id, status, customer_name, city, subtotal, shipping, grand_total, created_at
+      `SELECT id, status, customer_name, city, subtotal, shipping, grand_total, created_at,
+              received_at, preparing_at, in_transit_at, delivered_at, cancelled_at
        FROM orders WHERE id = ?`,
     )
     .bind(orderId)
@@ -51,25 +50,33 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
       shipping: number
       grand_total: number
       created_at: string
+      received_at: string | null
+      preparing_at: string | null
+      in_transit_at: string | null
+      delivered_at: string | null
+      cancelled_at: string | null
     }>()
 
   if (!order) {
     throw createError({ statusCode: 404, statusMessage: 'Porudžbina nije pronađena. Proverite broj i pokušajte ponovo.' })
   }
 
-  const [itemsResult, eventsResult] = await Promise.all([
-    db
-      .prepare('SELECT slug, title, price, quantity FROM order_items WHERE order_id = ?')
-      .bind(orderId)
-      .all<{ slug: string, title: string, price: number, quantity: number }>(),
-    db
-      .prepare(
-        `SELECT status, label, description, created_at
-         FROM order_events WHERE order_id = ? ORDER BY id ASC`,
-      )
-      .bind(orderId)
-      .all<{ status: string, label: string, description: string, created_at: string }>(),
-  ])
+  const itemsResult = await db
+    .prepare('SELECT slug, title, price, quantity FROM order_items WHERE order_id = ?')
+    .bind(orderId)
+    .all<{ slug: string, title: string, price: number, quantity: number }>()
+
+  // Build timeline from timestamp columns (only non-null phases, in lifecycle order)
+  const phases: Array<[string, string | null]> = [
+    ['received', order.received_at],
+    ['preparing', order.preparing_at],
+    ['in_transit', order.in_transit_at],
+    ['delivered', order.delivered_at],
+    ['cancelled', order.cancelled_at],
+  ]
+  const timeline = phases
+    .filter(([, at]) => !!at)
+    .map(([status, at]) => ({ status, at: at as string }))
 
   return {
     id: order.id,
@@ -85,11 +92,6 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
       grandTotal: order.grand_total,
     },
     items: itemsResult.results ?? [],
-    events: (eventsResult.results ?? []).map(e => ({
-      status: e.status,
-      label: e.label,
-      description: e.description,
-      createdAt: e.created_at,
-    })),
+    timeline,
   }
 })

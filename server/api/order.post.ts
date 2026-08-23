@@ -91,12 +91,12 @@ export default defineEventHandler(async (event) => {
   const year = new Date().getFullYear()
   const orderId = await generateOrderId(db, year)
 
-  // --- Persist order + items + initial event (single transaction) ---
+  // --- Persist order + items (single transaction) ---
   const stmts = [
     db
       .prepare(
-        `INSERT INTO orders (id, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'processed')`,
+        `INSERT INTO orders (id, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status, received_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'received', datetime('now'))`,
       )
       .bind(
         orderId, userId, name, phone, email, address, city, postal, note,
@@ -108,16 +108,6 @@ export default defineEventHandler(async (event) => {
         .prepare('INSERT INTO order_items (order_id, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?)')
         .bind(orderId, item.slug, item.title, item.price, item.quantity),
     ),
-    // Initial tracking event
-    db
-      .prepare(
-        `INSERT INTO order_events (order_id, status, label, description) VALUES (?, 'received', ?, ?)`,
-      )
-      .bind(
-        orderId,
-        'Porudžbina primljena',
-        'Vaša porudžbina je uspešno kreirana i čeka obradu.',
-      ),
   ]
 
   await db.batch(stmts)

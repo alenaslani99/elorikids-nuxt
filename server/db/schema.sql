@@ -38,7 +38,12 @@ CREATE TABLE IF NOT EXISTS orders (
   subtotal      INTEGER NOT NULL,        -- RSD, integer
   shipping      INTEGER NOT NULL,
   grand_total   INTEGER NOT NULL,
-  status        TEXT NOT NULL DEFAULT 'processed',  -- processed|shipped|delivered|cancelled
+  status        TEXT NOT NULL DEFAULT 'received',  -- received|preparing|in_transit|delivered|cancelled
+  received_at    TEXT,              -- set when order is placed
+  preparing_at   TEXT,              -- set when being packed
+  in_transit_at  TEXT,              -- set when handed to courier
+  delivered_at   TEXT,              -- set when delivered
+  cancelled_at   TEXT,              -- set if cancelled
   created_at    TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -57,18 +62,6 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
-
--- ─── Order events (tracking timeline) ─────────────────────────
-CREATE TABLE IF NOT EXISTS order_events (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  order_id    TEXT NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-  status      TEXT NOT NULL,              -- received|preparing|in_transit|delivered
-  label       TEXT NOT NULL,
-  description TEXT,
-  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_order_events_order ON order_events(order_id);
 
 -- ─── Newsletter subscribers ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (

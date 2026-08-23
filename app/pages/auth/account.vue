@@ -75,10 +75,11 @@ async function fetchOrders() {
 
 // Map DB status to Serbian label + styling
 const statusStyles: Record<string, { label: string, bg: string, text: string, icon: string }> = {
-  processed: { label: 'U obradi', bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
-  shipped: { label: 'U transportu', bg: 'bg-blue/15', text: 'text-blue', icon: 'lucide:truck' },
-  delivered: { label: 'Isporučeno', bg: 'bg-mint/15', text: 'text-mint', icon: 'lucide:check-circle' },
-  cancelled: { label: 'Otkazano', bg: 'bg-coral/15', text: 'text-coral', icon: 'lucide:x-circle' },
+  received:    { label: 'U obradi',      bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
+  preparing:   { label: 'U pripremi',    bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
+  in_transit:  { label: 'U transportu',  bg: 'bg-blue/15',   text: 'text-blue',  icon: 'lucide:truck' },
+  delivered:   { label: 'Isporučeno',    bg: 'bg-mint/15',   text: 'text-mint',  icon: 'lucide:check-circle' },
+  cancelled:   { label: 'Otkazano',      bg: 'bg-coral/15',  text: 'text-coral', icon: 'lucide:x-circle' },
 }
 
 const months = [
