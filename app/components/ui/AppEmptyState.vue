@@ -7,7 +7,7 @@ withDefaults(defineProps<{
   ctaTo?: string
 }>(), {
   ctaLabel: 'Pogledaj knjige',
-  ctaTo: '/#categories',
+  ctaTo: '/books',
 })
 </script>
 

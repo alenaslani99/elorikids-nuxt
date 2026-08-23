@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { books } from '~/composables/useBooks'
+
 const search = ref('');
+const isSearchOpen = ref(false)
 const { count: cartCount } = useCart()
 const { count: savedCount } = useSaved()
 const { isLoggedIn, isReady, user, logout } = useAuth()
@@ -9,6 +12,39 @@ async function handleLogout() {
   await logout()
   router.push('/')
 }
+
+const searchResults = computed(() => {
+  const q = search.value.trim().toLowerCase()
+  if (!q) return []
+  return books.filter(b =>
+    b.title.toLowerCase().includes(q) ||
+    b.subtitle.toLowerCase().includes(q) ||
+    b.category.toLowerCase().includes(q),
+  ).slice(0, 5)
+})
+
+function goToBook(slug: string) {
+  search.value = ''
+  isSearchOpen.value = false
+  router.push(`/books/${slug}`)
+}
+
+function onSearchSubmit() {
+  const first = searchResults.value[0]
+  if (first) {
+    goToBook(first.slug)
+  }
+}
+
+// Close dropdown when clicking outside
+const searchContainer = ref<HTMLElement | null>(null)
+function onClickOutside(e: MouseEvent) {
+  if (searchContainer.value && !searchContainer.value.contains(e.target as Node)) {
+    isSearchOpen.value = false
+  }
+}
+onMounted(() => document.addEventListener('click', onClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
 </script>
 
 <template>
@@ -53,16 +89,52 @@ async function handleLogout() {
         </NuxtLink>
 
         <!-- Search -->
-        <div class="relative hidden flex-1 md:block">
+        <div ref="searchContainer" class="relative hidden flex-1 md:block">
           <input
+            id="header-search"
+            name="header-search"
             v-model="search"
             type="search"
             placeholder="Pretražite knjige i školski pribor..."
+            autocomplete="off"
             class="w-full rounded-full border border-white/10 bg-white/10 py-2.5 pl-12 pr-4 text-sm text-white placeholder:text-cloud/70 transition-colors focus:border-sky focus:bg-white/15 focus:outline-none focus:ring-2 focus:ring-sky/30"
+            @focus="isSearchOpen = true"
+            @keydown.enter.prevent="onSearchSubmit"
           >
           <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-cloud">
             <Icon name="lucide:search" class="size-5" />
           </span>
+
+          <!-- Dropdown results -->
+          <div
+            v-if="isSearchOpen && search.trim()"
+            class="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-cloud/30 bg-white shadow-xl"
+          >
+            <div v-if="searchResults.length === 0" class="px-4 py-6 text-center text-sm text-navy/50">
+              Nema rezultata za „{{ search }}“
+            </div>
+            <ul v-else class="divide-y divide-cloud/20">
+              <li v-for="book in searchResults" :key="book.slug">
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-cream"
+                  @click="goToBook(book.slug)"
+                >
+                  <NuxtImg
+                    :src="`/${book.img}`"
+                    :alt="book.title"
+                    width="40"
+                    height="56"
+                    class="size-10 shrink-0 rounded-lg object-cover"
+                  />
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-semibold text-navy">{{ book.title }}</p>
+                    <p class="truncate text-xs text-navy/50">{{ book.category }} · {{ book.price.toLocaleString('sr-RS') }} RSD</p>
+                  </div>
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
 
         <!-- Icons right -->
@@ -87,7 +159,7 @@ async function handleLogout() {
       <div class="mx-auto flex h-12 max-w-7xl items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
         <NuxtLink to="/" exact-active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40  hover:text-navy">Početna</NuxtLink>
         <NuxtLink to="/legal/contact" active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40 hover:text-navy">Kontakt</NuxtLink>
-        <NuxtLink to="/#categories" class="ml-auto flex items-center gap-1 whitespace-nowrap rounded-lg bg-coral px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral/90">
+        <NuxtLink to="/books" class="ml-auto flex items-center gap-1 whitespace-nowrap rounded-lg bg-coral px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral/90">
           Interaktivne knjige
         </NuxtLink>
       </div>

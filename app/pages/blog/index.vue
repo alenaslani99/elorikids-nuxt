@@ -3,9 +3,13 @@ useHead({
   title: 'Blog - elorikids',
   meta: [
     { name: 'description', content: 'Saveti, priče i uvidi o učenju kroz igru, razvoju deteta i piši-briši knjigama elorikids.' },
-    { name: 'og:title', content: 'Blog | elorikids' },
-    { name: 'og:description', content: 'Saveti i priče o učenju kroz igru i razvoju deteta.' },
-    { name: 'og:type', content: 'website' },
+    { property: 'og:title', content: 'Blog | elorikids' },
+    { property: 'og:description', content: 'Saveti i priče o učenju kroz igru i razvoju deteta.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://elorikids.rs/blog' },
+    { property: 'og:image', content: 'https://elorikids.rs/elorikids-1.jpg' },
+    { name: 'twitter:title', content: 'Blog | elorikids' },
+    { name: 'twitter:description', content: 'Saveti i priče o učenju kroz igru i razvoju deteta.' },
   ],
   link: [
     { rel: 'canonical', href: 'https://elorikids.rs/blog' },

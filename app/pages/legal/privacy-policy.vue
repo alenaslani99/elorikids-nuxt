@@ -3,6 +3,13 @@ useHead({
   title: 'Politika privatnosti - elorikids',
   meta: [
     { name: 'description', content: 'Politika privatnosti elorikids - kako prikupljamo, koristimo i štitimo vaše lične podatke.' },
+    { property: 'og:title', content: 'Politika privatnosti | elorikids' },
+    { property: 'og:description', content: 'Kako prikupljamo, koristimo i štitimo vaše lične podatke.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://elorikids.rs/legal/privacy-policy' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://elorikids.rs/legal/privacy-policy' },
   ],
 })
 

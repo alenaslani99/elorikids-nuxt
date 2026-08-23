@@ -67,6 +67,8 @@ watch(email, () => {
         @submit.prevent="handleSubmit"
       >
         <input
+          id="newsletter-email"
+          name="newsletter-email"
           v-model="email"
           type="email"
           inputmode="email"

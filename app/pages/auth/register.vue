@@ -205,6 +205,8 @@ const passwordStrength = computed(() => {
             <!-- Terms -->
             <label class="flex items-start gap-3 text-sm text-navy/70">
               <input
+                id="agree-terms"
+                name="agree-terms"
                 v-model="agree"
                 type="checkbox"
                 class="mt-0.5 size-4 rounded border-cloud text-blue focus:ring-blue/20"

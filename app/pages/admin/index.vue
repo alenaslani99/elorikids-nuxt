@@ -244,6 +244,8 @@ const filterTabs = computed(() => [
           <div class="relative flex-1">
             <Icon name="lucide:search" class="absolute left-3 top-1/2 size-5 -translate-y-1/2 text-navy/40" />
             <input
+              id="admin-search"
+              name="admin-search"
               v-model="searchInput"
               type="text"
               placeholder="Pretraga po broju, imenu, emailu, telefonu, gradu..."

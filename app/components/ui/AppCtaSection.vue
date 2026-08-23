@@ -10,7 +10,7 @@ withDefaults(defineProps<{
   sectionClass?: string
 }>(), {
   primaryLabel: 'Pogledaj knjige',
-  primaryTo: '/#categories',
+  primaryTo: '/books',
   secondaryLabel: 'Kontaktirajte nas',
   secondaryTo: '/legal/contact',
   sectionClass: 'bg-cream py-16 lg:py-24',

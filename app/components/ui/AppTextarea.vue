@@ -33,6 +33,7 @@ const wordCount = computed(() => {
     </label>
     <textarea
       :id="id"
+      :name="id"
       v-model="model"
       :rows="rows"
       :placeholder="placeholder"

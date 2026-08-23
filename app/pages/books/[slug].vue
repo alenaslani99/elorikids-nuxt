@@ -44,9 +44,15 @@ useHead({
   title: `${book.value!.title} - ${book.value!.ageRange} | elorikids`,
   meta: [
     { name: 'description', content: book.value!.description },
-    { name: 'og:title', content: `${book.value!.title} | elorikids` },
-    { name: 'og:description', content: book.value!.description },
-    { name: 'og:type', content: 'product' },
+    { property: 'og:title', content: `${book.value!.title} | elorikids` },
+    { property: 'og:description', content: book.value!.description },
+    { property: 'og:type', content: 'product' },
+    { property: 'og:url', content: `https://elorikids.rs/books/${book.value!.slug}` },
+    { property: 'og:image', content: `https://elorikids.rs/${book.value!.img}` },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:title', content: `${book.value!.title} | elorikids` },
+    { name: 'twitter:description', content: book.value!.description },
+    { name: 'twitter:image', content: `https://elorikids.rs/${book.value!.img}` },
   ],
   link: [
     { rel: 'canonical', href: `https://elorikids.rs/books/${book.value!.slug}` },
@@ -59,6 +65,7 @@ useHead({
         '@type': 'Product',
         name: book.value!.title,
         description: book.value!.description,
+        image: `https://elorikids.rs/${book.value!.img}`,
         brand: { '@type': 'Brand', name: 'elorikids' },
         category: 'Children\'s activity book',
         offers: {
@@ -90,7 +97,7 @@ useHead({
   <div v-if="book" class="bg-cream">
     <!-- Breadcrumbs -->
     <AppBreadcrumb
-      :items="[{ label: 'Početna', to: '/' }, { label: 'Knjige', to: '/#categories' }, { label: book.title }]"
+      :items="[{ label: 'Početna', to: '/' }, { label: 'Knjige', to: '/books' }, { label: book.title }]"
       nav-class="mx-auto max-w-7xl px-4 pt-6 sm:px-6 lg:px-8"
     />
 

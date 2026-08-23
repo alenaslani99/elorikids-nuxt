@@ -41,14 +41,11 @@ const columns = [
             čine učenje zabavnim.
           </p>
           <div class="mt-6 flex gap-3">
-            <a href="#" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
-              <Icon name="lucide:facebook" class="size-4" />
-            </a>
-            <a href="#" aria-label="Instagram" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
+            <a href="https://instagram.com/elorikids" target="_blank" rel="noopener" aria-label="Instagram" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
               <Icon name="lucide:instagram" class="size-4" />
             </a>
-            <a href="#" aria-label="Twitter" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
-              <Icon name="lucide:twitter" class="size-4" />
+            <a href="https://facebook.com/elorikids" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
+              <Icon name="lucide:facebook" class="size-4" />
             </a>
           </div>
         </div>

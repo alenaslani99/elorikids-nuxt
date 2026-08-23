@@ -43,7 +43,7 @@ const orderId = computed(() => (route.query.id as string) || '')
           Vrati se na početnu
         </NuxtLink>
         <NuxtLink
-          to="/#categories"
+          to="/books"
           class="inline-flex items-center justify-center gap-2 rounded-full border-2 border-cloud bg-white px-8 py-3.5 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
         >
           Pogledaj ostale knjige

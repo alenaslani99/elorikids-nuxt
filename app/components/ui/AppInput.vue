@@ -39,6 +39,7 @@ const actualType = computed(() => {
     <div :class="showPasswordToggle ? 'relative' : ''">
       <input
         :id="id"
+        :name="id"
         v-model="model"
         :type="actualType"
         :placeholder="placeholder"

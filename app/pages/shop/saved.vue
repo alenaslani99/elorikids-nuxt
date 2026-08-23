@@ -3,6 +3,7 @@ useHead({
   title: 'Sačuvano - elorikids',
   meta: [
     { name: 'description', content: 'Vaše sačuvane knjige - interaktivne piši-briši knjige koje ste označili za kasnije.' },
+    { name: 'robots', content: 'noindex, nofollow' },
   ],
 })
 

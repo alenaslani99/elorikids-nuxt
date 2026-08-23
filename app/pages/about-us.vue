@@ -3,6 +3,16 @@ useHead({
   title: 'O nama - elorikids',
   meta: [
     { name: 'description', content: 'elorikids je brend interaktivnih piši-briši knjiga za decu uzrasta 2 do 6 godina. Laminirane, vodootporne stranice sa originalnim ručno ilustrovanim sadržajem. Učenje kroz igru, iznova i iznova.' },
+    { property: 'og:title', content: 'O nama | elorikids' },
+    { property: 'og:description', content: 'elorikids je brend interaktivnih piši-briši knjiga za decu uzrasta 2 do 6 godina. Originalni, ručno ilustrovan sadržaj. Učenje kroz igru, iznova i iznova.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://elorikids.rs/about-us' },
+    { property: 'og:image', content: 'https://elorikids.rs/elorikids-1.jpg' },
+    { name: 'twitter:title', content: 'O nama | elorikids' },
+    { name: 'twitter:description', content: 'elorikids je brend interaktivnih piši-briši knjiga za decu uzrasta 2 do 6 godina.' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://elorikids.rs/about-us' },
   ],
 })
 

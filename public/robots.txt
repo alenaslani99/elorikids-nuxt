@@ -1,2 +1,16 @@
+# elorikids.rs — robots.txt
+# All SEO-critical pages (/, /about-us, /faq, /legal/**, /books/**, /blog/**)
+# are SSR and fully crawlable.
+
 User-Agent: *
-Disallow:
+# Block SPA-only routes that return empty client-rendered shells.
+Disallow: /admin
+Disallow: /shop/cart
+Disallow: /shop/checkout
+Disallow: /shop/saved
+Disallow: /auth/account
+Disallow: /auth/forgot-password
+Disallow: /track-order
+
+# XML sitemap
+Sitemap: https://elorikids.rs/sitemap.xml

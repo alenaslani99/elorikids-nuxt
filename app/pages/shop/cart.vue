@@ -3,6 +3,7 @@ useHead({
   title: 'Korpa - elorikids',
   meta: [
     { name: 'description', content: 'Pregled vaše korpe - interaktivne piši-briši knjige za decu. Besplatna dostava za porudžbine preko 5.000 RSD.' },
+    { name: 'robots', content: 'noindex, nofollow' },
   ],
 })
 
@@ -134,7 +135,7 @@ const shippingProgress = computed(() => Math.min(100, (total.value / FREE_SHIPPI
 
             <!-- Continue shopping -->
             <NuxtLink
-              to="/#categories"
+              to="/books"
               class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-blue transition-colors hover:text-navy"
             >
               <Icon name="lucide:arrow-left" class="size-4" />

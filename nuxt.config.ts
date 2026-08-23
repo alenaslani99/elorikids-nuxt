@@ -22,6 +22,15 @@ export default defineNuxtConfig({
         { name: 'description', content: 'Interaktivne piši-briši knjige za decu uzrasta 2-6 godina. Laminirane, vodootporne stranice, originalni ručno ilustrovani sadržaj. Učenje kroz igru.' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'theme-color', content: '#123F73' },
+        // ── Global Open Graph / Twitter defaults ──
+        // Per-page OG tags override these. og:image uses an absolute URL
+        // because social crawlers don't resolve relative paths.
+        { property: 'og:site_name', content: 'elorikids' },
+        { property: 'og:locale', content: 'sr_RS' },
+        { property: 'og:image', content: 'https://elorikids.rs/elorikids-1.jpg' },
+        { property: 'og:image:width', content: '1280' },
+        { property: 'og:image:height', content: '1920' },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon_io/favicon.ico' },
@@ -43,6 +52,7 @@ export default defineNuxtConfig({
   routeRules: {
     // ── SSR pages (left on by default — SEO-critical, public content) ──
     //   /, /about-us, /faq, /legal/**, /books/**
+    //   /blog/** (SEO-critical — blog index and posts must render server-side)
     //   /auth/login, /auth/register (form renders immediately, no flash)
     //
     // ── SPA-only pages (ssr: false) ────────────────────────────────────
@@ -51,7 +61,6 @@ export default defineNuxtConfig({
     //   gating on isReady gives a clean state with no hydration mismatch.
     '/admin/**': { ssr: false },
     '/shop/**': { ssr: false },
-    '/blog/**': { ssr: false },
     '/auth/account': { ssr: false },
     '/auth/forgot-password': { ssr: false },
     '/track-order': { ssr: false },

@@ -3,6 +3,13 @@ useHead({
   title: 'Uslovi korišćenja - elorikids',
   meta: [
     { name: 'description', content: 'Uslovi korišćenja elorikids sajta i usluga - pravila kupovine, poručivanja, dostave i povraćaja.' },
+    { property: 'og:title', content: 'Uslovi korišćenja | elorikids' },
+    { property: 'og:description', content: 'Pravila kupovine, poručivanja, dostave i povraćaja na elorikids sajtu.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://elorikids.rs/legal/terms' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://elorikids.rs/legal/terms' },
   ],
 })
 

@@ -3,6 +3,16 @@ useHead({
   title: 'Kontakt - elorikids',
   meta: [
     { name: 'description', content: 'Stupite u kontakt sa elorikids timom. Pitanja o knjigama, porudžbinama ili dostavi? Pišite nam - odgovaramo u roku od 24h.' },
+    { property: 'og:title', content: 'Kontakt | elorikids' },
+    { property: 'og:description', content: 'Pitanja o knjigama, porudžbinama ili dostavi? Pišite nam - odgovaramo u roku od 24h.' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:url', content: 'https://elorikids.rs/legal/contact' },
+    { property: 'og:image', content: 'https://elorikids.rs/elorikids-1.jpg' },
+    { name: 'twitter:title', content: 'Kontakt | elorikids' },
+    { name: 'twitter:description', content: 'Pitanja o knjigama, porudžbinama ili dostavi? Odgovaramo u roku od 24h.' },
+  ],
+  link: [
+    { rel: 'canonical', href: 'https://elorikids.rs/legal/contact' },
   ],
 })
 

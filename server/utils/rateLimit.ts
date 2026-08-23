@@ -91,10 +91,10 @@ export async function checkRateLimit(
  *
  * On Cloudflare, the connecting IP is in `CF-Connecting-IP`.
  */
-export function getClientIp(headers: Headers): string {
+export function getClientIp(headers: Partial<Record<string, string | undefined>>): string {
   return (
-    headers.get('cf-connecting-ip')
-    || headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    headers['cf-connecting-ip']
+    || headers['x-forwarded-for']?.split(',')[0]?.trim()
     || 'unknown'
   )
 }

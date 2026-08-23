@@ -188,7 +188,7 @@ const quickLinks = computed(() => [
               <div v-else-if="orders.length === 0" class="rounded-2xl border border-dashed border-cloud/60 bg-cream p-8 text-center">
                 <Icon name="lucide:package-x" class="mx-auto mb-3 size-8 text-navy/30" />
                 <p class="text-navy/60">Nemate porudžbina još.</p>
-                <NuxtLink to="/#categories" class="mt-3 inline-block font-semibold text-blue hover:text-navy">
+                <NuxtLink to="/books" class="mt-3 inline-block font-semibold text-blue hover:text-navy">
                   Pogledajte knjige →
                 </NuxtLink>
               </div>
