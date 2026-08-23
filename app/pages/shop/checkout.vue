@@ -61,7 +61,7 @@ const cityError = computed(() =>
   submitted.value && !form.city.trim() ? 'Unesite grad.' : '',
 )
 const postalError = computed(() =>
-  submitted.value && (!form.postal.trim() || !postalRegex.test(form.postal.trim())) ? '6 cifara, ne može početi nulom.' : '',
+  submitted.value && (!form.postal.trim() || !postalRegex.test(form.postal.trim())) ? '5 cifara, ne može početi nulom.' : '',
 )
 const noteError = computed(() => {
   const trimmed = form.note.trim()
@@ -155,6 +155,7 @@ async function handleSubmit() {
                   placeholder="Marko Marković"
                   :disabled="status === 'loading'"
                   :error="nameError"
+                  capitalize
                 />
 
                 <!-- Phone + Email -->
@@ -193,6 +194,7 @@ async function handleSubmit() {
                   placeholder="Bulevar oslobođenja 12"
                   :disabled="status === 'loading'"
                   :error="addressError"
+                  capitalize
                 />
 
                 <!-- City + Postal -->
@@ -206,6 +208,7 @@ async function handleSubmit() {
                     placeholder="Novi Sad"
                     :disabled="status === 'loading'"
                     :error="cityError"
+                    capitalize
                   />
                   <AppInput
                     id="postal"

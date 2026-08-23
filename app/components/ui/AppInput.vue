@@ -13,11 +13,14 @@ const props = withDefaults(defineProps<{
   /** Inline validation error shown below the input (reserved height avoids layout shift).
    *  Pass an empty string to reserve space without showing a message; omit entirely to render no slot. */
   error?: string
+  /** Capitalize the first letter of each word as the user types (names, addresses, cities). */
+  capitalize?: boolean
 }>(), {
   type: 'text',
   required: false,
   disabled: false,
   showPasswordToggle: false,
+  capitalize: false,
 })
 
 const model = defineModel<string>({ default: '' })
@@ -29,6 +32,22 @@ const actualType = computed(() => {
   }
   return props.type
 })
+
+// Capitalize the first letter of every word. Preserves cursor position so
+// typing in the middle of a word doesn't jump the caret to the end.
+function onInput(e: Event) {
+  const el = e.target as HTMLInputElement
+  const { selectionStart, selectionEnd } = el
+  model.value = el.value
+    .toLowerCase()
+    .replace(/(^|\s)([a-zšđčćž])/g, (_, space, ch) => space + ch.toUpperCase())
+  // Restore selection on the next tick (after v-model writes the value)
+  nextTick(() => {
+    if (selectionStart !== null && selectionEnd !== null) {
+      el.setSelectionRange(selectionStart, selectionEnd)
+    }
+  })
+}
 </script>
 
 <template>
@@ -47,6 +66,8 @@ const actualType = computed(() => {
         :inputmode="inputmode"
         :required="required"
         :disabled="disabled"
+        :autocapitalize="capitalize ? 'words' : undefined"
+        @input="capitalize ? onInput($event) : undefined"
         :class="[
           'w-full rounded-xl border-2 bg-cream px-4 py-3 text-navy placeholder:text-navy/40 focus:outline-none focus:ring-2',
           error

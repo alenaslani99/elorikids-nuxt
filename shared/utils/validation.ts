@@ -15,8 +15,7 @@ export const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
 export const serbianPhoneRegex = /^\+381\s?6[1-9](\s?\d){6,7}$/
 
 /** Serbian postal code: 6 digits, cannot start with zero. */
-export const postalRegex = /^[1-9]\d{5}$/
+export const postalRegex = /^[1-9]\d{4}$/
 
 /** Full name: at least two words of Serbian/Latin letters. */
 export const nameRegex = /^[a-zA-ZšđčćžŠĐČĆŽ]+(?:\s+[a-zA-ZšđčćžŠĐČĆŽ]+)+$/
-

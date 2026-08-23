@@ -125,8 +125,8 @@ export default defineEventHandler(async (event) => {
 
   const insertResult = await db
     .prepare(
-      `INSERT INTO orders (track_number, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status, received_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'received', datetime('now'))`,
+      `INSERT INTO orders (track_number, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, received_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
     )
     .bind(
       trackNumber, userId, name, phone, email, address, city, postal, note,
