@@ -2,6 +2,9 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../utils/db'
 import { requireOwner, setElevated } from '../../utils/admin'
 import { verifyPassword } from '../../utils/crypto'
+import { getSessionToken } from '../../utils/session'
+import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
+import { checkRateLimit, maybeCleanupRateLimits } from '../../utils/rateLimit'
 
 interface ElevateBody {
   answer?: string
@@ -14,10 +17,21 @@ export default defineEventHandler(async (event) => {
   const db = useDb(event)
   const user = await requireOwner(event, db)
 
+  // ── Rate limiting (per session token) ────────────────────────
+  const token = getSessionToken(event)
+  const rl = await checkRateLimit(db, `elevate:${token}`, 'elevate', RATE_LIMITS.elevate.maxAttempts, RATE_LIMITS.elevate.windowMs)
+  if (rl.limited) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: `Preveliki broj pokušaja. Pokušajte ponovo za ${Math.ceil(rl.retryAfterSec / 60)} minuta.`,
+    })
+  }
+  await maybeCleanupRateLimits(db)
+
   const body = await readBody<ElevateBody>(event)
   const answer = body?.answer?.trim().toLowerCase()
 
-  if (!answer) {
+  if (!answer || answer.length < 3 || answer.length > LIMITS.securityAnswer) {
     throw createError({ statusCode: 400, statusMessage: 'Odgovor je obavezan.' })
   }
 

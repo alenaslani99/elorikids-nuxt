@@ -2,6 +2,7 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../utils/db'
 import { requireOwner } from '../../utils/admin'
 import { hashPassword } from '../../utils/crypto'
+import { LIMITS } from '~~/shared/utils/limits'
 
 interface SetupBody {
   question?: string
@@ -20,10 +21,10 @@ export default defineEventHandler(async (event) => {
   const question = body?.question?.trim()
   const answer = body?.answer?.trim().toLowerCase()
 
-  if (!question || question.length < 5) {
+  if (!question || question.length < 5 || question.length > LIMITS.securityQuestion) {
     throw createError({ statusCode: 400, statusMessage: 'Pitanje mora imati najmanje 5 karaktera.' })
   }
-  if (!answer || answer.length < 3) {
+  if (!answer || answer.length < 3 || answer.length > LIMITS.securityAnswer) {
     throw createError({ statusCode: 400, statusMessage: 'Odgovor mora imati najmanje 3 karaktera.' })
   }
 

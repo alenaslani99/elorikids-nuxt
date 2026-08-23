@@ -84,6 +84,22 @@ export function generateSessionToken(): string {
   return toBase64Url(bytes)
 }
 
+// ── Order track code suffix ────────────────────────────────────
+/**
+ * Generate a random 6-character alphanumeric suffix for order track codes.
+ * Uses only lowercase letters + digits to stay URL-friendly.
+ * 36^6 ≈ 2.2 billion combinations → unguessable by enumeration.
+ */
+export function generateTrackSuffix(): string {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  const bytes = crypto.getRandomValues(new Uint8Array(6))
+  let suffix = ''
+  for (let i = 0; i < 6; i++) {
+    suffix += alphabet[bytes[i]! % alphabet.length]
+  }
+  return suffix
+}
+
 // ── Constant-time string compare ──────────────────────────────
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false

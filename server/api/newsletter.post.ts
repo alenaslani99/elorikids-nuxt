@@ -1,6 +1,8 @@
-import { createError, defineEventHandler, readBody } from 'h3'
+import { createError, defineEventHandler, readBody, getRequestHeaders } from 'h3'
 import { useDb } from '../utils/db'
 import { emailRegex } from '~~/shared/utils/validation'
+import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
+import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../utils/rateLimit'
 
 interface NewsletterBody {
   email?: string
@@ -8,6 +10,19 @@ interface NewsletterBody {
 
 export default defineEventHandler(async (event) => {
   const db = useDb(event)
+
+  // ── Rate limiting (per IP) ────────────────────────────────────
+  const headers = getRequestHeaders(event)
+  const ip = getClientIp(headers)
+  const rl = await checkRateLimit(db, `newsletter:${ip}`, 'newsletter', RATE_LIMITS.newsletter.maxAttempts, RATE_LIMITS.newsletter.windowMs)
+  if (rl.limited) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: `Preveliki broj pokušaja. Pokušajte ponovo za ${Math.ceil(rl.retryAfterSec / 60)} minuta.`,
+    })
+  }
+  await maybeCleanupRateLimits(db)
+
   const body = await readBody<NewsletterBody>(event)
   const email = body?.email?.trim().toLowerCase()
 
@@ -15,7 +30,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Adresa e-pošte je obavezna.' })
   }
 
-  if (!emailRegex.test(email)) {
+  if (!emailRegex.test(email) || email.length > LIMITS.email) {
     throw createError({ statusCode: 400, statusMessage: 'Neispravna adresa e-pošte.' })
   }
 

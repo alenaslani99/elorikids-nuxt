@@ -38,6 +38,9 @@ export async function createSession(event: H3Event, db: D1Database, userId: numb
     .bind(userId, token, expiresAt)
     .run()
 
+  // Lazily purge expired sessions (~1 in 50 requests)
+  await maybeCleanupExpiredSessions(db)
+
   setCookie(event, SESSION_COOKIE, token, {
     httpOnly: true,
     secure: true,
@@ -80,4 +83,14 @@ export async function destroySession(event: H3Event, db: D1Database): Promise<vo
 
   await db.prepare('DELETE FROM sessions WHERE token = ?').bind(token).run()
   deleteCookie(event, SESSION_COOKIE, { path: '/' })
+}
+
+/**
+ * Lazily delete expired sessions. Called with a small probability
+ * (~1 in 50 requests) to avoid adding DB overhead to every request.
+ * This keeps the sessions table from growing unboundedly.
+ */
+export async function maybeCleanupExpiredSessions(db: D1Database): Promise<void> {
+  if (Math.random() > 0.02) return
+  await db.prepare("DELETE FROM sessions WHERE expires_at <= datetime('now')").run()
 }

@@ -72,7 +72,7 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
   // ── Fetch orders for current page ───────────────────────────────
   const ordersResult = await db
     .prepare(
-      `SELECT id, status, customer_name, email, phone, address, city, postal, note,
+      `SELECT seq, id, track_code, status, customer_name, email, phone, address, city, postal, note,
               subtotal, shipping, grand_total, created_at
        FROM orders
        ${whereClause}
@@ -81,7 +81,9 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
     )
     .bind(...params, limit, offset)
     .all<{
+      seq: number
       id: string
+      track_code: string
       status: string
       customer_name: string
       email: string
@@ -119,13 +121,13 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
   const itemsByOrder = new Map<string, AdminOrderItem[]>()
 
   if (pageOrders.length > 0) {
-    const orderIds = pageOrders.map(o => o.id)
-    const placeholders = orderIds.map(() => '?').join(',')
+    const orderSeqs = pageOrders.map(o => o.seq)
+    const placeholders = orderSeqs.map(() => '?').join(',')
     const itemsResult = await db
-      .prepare(`SELECT order_id, slug, title, price, quantity FROM order_items WHERE order_id IN (${placeholders})`)
-      .bind(...orderIds)
+      .prepare(`SELECT order_seq, slug, title, price, quantity FROM order_items WHERE order_seq IN (${placeholders})`)
+      .bind(...orderSeqs)
       .all<{
-        order_id: string
+        order_seq: number
         slug: string
         title: string
         price: number
@@ -133,14 +135,14 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
       }>()
 
     for (const item of itemsResult.results ?? []) {
-      const list = itemsByOrder.get(item.order_id) ?? []
+      const list = itemsByOrder.get(String(item.order_seq)) ?? []
       list.push({
         slug: item.slug,
         title: item.title,
         price: item.price,
         quantity: item.quantity,
       })
-      itemsByOrder.set(item.order_id, list)
+      itemsByOrder.set(String(item.order_seq), list)
     }
   }
 
@@ -158,7 +160,7 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
     shipping: row.shipping,
     grandTotal: row.grand_total,
     createdAt: row.created_at,
-    items: itemsByOrder.get(row.id) ?? [],
+    items: itemsByOrder.get(String(row.seq)) ?? [],
   }))
 
   return {

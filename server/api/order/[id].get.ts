@@ -28,21 +28,23 @@ export interface OrderTrackingResponse {
 
 export default defineEventHandler(async (event): Promise<OrderTrackingResponse> => {
   const db = useDb(event)
-  const orderId = String(getRouterParam(event, 'id') ?? '').trim().toUpperCase()
+  const trackCode = String(getRouterParam(event, 'id') ?? '').trim()
 
-  if (!orderId) {
+  if (!trackCode) {
     throw createError({ statusCode: 400, statusMessage: 'Broj porudžbine je obavezan.' })
   }
 
+  // Look up by track_code (random, unguessable) — NOT by sequential id
   const order = await db
     .prepare(
-      `SELECT id, status, customer_name, city, subtotal, shipping, grand_total, created_at,
+      `SELECT id, track_code, status, customer_name, city, subtotal, shipping, grand_total, created_at,
               received_at, preparing_at, in_transit_at, delivered_at, cancelled_at
-       FROM orders WHERE id = ?`,
+       FROM orders WHERE track_code = ?`,
     )
-    .bind(orderId)
+    .bind(trackCode)
     .first<{
       id: string
+      track_code: string
       status: string
       customer_name: string
       city: string
@@ -61,9 +63,15 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
     throw createError({ statusCode: 404, statusMessage: 'Porudžbina nije pronađena. Proverite broj i pokušajte ponovo.' })
   }
 
+  // Fetch items by joining on track_code → orders.seq → order_items.order_seq
   const itemsResult = await db
-    .prepare('SELECT slug, title, price, quantity FROM order_items WHERE order_id = ?')
-    .bind(orderId)
+    .prepare(
+      `SELECT oi.slug, oi.title, oi.price, oi.quantity
+       FROM order_items oi
+       JOIN orders o ON oi.order_seq = o.seq
+       WHERE o.track_code = ?`,
+    )
+    .bind(trackCode)
     .all<{ slug: string, title: string, price: number, quantity: number }>()
 
   // Build timeline from timestamp columns (only non-null phases, in lifecycle order)

@@ -76,7 +76,7 @@ async function handleSubmit() {
   foundOrder.value = null
   status.value = 'loading'
 
-  const trimmed = orderId.value.trim().toUpperCase()
+  const trimmed = orderId.value.trim()
   if (!trimmed) {
     setError('Unesite broj porudžbine.')
     return
@@ -126,7 +126,7 @@ onMounted(() => {
               Pronađite vašu porudžbinu
             </h2>
             <p class="mt-2 text-navy/60">
-              Broj porudžbine izgleda kao "EK-2026-000001".
+              Broj porudžbine izgleda kao "EK-2026-000001-a3f9c2".
             </p>
           </div>
 
@@ -139,7 +139,7 @@ onMounted(() => {
               inputmode="text"
               autocomplete="off"
               required
-              placeholder="EK-2026-000001"
+              placeholder="EK-2026-000001-a3f9c2"
               :disabled="status === 'loading'"
             />
 
@@ -160,7 +160,7 @@ onMounted(() => {
             <p class="flex items-start gap-2">
               <Icon name="lucide:info" class="mt-0.5 size-4 shrink-0 text-blue" />
               <span>
-                Broj porudžbine ste dobili u potvrdi e-pošte nakon naručivanja. Format: EK-YYYY-NNNNNN.
+                Broj porudžbine ste dobili u potvrdi e-pošte nakon naručivanja. Format: EK-YYYY-NNNNNN-XXXXXX.
               </span>
             </p>
           </div>

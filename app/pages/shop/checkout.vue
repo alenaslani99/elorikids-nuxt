@@ -63,9 +63,12 @@ const cityError = computed(() =>
 const postalError = computed(() =>
   submitted.value && (!form.postal.trim() || !postalRegex.test(form.postal.trim())) ? '6 cifara, ne može početi nulom.' : '',
 )
-const noteError = computed(() =>
-  submitted.value && form.note.trim() && form.note.trim().length < 10 ? 'Napomena mora imati najmanje 10 karaktera.' : '',
-)
+const noteError = computed(() => {
+  const trimmed = form.note.trim()
+  if (submitted.value && trimmed && trimmed.length < 10) return 'Napomena mora imati najmanje 10 karaktera.'
+  if (trimmed.length > 500) return 'Napomena je preduga (maksimum 500 karaktera).'
+  return ''
+})
 
 // Clear stale error state as soon as the user edits any field
 watch(form, () => {

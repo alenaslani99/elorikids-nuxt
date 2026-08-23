@@ -1,9 +1,11 @@
-import { createError, defineEventHandler, readBody } from 'h3'
+import { createError, defineEventHandler, readBody, getRequestHeaders } from 'h3'
 import { useDb } from '../utils/db'
 import { verifyPassword } from '../utils/crypto'
 import { createSession } from '../utils/session'
 import { isOwnerEmail } from '../utils/admin'
 import { emailRegex } from '~~/shared/utils/validation'
+import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
+import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../utils/rateLimit'
 
 interface LoginBody {
   email?: string
@@ -12,15 +14,29 @@ interface LoginBody {
 
 export default defineEventHandler(async (event) => {
   const db = useDb(event)
-  const body = await readBody<LoginBody>(event)
 
+  // ── Rate limiting (per email + IP) ────────────────────────────
+  const headers = getRequestHeaders(event)
+  const ip = getClientIp(headers)
+
+  const body = await readBody<LoginBody>(event)
   const email = body?.email?.trim().toLowerCase()
   const password = body?.password
 
-  if (!email || !emailRegex.test(email)) {
+  const rlId = `login:${email ?? 'unknown'}:${ip}`
+  const rl = await checkRateLimit(db, rlId, 'login', RATE_LIMITS.login.maxAttempts, RATE_LIMITS.login.windowMs)
+  if (rl.limited) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: `Preveliki broj pokušaja. Pokušajte ponovo za ${Math.ceil(rl.retryAfterSec / 60)} minuta.`,
+    })
+  }
+  await maybeCleanupRateLimits(db)
+
+  if (!email || !emailRegex.test(email) || email.length > LIMITS.email) {
     throw createError({ statusCode: 400, statusMessage: 'Ispravna adresa e-pošte je obavezna.' })
   }
-  if (!password || password.length < 6) {
+  if (!password || password.length < 6 || password.length > LIMITS.password) {
     throw createError({ statusCode: 400, statusMessage: 'Lozinka mora imati najmanje 6 karaktera.' })
   }
 

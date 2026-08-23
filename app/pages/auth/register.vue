@@ -23,11 +23,15 @@ const agree = ref(false)
 
 const submitted = ref(false)
 
-const { emailRegex } = useValidation()
+const { emailRegex, nameRegex } = useValidation()
 
-const nameError = computed(() =>
-  submitted.value && !form.name.trim() ? 'Unesite ime i prezime.' : '',
-)
+const nameError = computed(() => {
+  if (!submitted.value) return ''
+  const trimmed = form.name.trim()
+  if (!trimmed) return 'Unesite ime i prezime.'
+  if (!nameRegex.test(trimmed)) return 'Unesite ime i prezime (najmanje dve reči).'
+  return ''
+})
 const emailError = computed(() => {
   if (!submitted.value) return ''
   if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
