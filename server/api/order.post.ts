@@ -120,13 +120,21 @@ export default defineEventHandler(async (event) => {
   // --- Insert order (auto-increment seq via SQLite) ---
   // The INSERT returns last_row_id (the seq), which we use to build the
   // human-readable `id` and the random `track_code`.
+  //
+  // IMPORTANT: Use unique random placeholders (not a fixed string like 'PENDING')
+  // for both id and track_code during INSERT. A fixed placeholder means that if
+  // the UPDATE below ever fails (or the process is interrupted), the orphaned
+  // row blocks ALL future orders with a UNIQUE constraint collision.
+  const tempId = `tmp-${generateTrackSuffix()}${generateTrackSuffix()}`
+  const tempTrack = `tmp-${generateTrackSuffix()}${generateTrackSuffix()}`
+
   const insertResult = await db
     .prepare(
       `INSERT INTO orders (id, track_code, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status, received_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'received', datetime('now'))`,
     )
     .bind(
-      'PENDING', 'PENDING', userId, name, phone, email, address, city, postal, note,
+      tempId, tempTrack, userId, name, phone, email, address, city, postal, note,
       subtotal, shipping, grandTotal,
     )
     .run()
@@ -136,11 +144,22 @@ export default defineEventHandler(async (event) => {
   const orderId = `EK-${year}-${String(seq).padStart(6, '0')}`
   const trackCode = `${orderId}-${generateTrackSuffix()}`
 
-  // Update the placeholder id + track_code with the real values
-  await db
-    .prepare('UPDATE orders SET id = ?, track_code = ? WHERE seq = ?')
-    .bind(orderId, trackCode, seq)
-    .run()
+  // Replace the unique placeholders with the real seq-based id + track_code.
+  // If this fails (extremely unlikely — track_code has 36^6 ≈ 2.2B entropy),
+  // delete the orphan so it doesn't linger in the table.
+  try {
+    await db
+      .prepare('UPDATE orders SET id = ?, track_code = ? WHERE seq = ?')
+      .bind(orderId, trackCode, seq)
+      .run()
+  } catch (updateErr) {
+    await db.prepare('DELETE FROM orders WHERE seq = ?').bind(seq).run()
+    console.error(`[order] UPDATE failed for seq=${seq}, orphan deleted:`, updateErr)
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Greška pri kreiranju porudžbine. Pokušajte ponovo.',
+    })
+  }
 
   // --- Insert order items ---
   const itemStmts = validatedItems.map((item) =>
