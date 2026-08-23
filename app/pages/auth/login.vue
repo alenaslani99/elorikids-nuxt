@@ -57,9 +57,7 @@ async function handleSubmit() {
 
     if (res.ok && res.user) {
       setUser(res.user)
-      // Redirect to intended page or account
-      const redirect = (route.query.redirect as string) || '/auth/account'
-      router.push(redirect)
+      router.push('/auth/account')
     }
     else {
       throw new Error('Neispravan email ili lozinka.')

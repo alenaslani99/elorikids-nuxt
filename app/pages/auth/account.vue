@@ -17,7 +17,7 @@ onMounted(async () => {
   // The auth plugin validates the session on first load.
   // If the user navigated here client-side, isReady is already true.
   if (isReady.value && !isLoggedIn.value) {
-    router.replace('/auth/login?redirect=/auth/account')
+    router.replace('/auth/login')
     return
   }
   if (isLoggedIn.value) {

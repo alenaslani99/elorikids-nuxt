@@ -19,7 +19,7 @@ export default defineNuxtRouteMiddleware((to) => {
   if (!isReady.value) return
 
   if (!isLoggedIn.value) {
-    return navigateTo('/auth/login?redirect=/admin')
+    return navigateTo('/auth/login')
   }
 
   if (!isOwner.value) {
