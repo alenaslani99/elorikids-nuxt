@@ -58,7 +58,7 @@ useHead({
               <Icon name="lucide:arrow-right" class="size-5" />
             </NuxtLink>
             <NuxtLink
-              to="/pratite-porudzbinu"
+              to="/track-order"
               class="inline-flex items-center gap-2 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:text-blue"
             >
               Pratite porudžbinu

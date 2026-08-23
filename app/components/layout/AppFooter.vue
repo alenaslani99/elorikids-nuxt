@@ -22,7 +22,7 @@ const columns = [
     title: 'Podrška',
     links: [
       { label: 'Česta pitanja', to: '/faq' },
-      { label: 'Pratite porudžbinu', to: '/pratite-porudzbinu' },
+      { label: 'Pratite porudžbinu', to: '/track-order' },
     ],
   },
 ]

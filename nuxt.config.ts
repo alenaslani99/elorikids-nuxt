@@ -54,7 +54,7 @@ export default defineNuxtConfig({
     '/blog/**': { ssr: false },
     '/auth/account': { ssr: false },
     '/auth/forgot-password': { ssr: false },
-    '/pratite-porudzbinu': { ssr: false },
+    '/track-order': { ssr: false },
   },
   icon: {
     clientBundle: {

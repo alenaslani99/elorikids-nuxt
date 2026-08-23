@@ -212,7 +212,7 @@ const quickLinks = computed(() => [
                 <NuxtLink
                   v-for="order in orders"
                   :key="order.id"
-                  :to="`/pratite-porudzbinu?id=${order.id}`"
+                  :to="`/track-order?id=${order.id}`"
                   class="flex flex-col gap-3 rounded-2xl border border-cloud/40 bg-cream p-5 transition-colors hover:border-blue/40 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <!-- Order info -->
