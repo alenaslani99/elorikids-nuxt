@@ -41,10 +41,7 @@ watch(user, (u) => {
 const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
 const submitted = ref(false)
 
-const nameRegex = /^[a-zA-ZšđčćžŠĐČĆŽ]+(?:\s+[a-zA-ZšđčćžŠĐČĆŽ]+)+$/
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const phoneRegex = /^\+381\s?6[1-9](\s?\d){6,7}$/
-const postalRegex = /^[1-9]\d{5}$/
+const { emailRegex, nameRegex, serbianPhoneRegex: phoneRegex, postalRegex } = useValidation()
 
 const nameError = computed(() =>
   submitted.value && (!form.name.trim() || !nameRegex.test(form.name.trim())) ? 'Unesite ime i prezime (najmanje dve reči).' : '',

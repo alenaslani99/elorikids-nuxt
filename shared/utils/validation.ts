@@ -1,0 +1,22 @@
+/**
+ * Shared validation patterns used across client and server.
+ *
+ * Lives in `shared/` so it is auto-imported by both the Nuxt app
+ * (client) and the Nitro server — single source of truth.
+ */
+
+/** Basic email format check (RFC 5322 simplified). */
+export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/** Permissive phone format: optional + prefix, digits, spaces, dashes, slashes. */
+export const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
+
+/** Serbian mobile phone format: +381 6X XXX XXXX */
+export const serbianPhoneRegex = /^\+381\s?6[1-9](\s?\d){6,7}$/
+
+/** Serbian postal code: 6 digits, cannot start with zero. */
+export const postalRegex = /^[1-9]\d{5}$/
+
+/** Full name: at least two words of Serbian/Latin letters. */
+export const nameRegex = /^[a-zA-ZšđčćžŠĐČĆŽ]+(?:\s+[a-zA-ZšđčćžŠĐČĆŽ]+)+$/
+

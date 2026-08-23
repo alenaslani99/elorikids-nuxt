@@ -22,7 +22,7 @@ export const faqs: FaqItem[] = [
   },
   {
     question: 'Koliko traje isporuka i da li dostavljate van Srbije?',
-    answer: 'Za porudžbine u Srbiji isporuka traje 1-3 radna dana. Dostava je besplatna za porudžbine iznad 3.000 RSD. Trenutno dostavljamo isključivo na teritoriji Srbije.',
+    answer: 'Za porudžbine u Srbiji isporuka traje 1-3 radna dana. Dostava je besplatna za porudžbine iznad 5.000 RSD. Trenutno dostavljamo isključivo na teritoriji Srbije.',
   },
   {
     question: 'Da li mogu vratiti proizvod ako mi ne odgovara?',

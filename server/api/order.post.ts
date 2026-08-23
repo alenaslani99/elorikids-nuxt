@@ -2,6 +2,8 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import type { D1Database } from '@cloudflare/workers-types'
 import { useDb } from '../utils/db'
 import { getSessionUser } from '../utils/session'
+import { emailRegex, serbianPhoneRegex, nameRegex, postalRegex } from '~~/shared/utils/validation'
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '~~/shared/utils/orders'
 
 interface OrderItem {
   slug: string
@@ -30,12 +32,6 @@ interface OrderBody {
   }
 }
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
-
-const FREE_SHIPPING_THRESHOLD = 5000
-const SHIPPING_FEE = 350
-
 export default defineEventHandler(async (event) => {
   const db = useDb(event)
   const body = await readBody<OrderBody>(event)
@@ -49,10 +45,10 @@ export default defineEventHandler(async (event) => {
   const postal = body?.customer?.postal?.trim()
   const note = body?.customer?.note?.trim() || null
 
-  if (!name) {
+  if (!name || !nameRegex.test(name)) {
     throw createError({ statusCode: 400, statusMessage: 'Ime i prezime je obavezno.' })
   }
-  if (!phone || !phoneRegex.test(phone)) {
+  if (!phone || !serbianPhoneRegex.test(phone)) {
     throw createError({ statusCode: 400, statusMessage: 'Ispravan broj telefona je obavezan.' })
   }
   if (!email || !emailRegex.test(email)) {
@@ -64,7 +60,7 @@ export default defineEventHandler(async (event) => {
   if (!city) {
     throw createError({ statusCode: 400, statusMessage: 'Grad je obavezan.' })
   }
-  if (!postal) {
+  if (!postal || !postalRegex.test(postal)) {
     throw createError({ statusCode: 400, statusMessage: 'Poštanski broj je obavezan.' })
   }
 

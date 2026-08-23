@@ -103,30 +103,8 @@ const visiblePages = computed(() => {
   return pages
 })
 
-const statusConfig: Record<string, { label: string, class: string, dot: string }> = {
-  received:    { label: 'Primljena',   class: 'bg-yellow/15 text-navy',           dot: 'bg-yellow' },
-  preparing:   { label: 'U pripremi',  class: 'bg-yellow/15 text-navy',           dot: 'bg-yellow' },
-  in_transit:  { label: 'U transportu', class: 'bg-blue/15 text-blue',            dot: 'bg-blue' },
-  delivered:   { label: 'Isporučeno',  class: 'bg-mint/15 text-mint',             dot: 'bg-mint' },
-  cancelled:   { label: 'Otkazano',    class: 'bg-coral/15 text-coral',           dot: 'bg-coral' },
-}
-
-const months = [
-  'jan', 'feb', 'mar', 'apr', 'maj', 'jun',
-  'jul', 'avg', 'sep', 'okt', 'nov', 'dec',
-]
-function formatDate(iso: string): string {
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return iso
-  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}.`
-}
-function formatDateTime(iso: string): string {
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return iso
-  const h = String(d.getHours()).padStart(2, '0')
-  const m = String(d.getMinutes()).padStart(2, '0')
-  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}. ${h}:${m}`
-}
+import { getOrderStatusMeta, ORDER_STATUSES } from '~~/shared/utils/order-status'
+import { formatDateShort as formatDate, formatDateTimeShort as formatDateTime } from '~~/shared/utils/format'
 
 // ── Status update ────────────────────────────────────────────────
 const updatingOrderId = ref<string | null>(null)
@@ -316,10 +294,10 @@ const filterTabs = computed(() => [
                   <span class="font-unbounded font-bold text-navy">{{ order.id }}</span>
                   <span
                     class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold"
-                    :class="statusConfig[order.status]?.class ?? 'bg-cloud/40'"
+                    :class="getOrderStatusMeta(order.status).badgeClass"
                   >
-                    <span class="size-1.5 rounded-full" :class="statusConfig[order.status]?.dot" />
-                    {{ statusConfig[order.status]?.label ?? order.status }}
+                    <span class="size-1.5 rounded-full" :class="getOrderStatusMeta(order.status).dotClass" />
+                    {{ getOrderStatusMeta(order.status).label }}
                   </span>
                   <span class="text-sm text-navy/40">{{ formatDateTime(order.createdAt) }}</span>
                 </div>
@@ -381,7 +359,7 @@ const filterTabs = computed(() => [
                 </p>
                 <div class="flex flex-wrap gap-2 lg:flex-col">
                   <button
-                    v-for="(meta, key) in statusConfig"
+                    v-for="key in ORDER_STATUSES"
                     :key="key"
                     type="button"
                     :disabled="order.status === key || updatingOrderId === order.id"
@@ -391,8 +369,8 @@ const filterTabs = computed(() => [
                       : 'border-cloud/50 text-navy/70 hover:border-navy/40'"
                     @click="updateStatus(order, key)"
                   >
-                    <span class="size-1.5 rounded-full" :class="meta.dot" />
-                    {{ meta.label }}
+                    <span class="size-1.5 rounded-full" :class="getOrderStatusMeta(key).dotClass" />
+                    {{ getOrderStatusMeta(key).label }}
                   </button>
                 </div>
               </div>

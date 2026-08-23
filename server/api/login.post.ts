@@ -2,13 +2,13 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../utils/db'
 import { verifyPassword } from '../utils/crypto'
 import { createSession } from '../utils/session'
+import { isOwnerEmail } from '../utils/admin'
+import { emailRegex } from '~~/shared/utils/validation'
 
 interface LoginBody {
   email?: string
   password?: string
 }
-
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default defineEventHandler(async (event) => {
   const db = useDb(event)

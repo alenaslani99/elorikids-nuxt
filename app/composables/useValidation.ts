@@ -1,7 +1,20 @@
-/** Shared validation regexes used across all form pages. */
-export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-export const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
+/**
+ * Re-exports shared validation patterns for client-side use.
+ *
+ * The actual definitions live in `shared/utils/validation.ts` so they
+ * are shared with the server. This composable provides the auto-imported
+ * `useValidation()` wrapper for backward compatibility.
+ */
+import {
+  emailRegex,
+  phoneRegex,
+  serbianPhoneRegex,
+  postalRegex,
+  nameRegex,
+} from '~~/shared/utils/validation'
+
+export { emailRegex, phoneRegex, serbianPhoneRegex, postalRegex, nameRegex }
 
 export function useValidation() {
-  return { emailRegex, phoneRegex }
+  return { emailRegex, phoneRegex, serbianPhoneRegex, postalRegex, nameRegex }
 }

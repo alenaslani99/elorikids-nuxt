@@ -19,16 +19,7 @@ export interface BlogPost {
   featured?: boolean
 }
 
-const months = [
-  'januar', 'februar', 'mart', 'april', 'maj', 'jun',
-  'jul', 'avgust', 'septembar', 'oktobar', 'novembar', 'decembar',
-]
-
-/** Format an ISO date as "15. avgust 2025." (Serbian Latin, no Intl dependency). */
-export function formatDate(iso: string): string {
-  const d = new Date(iso)
-  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}.`
-}
+import { formatDateLong as formatDate } from '~~/shared/utils/format'
 
 export const posts: BlogPost[] = [
   {

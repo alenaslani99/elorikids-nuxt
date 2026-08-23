@@ -19,7 +19,7 @@ const form = reactive({
 const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
 const submitted = ref(false)
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const { emailRegex } = useValidation()
 
 const emailError = computed(() => {
   if (!submitted.value) return ''

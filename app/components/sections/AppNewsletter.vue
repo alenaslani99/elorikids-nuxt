@@ -2,6 +2,7 @@
 const email = ref('')
 const status = ref<'idle' | 'loading' | 'success' | 'error'>('idle')
 const errorMessage = ref('')
+const { emailRegex } = useValidation()
 
 async function handleSubmit() {
   if (!email.value) {
@@ -10,7 +11,6 @@ async function handleSubmit() {
     return
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email.value)) {
     status.value = 'error'
     errorMessage.value = 'Unesite ispravnu adresu e-pošte.'

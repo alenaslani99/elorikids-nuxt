@@ -1,20 +1,10 @@
 import { createError, defineEventHandler, getRouterParam, readBody } from 'h3'
 import { useDb } from '../../../utils/db'
 import { requireElevated } from '../../../utils/admin'
+import { ORDER_STATUSES, STATUS_TIMESTAMP_COLUMNS, type OrderStatus } from '~~/shared/utils/order-status'
 
 interface UpdateStatusBody {
   status?: string
-}
-
-const VALID_STATUSES = ['received', 'preparing', 'in_transit', 'delivered', 'cancelled'] as const
-
-/** Maps a status to its timestamp column on the orders table. */
-const STATUS_TIMESTAMPS: Record<string, string> = {
-  received: 'received_at',
-  preparing: 'preparing_at',
-  in_transit: 'in_transit_at',
-  delivered: 'delivered_at',
-  cancelled: 'cancelled_at',
 }
 
 /**
@@ -31,13 +21,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody<UpdateStatusBody>(event)
-  const status = body?.status
+  const status = body?.status as OrderStatus | undefined
 
-  if (!status || !VALID_STATUSES.includes(status as typeof VALID_STATUSES[number])) {
+  if (!status || !ORDER_STATUSES.includes(status)) {
     throw createError({ statusCode: 400, statusMessage: 'Neispravan status.' })
   }
 
-  const timestampColumn = STATUS_TIMESTAMPS[status]
+  const timestampColumn = STATUS_TIMESTAMP_COLUMNS[status]
 
   await db
     .prepare(

@@ -104,23 +104,8 @@ async function loadMoreOrders() {
 }
 
 // Map DB status to Serbian label + styling
-const statusStyles: Record<string, { label: string, bg: string, text: string, icon: string }> = {
-  received:    { label: 'U obradi',      bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
-  preparing:   { label: 'U pripremi',    bg: 'bg-yellow/15', text: 'text-yellow', icon: 'lucide:clock' },
-  in_transit:  { label: 'U transportu',  bg: 'bg-blue/15',   text: 'text-blue',  icon: 'lucide:truck' },
-  delivered:   { label: 'Isporučeno',    bg: 'bg-mint/15',   text: 'text-mint',  icon: 'lucide:check-circle' },
-  cancelled:   { label: 'Otkazano',      bg: 'bg-coral/15',  text: 'text-coral', icon: 'lucide:x-circle' },
-}
-
-const months = [
-  'jan', 'feb', 'mar', 'apr', 'maj', 'jun',
-  'jul', 'avg', 'sep', 'okt', 'nov', 'dec',
-]
-function formatDate(iso: string): string {
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return iso
-  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}.`
-}
+import { getOrderStatusMeta } from '~~/shared/utils/order-status'
+import { formatDateShort as formatDate } from '~~/shared/utils/format'
 
 const quickLinks = computed(() => [
   { label: 'Sačuvane knjige', desc: `${savedCount.value} knjiga`, to: '/shop/saved', icon: 'lucide:heart', accent: 'bg-coral/10 text-coral' },
@@ -237,10 +222,10 @@ const quickLinks = computed(() => [
                     </p>
                     <span
                       class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-sm font-semibold"
-                      :class="statusStyles[order.status]?.bg ?? 'bg-cloud/40'"
+                      :class="getOrderStatusMeta(order.status).bgClass"
                     >
-                      <Icon :name="statusStyles[order.status]?.icon ?? 'lucide:circle'" class="size-3.5 shrink-0" :class="statusStyles[order.status]?.text" />
-                      <span :class="statusStyles[order.status]?.text">{{ statusStyles[order.status]?.label ?? order.status }}</span>
+                      <Icon :name="getOrderStatusMeta(order.status).icon" class="size-3.5 shrink-0" :class="getOrderStatusMeta(order.status).textClass" />
+                      <span :class="getOrderStatusMeta(order.status).textClass">{{ getOrderStatusMeta(order.status).label }}</span>
                     </span>
                   </div>
                 </NuxtLink>

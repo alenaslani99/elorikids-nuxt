@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../utils/db'
+import { emailRegex } from '~~/shared/utils/validation'
 
 interface NewsletterBody {
   email?: string
@@ -14,7 +15,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Adresa e-pošte je obavezna.' })
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email)) {
     throw createError({ statusCode: 400, statusMessage: 'Neispravna adresa e-pošte.' })
   }

@@ -41,9 +41,6 @@ export function useCart() {
 
   const items = computed(() => cart.value.items)
 
-  const FREE_SHIPPING_THRESHOLD = 5000
-  const SHIPPING_FEE = 350
-
   const shipping = computed(() =>
     cart.value.items.length === 0 || total.value >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE,
   )

@@ -23,7 +23,7 @@ const agree = ref(false)
 
 const submitted = ref(false)
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const { emailRegex } = useValidation()
 
 const nameError = computed(() =>
   submitted.value && !form.name.trim() ? 'Unesite ime i prezime.' : '',

@@ -28,17 +28,9 @@ const orderId = ref('')
 const { status, errorMessage, setError } = useFormStatus()
 const foundOrder = ref<FoundOrder | null>(null)
 
-// --- Status metadata (label + description live on frontend, not in DB) ---
-type StatusKey = 'received' | 'preparing' | 'in_transit' | 'delivered' | 'cancelled'
-const STATUS_META: Record<StatusKey, { label: string, description: string }> = {
-  received:   { label: 'Porudžbina primljena', description: 'Vaša porudžbina je uspešno kreirana i čeka obradu.' },
-  preparing:  { label: 'U pripremi',          description: 'Naš tim priprema vaše knjige za slanje.' },
-  in_transit: { label: 'U transportu',         description: 'Vaša porudžbina je predata kuriru i kreće ka vama.' },
-  delivered:  { label: 'Isporučeno',           description: 'Vaša porudžbina je uspešno isporučena. Hvala na poverenju!' },
-  cancelled:  { label: 'Otkazano',             description: 'Ova porudžbina je otkazana.' },
-}
-
-const LIFECYCLE_STEPS = ['received', 'preparing', 'in_transit', 'delivered'] as const
+// --- Status metadata lives in shared/utils/order-status.ts ---
+import { getOrderStatusMeta, LIFECYCLE_STEPS } from '~~/shared/utils/order-status'
+import { formatDateLong as formatDate } from '~~/shared/utils/format'
 
 interface DisplayStep {
   status: string
@@ -48,15 +40,6 @@ interface DisplayStep {
   state: 'done' | 'current' | 'pending'
 }
 
-// Map DB status to the Serbian badge label + class
-const statusConfig: Record<string, { label: string, class: string }> = {
-  received:    { label: 'U obradi',     class: 'bg-yellow/20 text-navy' },
-  preparing:   { label: 'U pripremi',   class: 'bg-yellow/20 text-navy' },
-  in_transit:  { label: 'U transportu', class: 'bg-blue/10 text-blue' },
-  delivered:   { label: 'Isporučeno',    class: 'bg-mint/20 text-navy' },
-  cancelled:   { label: 'Otkazano',      class: 'bg-coral/20 text-coral' },
-}
-
 // Build display steps: all lifecycle phases shown, with state + timestamp
 function buildSteps(order: FoundOrder): DisplayStep[] {
   const timelineMap = new Map(order.timeline.map(t => [t.status, t.at]))
@@ -64,34 +47,28 @@ function buildSteps(order: FoundOrder): DisplayStep[] {
   if (order.status === 'cancelled') {
     const steps: DisplayStep[] = LIFECYCLE_STEPS
       .filter(s => timelineMap.has(s))
-      .map(s => ({ status: s, ...STATUS_META[s], at: timelineMap.get(s) ?? null, state: 'done' as const }))
-    steps.push({ status: 'cancelled', ...STATUS_META.cancelled, at: timelineMap.get('cancelled') ?? null, state: 'done' as const })
+      .map(s => {
+        const meta = getOrderStatusMeta(s)
+        return { status: s, label: meta.label, description: meta.description, at: timelineMap.get(s) ?? null, state: 'done' as const }
+      })
+    const cancelledMeta = getOrderStatusMeta('cancelled')
+    steps.push({ status: 'cancelled', label: cancelledMeta.label, description: cancelledMeta.description, at: timelineMap.get('cancelled') ?? null, state: 'done' as const })
     return steps
   }
 
   const lastReached = order.timeline[order.timeline.length - 1]?.status
 
   return LIFECYCLE_STEPS.map((s) => {
+    const meta = getOrderStatusMeta(s)
     const at = timelineMap.get(s) ?? null
     if (at) {
       if (s === lastReached && order.status !== 'delivered') {
-        return { status: s, ...STATUS_META[s], at, state: 'current' as const }
+        return { status: s, label: meta.label, description: meta.description, at, state: 'current' as const }
       }
-      return { status: s, ...STATUS_META[s], at, state: 'done' as const }
+      return { status: s, label: meta.label, description: meta.description, at, state: 'done' as const }
     }
-    return { status: s, ...STATUS_META[s], at: null, state: 'pending' as const }
+    return { status: s, label: meta.label, description: meta.description, at: null, state: 'pending' as const }
   })
-}
-
-// Format ISO date → "15. avgust 2025."
-const months = [
-  'januar', 'februar', 'mart', 'april', 'maj', 'jun',
-  'jul', 'avgust', 'septembar', 'oktobar', 'novembar', 'decembar',
-]
-function formatDate(iso: string): string {
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return iso
-  return `${d.getDate()}. ${months[d.getMonth()]} ${d.getFullYear()}.`
 }
 
 async function handleSubmit() {
@@ -203,9 +180,9 @@ onMounted(() => {
             </div>
             <span
               class="rounded-full px-4 py-1.5 text-sm font-semibold"
-              :class="statusConfig[foundOrder.status]?.class ?? 'bg-cloud/40 text-navy'"
+              :class="getOrderStatusMeta(foundOrder.status).badgeClass"
             >
-              {{ statusConfig[foundOrder.status]?.label ?? foundOrder.status }}
+              {{ getOrderStatusMeta(foundOrder.status).label }}
             </span>
           </div>
 

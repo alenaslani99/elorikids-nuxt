@@ -13,7 +13,7 @@ const form = reactive({
 
 const { status, errorMessage, setError, clearStale } = useFormStatus()
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const { emailRegex } = useValidation()
 
 async function handleSubmit() {
   errorMessage.value = ''
