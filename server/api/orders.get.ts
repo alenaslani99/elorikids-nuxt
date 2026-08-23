@@ -39,8 +39,8 @@ export default defineEventHandler(async (event): Promise<OrdersResponse> => {
   const result = await db
     .prepare(
       `SELECT
-         o.id, o.track_code, o.status, o.grand_total, o.created_at,
-         (SELECT COUNT(*) FROM order_items oi WHERE oi.order_seq = o.seq) as item_count
+         o.id, o.track_number, o.status, o.grand_total, o.created_at,
+         (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) as item_count
        FROM orders o
        WHERE o.user_id = ?
        ORDER BY o.created_at DESC
@@ -48,8 +48,8 @@ export default defineEventHandler(async (event): Promise<OrdersResponse> => {
     )
     .bind(sessionUser.id, limit, offset)
     .all<{
-      id: string
-      track_code: string
+      id: number
+      track_number: string
       status: string
       grand_total: number
       item_count: number
@@ -62,9 +62,9 @@ export default defineEventHandler(async (event): Promise<OrdersResponse> => {
     .first<{ total: number }>()
 
   return {
-    // Return track_code as the customer-facing "id" for tracking links
+    // Return track_number as the customer-facing "id" for tracking links
     orders: (result.results ?? []).map(row => ({
-      id: row.track_code,
+      id: row.track_number,
       status: row.status,
       grandTotal: row.grand_total,
       itemCount: row.item_count,

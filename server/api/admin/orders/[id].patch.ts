@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
   const db = useDb(event)
   await requireElevated(event, db)
 
-  const orderId = String(getRouterParam(event, 'id') ?? '').trim().toUpperCase()
+  const orderId = String(getRouterParam(event, 'id') ?? '').trim()
   if (!orderId) {
     throw createError({ statusCode: 400, statusMessage: 'Broj porudžbine je obavezan.' })
   }
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
     .prepare(
       `UPDATE orders
        SET status = ?, ${timestampColumn} = datetime('now'), updated_at = datetime('now')
-       WHERE id = ?`,
+       WHERE track_number = ?`,
     )
     .bind(status, orderId)
     .run()

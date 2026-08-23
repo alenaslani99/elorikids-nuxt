@@ -126,7 +126,7 @@ onMounted(() => {
               Pronađite vašu porudžbinu
             </h2>
             <p class="mt-2 text-navy/60">
-              Broj porudžbine izgleda kao "EK-2026-000001-a3f9c2".
+              Broj porudžbine izgleda kao "EK-2026-a3f9c2".
             </p>
           </div>
 
@@ -139,7 +139,7 @@ onMounted(() => {
               inputmode="text"
               autocomplete="off"
               required
-              placeholder="EK-2026-000001-a3f9c2"
+              placeholder="EK-2026-a3f9c2"
               :disabled="status === 'loading'"
             />
 

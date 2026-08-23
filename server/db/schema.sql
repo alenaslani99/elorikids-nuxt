@@ -25,14 +25,12 @@ CREATE INDEX IF NOT EXISTS idx_sessions_token   ON sessions(token);
 CREATE INDEX IF NOT EXISTS idx_sessions_user   ON sessions(user_id);
 
 -- ─── Orders ────────────────────────────────────────────────────
--- `seq`   is the internal auto-increment PK (assigned by SQLite, no race).
--- `id`    is the human-readable display ID ('EK-2026-000001') derived from seq.
--- `track_code` is the public tracking ID with a random suffix (unguessable).
--- Customers use `track_code` to look up their order; `id` is for display.
+-- `id`           is the auto-increment integer PK (internal).
+-- `track_number` is the public tracking ID: 'EK-2026-a3f9c2' (unguessable).
+-- Customers use `track_number` to look up their order.
 CREATE TABLE IF NOT EXISTS orders (
-  seq           INTEGER PRIMARY KEY AUTOINCREMENT,
-  id            TEXT NOT NULL UNIQUE,     -- 'EK-2026-000001' (display)
-  track_code    TEXT NOT NULL UNIQUE,     -- 'EK-2026-000001-a3f9c2' (tracking)
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  track_number  TEXT NOT NULL UNIQUE,     -- 'EK-2026-a3f9c2' (tracking)
   user_id       INTEGER REFERENCES users(id) ON DELETE SET NULL,
   customer_name TEXT NOT NULL,
   phone         TEXT NOT NULL,
@@ -54,22 +52,22 @@ CREATE TABLE IF NOT EXISTS orders (
   updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
-CREATE INDEX IF NOT EXISTS idx_orders_user       ON orders(user_id);
-CREATE INDEX IF NOT EXISTS idx_orders_email      ON orders(email);
-CREATE INDEX IF NOT EXISTS idx_orders_track_code ON orders(track_code);
+CREATE INDEX IF NOT EXISTS idx_orders_user         ON orders(user_id);
+CREATE INDEX IF NOT EXISTS idx_orders_email        ON orders(email);
+CREATE INDEX IF NOT EXISTS idx_orders_track_number ON orders(track_number);
 
 -- ─── Order items (line items per order) ────────────────────────
--- `order_seq` references orders.seq (the integer PK).
+-- `order_id` references orders.id (the integer PK).
 CREATE TABLE IF NOT EXISTS order_items (
   id        INTEGER PRIMARY KEY AUTOINCREMENT,
-  order_seq INTEGER NOT NULL REFERENCES orders(seq) ON DELETE CASCADE,
+  order_id  INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
   slug      TEXT NOT NULL,
   title     TEXT NOT NULL,
   price     INTEGER NOT NULL,
   quantity  INTEGER NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_seq);
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 
 -- ─── Newsletter subscribers ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (

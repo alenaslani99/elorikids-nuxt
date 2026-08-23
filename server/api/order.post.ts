@@ -6,7 +6,7 @@ import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '~~/shared/utils/orders'
 import { getProduct, MAX_ORDER_ITEMS } from '~~/shared/utils/products'
 import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
 import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../utils/rateLimit'
-import { generateTrackSuffix } from '../utils/crypto'
+import { generateTrackNumber } from '../utils/crypto'
 
 interface OrderItemInput {
   slug: string
@@ -117,61 +117,36 @@ export default defineEventHandler(async (event) => {
   const sessionUser = await getSessionUser(event, db)
   const userId = sessionUser?.id ?? null
 
-  // --- Insert order (auto-increment seq via SQLite) ---
-  // The INSERT returns last_row_id (the seq), which we use to build the
-  // human-readable `id` and the random `track_code`.
-  //
-  // IMPORTANT: Use unique random placeholders (not a fixed string like 'PENDING')
-  // for both id and track_code during INSERT. A fixed placeholder means that if
-  // the UPDATE below ever fails (or the process is interrupted), the orphaned
-  // row blocks ALL future orders with a UNIQUE constraint collision.
-  const tempId = `tmp-${generateTrackSuffix()}${generateTrackSuffix()}`
-  const tempTrack = `tmp-${generateTrackSuffix()}${generateTrackSuffix()}`
+  // --- Insert order ---
+  // `id` is auto-increment (SQLite assigns it). `track_number` is the
+  // public tracking ID, generated up front so there's no second UPDATE step.
+  const year = new Date().getFullYear()
+  const trackNumber = generateTrackNumber(year)
 
   const insertResult = await db
     .prepare(
-      `INSERT INTO orders (id, track_code, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status, received_at)
+      `INSERT INTO orders (track_number, user_id, customer_name, phone, email, address, city, postal, note, subtotal, shipping, grand_total, status, received_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'received', datetime('now'))`,
     )
     .bind(
-      tempId, tempTrack, userId, name, phone, email, address, city, postal, note,
+      trackNumber, userId, name, phone, email, address, city, postal, note,
       subtotal, shipping, grandTotal,
     )
     .run()
 
-  const seq = insertResult.meta.last_row_id as number
-  const year = new Date().getFullYear()
-  const orderId = `EK-${year}-${String(seq).padStart(6, '0')}`
-  const trackCode = `${orderId}-${generateTrackSuffix()}`
-
-  // Replace the unique placeholders with the real seq-based id + track_code.
-  // If this fails (extremely unlikely — track_code has 36^6 ≈ 2.2B entropy),
-  // delete the orphan so it doesn't linger in the table.
-  try {
-    await db
-      .prepare('UPDATE orders SET id = ?, track_code = ? WHERE seq = ?')
-      .bind(orderId, trackCode, seq)
-      .run()
-  } catch (updateErr) {
-    await db.prepare('DELETE FROM orders WHERE seq = ?').bind(seq).run()
-    console.error(`[order] UPDATE failed for seq=${seq}, orphan deleted:`, updateErr)
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Greška pri kreiranju porudžbine. Pokušajte ponovo.',
-    })
-  }
+  const orderId = insertResult.meta.last_row_id as number
 
   // --- Insert order items ---
   const itemStmts = validatedItems.map((item) =>
     db
-      .prepare('INSERT INTO order_items (order_seq, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?)')
-      .bind(seq, item.slug, item.title, item.price, item.quantity),
+      .prepare('INSERT INTO order_items (order_id, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?)')
+      .bind(orderId, item.slug, item.title, item.price, item.quantity),
   )
 
   await db.batch(itemStmts)
 
-  console.log(`[order] ${orderId} (track: ${trackCode}) — ${name} <${email}> — ${grandTotal} RSD (${validatedItems.length} items)`)
+  console.log(`[order] #${orderId} (track: ${trackNumber}) — ${name} <${email}> — ${grandTotal} RSD (${validatedItems.length} items)`)
 
-  // Return the track_code as the customer-facing "orderId"
-  return { ok: true, orderId: trackCode }
+  // Return the track_number as the customer-facing "orderId"
+  return { ok: true, orderId: trackNumber }
 })

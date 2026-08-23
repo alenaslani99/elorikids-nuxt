@@ -34,17 +34,17 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
     throw createError({ statusCode: 400, statusMessage: 'Broj porudžbine je obavezan.' })
   }
 
-  // Look up by track_code (random, unguessable) — NOT by sequential id
+  // Look up by track_number (random, unguessable) — NOT by sequential id
   const order = await db
     .prepare(
-      `SELECT id, track_code, status, customer_name, city, subtotal, shipping, grand_total, created_at,
+      `SELECT id, track_number, status, customer_name, city, subtotal, shipping, grand_total, created_at,
               received_at, preparing_at, in_transit_at, delivered_at, cancelled_at
-       FROM orders WHERE track_code = ?`,
+       FROM orders WHERE track_number = ?`,
     )
     .bind(trackCode)
     .first<{
-      id: string
-      track_code: string
+      id: number
+      track_number: string
       status: string
       customer_name: string
       city: string
@@ -63,13 +63,13 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
     throw createError({ statusCode: 404, statusMessage: 'Porudžbina nije pronađena. Proverite broj i pokušajte ponovo.' })
   }
 
-  // Fetch items by joining on track_code → orders.seq → order_items.order_seq
+  // Fetch items by joining on track_number → orders.id → order_items.order_id
   const itemsResult = await db
     .prepare(
       `SELECT oi.slug, oi.title, oi.price, oi.quantity
        FROM order_items oi
-       JOIN orders o ON oi.order_seq = o.seq
-       WHERE o.track_code = ?`,
+       JOIN orders o ON oi.order_id = o.id
+       WHERE o.track_number = ?`,
     )
     .bind(trackCode)
     .all<{ slug: string, title: string, price: number, quantity: number }>()
@@ -87,7 +87,7 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
     .map(([status, at]) => ({ status, at: at as string }))
 
   return {
-    id: order.id,
+    id: order.track_number,
     status: order.status,
     createdAt: order.created_at,
     customer: {

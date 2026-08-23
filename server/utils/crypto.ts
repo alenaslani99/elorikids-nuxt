@@ -84,20 +84,20 @@ export function generateSessionToken(): string {
   return toBase64Url(bytes)
 }
 
-// ── Order track code suffix ────────────────────────────────────
+// ── Order track number ────────────────────────────────────────
 /**
- * Generate a random 6-character alphanumeric suffix for order track codes.
- * Uses only lowercase letters + digits to stay URL-friendly.
+ * Generate a public tracking number: 'EK-YYYY-XXXXXX'
+ * where XXXXXX is 6 random lowercase alphanumeric characters.
  * 36^6 ≈ 2.2 billion combinations → unguessable by enumeration.
  */
-export function generateTrackSuffix(): string {
+export function generateTrackNumber(year: number): string {
   const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789'
   const bytes = crypto.getRandomValues(new Uint8Array(6))
   let suffix = ''
   for (let i = 0; i < 6; i++) {
     suffix += alphabet[bytes[i]! % alphabet.length]
   }
-  return suffix
+  return `EK-${year}-${suffix}`
 }
 
 // ── Constant-time string compare ──────────────────────────────

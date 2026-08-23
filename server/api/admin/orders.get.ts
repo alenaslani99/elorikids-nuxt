@@ -63,7 +63,7 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
 
   if (search) {
     const pattern = `%${search}%`
-    conditions.push('(LOWER(id) LIKE ? OR LOWER(customer_name) LIKE ? OR LOWER(email) LIKE ? OR LOWER(phone) LIKE ? OR LOWER(city) LIKE ?)')
+    conditions.push('(LOWER(track_number) LIKE ? OR LOWER(customer_name) LIKE ? OR LOWER(email) LIKE ? OR LOWER(phone) LIKE ? OR LOWER(city) LIKE ?)')
     params.push(pattern, pattern, pattern, pattern, pattern)
   }
 
@@ -72,7 +72,7 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
   // ── Fetch orders for current page ───────────────────────────────
   const ordersResult = await db
     .prepare(
-      `SELECT seq, id, track_code, status, customer_name, email, phone, address, city, postal, note,
+      `SELECT id, track_number, status, customer_name, email, phone, address, city, postal, note,
               subtotal, shipping, grand_total, created_at
        FROM orders
        ${whereClause}
@@ -81,9 +81,8 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
     )
     .bind(...params, limit, offset)
     .all<{
-      seq: number
-      id: string
-      track_code: string
+      id: number
+      track_number: string
       status: string
       customer_name: string
       email: string
@@ -121,13 +120,13 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
   const itemsByOrder = new Map<string, AdminOrderItem[]>()
 
   if (pageOrders.length > 0) {
-    const orderSeqs = pageOrders.map(o => o.seq)
-    const placeholders = orderSeqs.map(() => '?').join(',')
+    const orderIds = pageOrders.map(o => o.id)
+    const placeholders = orderIds.map(() => '?').join(',')
     const itemsResult = await db
-      .prepare(`SELECT order_seq, slug, title, price, quantity FROM order_items WHERE order_seq IN (${placeholders})`)
-      .bind(...orderSeqs)
+      .prepare(`SELECT order_id, slug, title, price, quantity FROM order_items WHERE order_id IN (${placeholders})`)
+      .bind(...orderIds)
       .all<{
-        order_seq: number
+        order_id: number
         slug: string
         title: string
         price: number
@@ -135,19 +134,19 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
       }>()
 
     for (const item of itemsResult.results ?? []) {
-      const list = itemsByOrder.get(String(item.order_seq)) ?? []
+      const list = itemsByOrder.get(String(item.order_id)) ?? []
       list.push({
         slug: item.slug,
         title: item.title,
         price: item.price,
         quantity: item.quantity,
       })
-      itemsByOrder.set(String(item.order_seq), list)
+      itemsByOrder.set(String(item.order_id), list)
     }
   }
 
   const orders: AdminOrder[] = pageOrders.map(row => ({
-    id: row.id,
+    id: row.track_number,
     status: row.status,
     customerName: row.customer_name,
     email: row.email,
@@ -160,7 +159,7 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
     shipping: row.shipping,
     grandTotal: row.grand_total,
     createdAt: row.created_at,
-    items: itemsByOrder.get(String(row.seq)) ?? [],
+    items: itemsByOrder.get(String(row.id)) ?? [],
   }))
 
   return {
