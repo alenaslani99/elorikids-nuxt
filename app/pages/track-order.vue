@@ -29,7 +29,8 @@ const { status, errorMessage, setError } = useFormStatus()
 const foundOrder = ref<FoundOrder | null>(null)
 
 // --- Status metadata (label + description live on frontend, not in DB) ---
-const STATUS_META: Record<string, { label: string, description: string }> = {
+type StatusKey = 'received' | 'preparing' | 'in_transit' | 'delivered' | 'cancelled'
+const STATUS_META: Record<StatusKey, { label: string, description: string }> = {
   received:   { label: 'Porudžbina primljena', description: 'Vaša porudžbina je uspešno kreirana i čeka obradu.' },
   preparing:  { label: 'U pripremi',          description: 'Naš tim priprema vaše knjige za slanje.' },
   in_transit: { label: 'U transportu',         description: 'Vaša porudžbina je predata kuriru i kreće ka vama.' },

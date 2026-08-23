@@ -13,9 +13,6 @@ const { user } = useAuth()
 
 const router = useRouter()
 
-// Dev-only flag exposed to the template (import.meta can't be used directly in templates).
-const isDev = import.meta.dev
-
 // Redirect to cart if empty
 onMounted(() => {
   if (items.value.length === 0) {
@@ -78,54 +75,6 @@ watch(form, () => {
   if (submitted.value) submitted.value = false
   clearStale()
 })
-
-// ── Dev helper: fill form with random valid dummy data ─────────────
-const DUMMY_NAMES = [
-  'Marko Marković', 'Jovan Jovanović', 'Milica Petrović', 'Ana Nikolić',
-  'Stefan Stanković', 'Jelena Pavlović', 'Nikola Milošević', 'Marija Popović',
-]
-const DUMMY_CITIES: { city: string, postal: string }[] = [
-  { city: 'Novi Sad', postal: '210000' },
-  { city: 'Beograd', postal: '110000' },
-  { city: 'Niš', postal: '180000' },
-  { city: 'Kragujevac', postal: '340000' },
-  { city: 'Subotica', postal: '240000' },
-  { city: 'Zrenjanin', postal: '230000' },
-]
-const DUMMY_STREETS = [
-  'Bulevar oslobođenja', 'Knez Mihailova', 'Bulevar despota Stefana',
-  'Cara Dušana', 'Makedonska', 'Nemanjina',
-]
-const DUMMY_NOTES = [
-  'Molim pozvoni pre dostave.', 'Dostava u popodnevnim satima.',
-  'Poklon za rođendan, obratite pažnju na pakovanje.',
-  '', '',
-]
-
-function fillDummyData() {
-  const name = DUMMY_NAMES[Math.floor(Math.random() * DUMMY_NAMES.length)]
-  const loc = DUMMY_CITIES[Math.floor(Math.random() * DUMMY_CITIES.length)]
-  const street = DUMMY_STREETS[Math.floor(Math.random() * DUMMY_STREETS.length)]
-  const streetNum = Math.floor(Math.random() * 120) + 1
-  const phonePrefix = ['61', '62', '63', '64', '65', '66', '69'][Math.floor(Math.random() * 7)]
-  const phoneRest = String(Math.floor(Math.random() * 10000000)).padStart(7, '0').slice(0, 7)
-  const emailSlug = name.toLowerCase()
-    .replace(/[šđčćž]/g, c => ({ š: 's', đ: 'dj', č: 'c', ć: 'c', ž: 'z' }[c] ?? c))
-    .replace(/\s+/g, '.')
-  const emailDomain = ['gmail.com', 'yahoo.com', 'hotmail.com'][Math.floor(Math.random() * 3)]
-  const note = DUMMY_NOTES[Math.floor(Math.random() * DUMMY_NOTES.length)]
-
-  form.name = name
-  form.phone = `+381 ${phonePrefix} ${phoneRest.slice(0, 3)} ${phoneRest.slice(3)}`
-  form.email = `${emailSlug}@${emailDomain}`
-  form.address = `${street} ${streetNum}`
-  form.city = loc.city
-  form.postal = loc.postal
-  form.note = note
-
-  submitted.value = false
-  clearStale()
-}
 
 async function handleSubmit() {
   reset()
@@ -194,17 +143,6 @@ async function handleSubmit() {
               <p class="mb-6 text-navy/60">
                 Sva polja sa * su obavezna.
               </p>
-
-              <!-- Dev only: fill dummy data -->
-              <button
-                v-if="isDev"
-                type="button"
-                class="mb-5 inline-flex items-center gap-2 rounded-full border-2 border-dashed border-blue/40 bg-blue/5 px-4 py-2 text-sm font-semibold text-blue transition-colors hover:bg-blue/10"
-                @click="fillDummyData"
-              >
-                <Icon name="lucide:wand-sparkles" class="size-4" />
-                Popuni test podatke
-              </button>
 
               <form class="space-y-5" @submit.prevent="handleSubmit">
                 <!-- Name -->

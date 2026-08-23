@@ -81,7 +81,7 @@ const totalPages = computed(() => Math.max(1, Math.ceil(totalCount.value / pageS
 
 const allCount = computed(() => {
   const c = serverStatusCounts.value
-  return c.received + c.preparing + c.in_transit + c.delivered + c.cancelled
+  return (c.received ?? 0) + (c.preparing ?? 0) + (c.in_transit ?? 0) + (c.delivered ?? 0) + (c.cancelled ?? 0)
 })
 
 // Reset to page 1 when filter changes

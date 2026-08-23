@@ -20,7 +20,12 @@ import { getSessionUser, getSessionToken, type SessionUser } from './session'
  */
 function getOwnerEmail(event: H3Event): string {
   const cloudflare = (event.context as any).cloudflare
-  return cloudflare?.env?.OWNER_EMAIL || process.env?.OWNER_EMAIL || ''
+  // process.env is only available during local dev (nuxt dev on Node).
+  // On Cloudflare Workers, only cloudflare.env is available — globalThis
+  // avoids importing Node types into the worker bundle.
+  return cloudflare?.env?.OWNER_EMAIL
+    || (globalThis as any).process?.env?.OWNER_EMAIL
+    || ''
 }
 
 /**
