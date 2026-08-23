@@ -124,15 +124,12 @@ if (route.query.email) {
               :error="passwordError"
             />
 
-            <!-- Forgot password -->
-            <div class="flex items-center justify-between text-sm">
+            <!-- Remember me -->
+            <div class="flex items-center text-sm">
               <label class="flex items-center gap-2 text-navy/60">
                 <input id="remember" name="remember" type="checkbox" class="size-4 rounded border-cloud text-blue focus:ring-blue/20">
                 Zapamti me
               </label>
-              <NuxtLink to="/auth/forgot-password" class="font-medium text-blue transition-colors hover:text-navy">
-                Zaboravili ste lozinku?
-              </NuxtLink>
             </div>
 
             <!-- Error (always reserved to avoid CLS) -->
