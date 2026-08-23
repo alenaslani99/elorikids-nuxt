@@ -107,7 +107,7 @@ const shippingProgress = computed(() => Math.min(100, (total.value / FREE_SHIPPI
                       >
                         <Icon name="lucide:minus" class="size-4" />
                       </button>
-                      <span class="flex-1 text-center font-bold text-navy sm:flex-none sm:px-2">{{ item.quantity }}</span>
+                      <span class="w-6 text-center text-sm font-bold tabular-nums text-navy sm:w-8">{{ item.quantity }}</span>
                       <button
                         type="button"
                         class="flex size-8 shrink-0 items-center justify-center rounded-full text-navy transition-colors hover:bg-sky/40"
@@ -120,10 +120,10 @@ const shippingProgress = computed(() => Math.min(100, (total.value / FREE_SHIPPI
 
                     <!-- Price -->
                     <div class="text-right">
-                      <p class="text-sm text-navy/50">
+                      <p class="whitespace-nowrap text-sm text-navy/50">
                         {{ item.price.toLocaleString('sr-RS') }} RSD / kom
                       </p>
-                      <p class="font-unbounded text-lg font-bold text-navy">
+                      <p class="whitespace-nowrap font-unbounded text-lg font-bold tabular-nums text-navy">
                         {{ (item.price * item.quantity).toLocaleString('sr-RS') }} RSD
                       </p>
                     </div>

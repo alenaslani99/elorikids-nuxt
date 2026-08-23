@@ -91,18 +91,18 @@ function flip(index: number) {
           @click="flip(index)"
         >
           <div
-            class="relative h-44 transition-transform duration-500 [transform-style:preserve-3d] sm:h-52"
+            class="relative h-52 transition-transform duration-500 [transform-style:preserve-3d] sm:h-56"
             :class="flipped[index] ? '[transform:rotateY(180deg)]' : ''"
           >
             <!-- Front -->
             <div
-              class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl p-6 shadow-md transition-shadow duration-300 [backface-visibility:hidden] group-hover:shadow-xl group-hover:-translate-y-1 sm:gap-4"
+              class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl p-4 shadow-md transition-shadow duration-300 [backface-visibility:hidden] group-hover:shadow-xl group-hover:-translate-y-1 sm:gap-4 sm:p-6"
               :class="[activity.bg, activity.text]"
             >
               <div class="flex size-14 items-center justify-center rounded-2xl bg-white/25 sm:size-16">
                 <Icon :name="activity.icon" class="size-7 sm:size-9" />
               </div>
-              <span class="font-unbounded text-lg font-extrabold sm:text-xl">{{ activity.title }}</span>
+              <span class="font-unbounded text-base font-extrabold sm:text-xl">{{ activity.title }}</span>
               <span class="flex items-center gap-1 text-xs font-medium opacity-80">
                 <Icon name="lucide:rotate-cw" class="size-3" />
                 Klikni za više
@@ -111,16 +111,16 @@ function flip(index: number) {
 
             <!-- Back -->
             <div
-              class="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-3xl border-2 bg-white p-6 text-center shadow-md [backface-visibility:hidden] [transform:rotateY(180deg)]"
+              class="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-3xl border-2 bg-white p-4 text-center shadow-md [backface-visibility:hidden] [transform:rotateY(180deg)] sm:gap-3 sm:p-6"
               :class="flipped[index] ? 'border-blue/40' : 'border-cloud/40'"
             >
               <div
-                class="flex size-12 items-center justify-center rounded-2xl sm:size-14"
+                class="flex size-10 shrink-0 items-center justify-center rounded-2xl sm:size-14"
                 :class="[activity.bg, activity.text]"
               >
-                <Icon :name="activity.icon" class="size-6 sm:size-7" />
+                <Icon :name="activity.icon" class="size-5 sm:size-7" />
               </div>
-              <h3 class="font-unbounded text-base font-bold text-navy sm:text-lg">
+              <h3 class="font-unbounded text-sm font-bold text-navy sm:text-lg">
                 {{ activity.title }}
               </h3>
               <p class="text-xs leading-relaxed text-navy/70 sm:text-sm">

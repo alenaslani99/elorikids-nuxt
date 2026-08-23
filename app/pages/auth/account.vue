@@ -200,15 +200,15 @@ const quickLinks = computed(() => [
                   </div>
 
                   <!-- Total + status -->
-                  <div class="flex items-center gap-4">
-                    <p class="font-bold text-navy">
+                  <div class="flex flex-nowrap items-center gap-4">
+                    <p class="whitespace-nowrap font-bold tabular-nums text-navy">
                       {{ order.grandTotal.toLocaleString('sr-RS') }} RSD
                     </p>
                     <span
-                      class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold"
+                      class="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-1 text-sm font-semibold"
                       :class="statusStyles[order.status]?.bg ?? 'bg-cloud/40'"
                     >
-                      <Icon :name="statusStyles[order.status]?.icon ?? 'lucide:circle'" class="size-3.5" :class="statusStyles[order.status]?.text" />
+                      <Icon :name="statusStyles[order.status]?.icon ?? 'lucide:circle'" class="size-3.5 shrink-0" :class="statusStyles[order.status]?.text" />
                       <span :class="statusStyles[order.status]?.text">{{ statusStyles[order.status]?.label ?? order.status }}</span>
                     </span>
                   </div>

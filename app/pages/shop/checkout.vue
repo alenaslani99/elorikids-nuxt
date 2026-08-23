@@ -9,6 +9,7 @@ useHead({
 
 const { items, total, shipping, grandTotal, clear } = useCart()
 const { getBook } = useBooks()
+const { user } = useAuth()
 
 const router = useRouter()
 
@@ -28,6 +29,14 @@ const form = reactive({
   postal: '',
   note: '',
 })
+
+// Prefill name + email from the logged-in user's session.
+// Only fills empty fields so the user's own edits are never overwritten.
+watch(user, (u) => {
+  if (!u) return
+  if (!form.name) form.name = u.name
+  if (!form.email) form.email = u.email
+}, { immediate: true })
 
 const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
 const submitted = ref(false)
@@ -216,6 +225,7 @@ async function handleSubmit() {
                   v-model="form.note"
                   label="Napomena (opciono)"
                   :rows="3"
+                  :max-words="50"
                   placeholder="Npr. pozvoni pre dostave, podatci o detetu..."
                   :disabled="status === 'loading'"
                   :error="noteError"

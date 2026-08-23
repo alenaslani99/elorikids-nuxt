@@ -20,11 +20,11 @@ const shippingLabel = computed(() =>
     <dl class="space-y-3 text-navy/70">
       <div class="flex justify-between">
         <dt>Knjige{{ showCount ? ` (${itemsCount})` : '' }}</dt>
-        <dd class="font-medium text-navy">{{ total.toLocaleString('sr-RS') }} RSD</dd>
+        <dd class="whitespace-nowrap font-medium text-navy">{{ total.toLocaleString('sr-RS') }} RSD</dd>
       </div>
       <div class="flex justify-between">
         <dt>Dostava</dt>
-        <dd class="font-medium" :class="shipping === 0 ? 'text-mint' : 'text-navy'">
+        <dd class="whitespace-nowrap font-medium" :class="shipping === 0 ? 'text-mint' : 'text-navy'">
           {{ shippingLabel }}
         </dd>
       </div>
@@ -34,7 +34,7 @@ const shippingLabel = computed(() =>
 
     <div class="flex items-baseline justify-between">
       <span class="font-semibold text-navy">Ukupno</span>
-      <span class="font-unbounded text-2xl font-extrabold text-navy">
+      <span class="whitespace-nowrap font-unbounded text-2xl font-extrabold tabular-nums text-navy">
         {{ grandTotal.toLocaleString('sr-RS') }} RSD
       </span>
     </div>
