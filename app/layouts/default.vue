@@ -6,5 +6,6 @@
     </main>
     <AppNewsletter />
     <AppFooter />
+    <CookieConsent />
   </div>
 </template>
