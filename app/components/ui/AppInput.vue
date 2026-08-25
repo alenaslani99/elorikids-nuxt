@@ -87,10 +87,11 @@ function onInput(e: Event) {
       </button>
     </div>
 
-    <!-- Inline error (absolute so it overlays without taking flow space → no layout shift, no extra padding) -->
+    <!-- Inline error: reserved height keeps it in flow so it never overlaps content below,
+         while avoiding layout shift for the common single-line case. -->
     <p
       v-if="error !== undefined"
-      class="absolute left-0 top-full flex items-center gap-1 pt-0.5 text-xs text-coral transition-opacity duration-200"
+      class="flex min-h-5 items-start gap-1 pt-0.5 text-xs text-coral transition-opacity duration-200"
       :class="error ? 'opacity-100' : 'opacity-0 pointer-events-none'"
     >
       <Icon name="lucide:alert-circle" class="size-3 shrink-0" />

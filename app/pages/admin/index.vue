@@ -183,22 +183,22 @@ const filterTabs = computed(() => [
     <div v-else>
       <!-- Header bar -->
       <header class="border-b-2 border-cloud/40 bg-white">
-        <div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
+        <div class="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <div class="flex items-center gap-3">
-            <div class="flex size-10 items-center justify-center rounded-xl bg-navy text-white">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-navy text-white">
               <Icon name="lucide:shield-check" class="size-5" />
             </div>
-            <div>
+            <div class="min-w-0">
               <h1 class="font-unbounded text-lg font-bold text-navy">
                 Admin panel
               </h1>
-              <p class="text-xs text-navy/50">
+              <p class="truncate text-xs text-navy/50">
                 Prijavljeni kao {{ user?.email }}
               </p>
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex shrink-0 items-center gap-2">
             <button
               type="button"
               class="inline-flex items-center gap-2 rounded-full border-2 border-cloud px-4 py-2 text-sm font-semibold text-navy/70 transition-colors hover:border-coral hover:text-coral"

@@ -228,7 +228,7 @@ async function handleSubmit() {
                   v-model="form.note"
                   label="Napomena (opciono)"
                   :rows="3"
-                  :max-words="50"
+                  :max-length="500"
                   placeholder="Npr. pozvoni pre dostave, podatci o detetu..."
                   :disabled="status === 'loading'"
                   :error="noteError"

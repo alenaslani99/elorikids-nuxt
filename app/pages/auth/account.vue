@@ -115,7 +115,7 @@ const quickLinks = computed(() => [
 </script>
 
 <template>
-  <div class="bg-cream">
+  <div class="bg-cream overflow-x-hidden">
     <!-- Page header -->
     <section class="bg-gradient-to-b from-sky/30 to-cream py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -216,7 +216,7 @@ const quickLinks = computed(() => [
                   </div>
 
                   <!-- Total + status -->
-                  <div class="flex items-center justify-between gap-3 sm:justify-end sm:gap-4">
+                  <div class="flex flex-wrap items-center justify-between gap-3 sm:justify-end sm:gap-4">
                     <p class="whitespace-nowrap font-bold tabular-nums text-navy">
                       {{ order.grandTotal.toLocaleString('sr-RS') }} RSD
                     </p>

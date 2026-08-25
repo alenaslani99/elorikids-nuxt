@@ -6,8 +6,8 @@ withDefaults(defineProps<{
   placeholder?: string
   required?: boolean
   disabled?: boolean
-  /** Optional word limit. When set, shows "X / max" and turns coral when exceeded. */
-  maxWords?: number
+  /** Optional character limit. When set, shows "X / max" and turns coral when exceeded. */
+  maxLength?: number
   /** Inline validation error shown below the textarea (reserved height avoids layout shift).
    *  Pass an empty string to reserve space without showing a message; omit entirely to render no slot. */
   error?: string
@@ -19,11 +19,7 @@ withDefaults(defineProps<{
 
 const model = defineModel<string>({ default: '' })
 
-const wordCount = computed(() => {
-  const text = model.value.trim()
-  if (!text) return 0
-  return text.split(/\s+/).filter(Boolean).length
-})
+const charCount = computed(() => model.value.length)
 </script>
 
 <template>
@@ -47,23 +43,28 @@ const wordCount = computed(() => {
       ]"
     />
 
-    <!-- Word counter -->
-    <p
-      v-if="maxWords"
-      class="pointer-events-none absolute right-0 top-full pt-0.5 text-xs transition-colors duration-200"
-      :class="wordCount > maxWords ? 'font-semibold text-coral' : 'text-navy/40'"
+    <!-- Bottom row: inline error (left) + optional character counter (right).
+         In flow with a reserved one-line height so a 2-line error grows downward
+         and pushes content below instead of overlapping it. -->
+    <div
+      v-if="error !== undefined || maxLength"
+      class="flex items-start gap-2 pt-0.5"
     >
-      {{ wordCount }} / {{ maxWords }}
-    </p>
-
-    <!-- Inline error (absolute so it overlays without taking flow space → no layout shift, no extra padding) -->
-    <p
-      v-if="error !== undefined"
-      class="absolute left-0 top-full flex items-center gap-1 pt-0.5 text-xs text-coral transition-opacity duration-200"
-      :class="error ? 'opacity-100' : 'opacity-0 pointer-events-none'"
-    >
-      <Icon name="lucide:alert-circle" class="size-3 shrink-0" />
-      <span>{{ error || '\u00A0' }}</span>
-    </p>
+      <p
+        v-if="error !== undefined"
+        class="flex min-h-5 flex-1 items-start gap-1 text-xs text-coral transition-opacity duration-200"
+        :class="error ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+      >
+        <Icon name="lucide:alert-circle" class="size-3 shrink-0" />
+        <span>{{ error || '\u00A0' }}</span>
+      </p>
+      <p
+        v-if="maxLength"
+        class="pointer-events-none shrink-0 text-xs transition-colors duration-200"
+        :class="charCount > maxLength ? 'font-semibold text-coral' : 'text-navy/40'"
+      >
+        {{ charCount }} / {{ maxLength }}
+      </p>
+    </div>
   </div>
 </template>
