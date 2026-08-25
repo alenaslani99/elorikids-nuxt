@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
--- elorikids D1 schema — Cloudflare D1 (SQLite)
+-- elorikids D1 schema - Cloudflare D1 (SQLite)
 -- Apply with: npx wrangler d1 execute elorikids-db --file server/db/schema.sql
 -- ═══════════════════════════════════════════════════════════════════
 

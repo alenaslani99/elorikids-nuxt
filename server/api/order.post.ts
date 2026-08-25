@@ -145,7 +145,7 @@ export default defineEventHandler(async (event) => {
 
   await db.batch(itemStmts)
 
-  console.log(`[order] #${orderId} (track: ${trackNumber}) — ${name} <${email}> — ${grandTotal} RSD (${validatedItems.length} items)`)
+  console.log(`[order] #${orderId} (track: ${trackNumber}) - ${name} <${email}> - ${grandTotal} RSD (${validatedItems.length} items)`)
 
   // Return the track_number as the customer-facing "orderId"
   return { ok: true, orderId: trackNumber }

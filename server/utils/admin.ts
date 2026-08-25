@@ -1,11 +1,11 @@
 /**
  * Admin authorization helpers.
  *
- * The "owner" is identified by the OWNER_EMAIL env var — no role column
+ * The "owner" is identified by the OWNER_EMAIL env var - no role column
  * needed for a one-man shop. Admin routes require two layers:
  *
- *   1. requireOwner()   — valid session + email matches OWNER_EMAIL
- *   2. requireElevated() — owner + recent security-question verification
+ *   1. requireOwner()   - valid session + email matches OWNER_EMAIL
+ *   2. requireElevated() - owner + recent security-question verification
  *
  * Elevation is stored as `elevated_until` on the session row (1-hour
  * window), so it is automatically revoked on logout / session expiry.
@@ -21,7 +21,7 @@ import { getSessionUser, getSessionToken, type SessionUser } from './session'
 function getOwnerEmail(event: H3Event): string {
   const cloudflare = (event.context as any).cloudflare
   // process.env is only available during local dev (nuxt dev on Node).
-  // On Cloudflare Workers, only cloudflare.env is available — globalThis
+  // On Cloudflare Workers, only cloudflare.env is available - globalThis
   // avoids importing Node types into the worker bundle.
   return cloudflare?.env?.OWNER_EMAIL
     || (globalThis as any).process?.env?.OWNER_EMAIL

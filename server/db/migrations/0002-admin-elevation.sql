@@ -1,8 +1,8 @@
 -- ═════════════════════════════════════════════════════════════════
--- 0002 — Admin elevation: security question + session elevation
+-- 0002 - Admin elevation: security question + session elevation
 --
 -- Adds a security-question gate for the owner's admin panel access.
--- No role column — the owner is identified by OWNER_EMAIL env var.
+-- No role column - the owner is identified by OWNER_EMAIL env var.
 --
 -- Run locally:
 --   npx wrangler d1 execute elorikids-db --local --file server/db/migrations/0002-admin-elevation.sql

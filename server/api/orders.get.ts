@@ -19,7 +19,7 @@ const DEFAULT_PAGE_SIZE = 5
 
 /**
  * Returns paginated orders for the currently authenticated user.
- * Protected — requires a valid session.
+ * Protected - requires a valid session.
  *
  * Query params: page, limit
  */

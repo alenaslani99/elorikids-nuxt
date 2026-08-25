@@ -4,11 +4,11 @@ Marketing-first online shop for interactive laminated write-wipe activity books 
 
 ## Stack
 
-- **Nuxt 4** — SSR framework
-- **Tailwind CSS v4** — styling (via `@tailwindcss/vite`)
-- **@nuxt/icon** + `@iconify-json/lucide` — icons
-- **@nuxt/image** — optimized responsive images (IPX)
-- **@nuxt/fonts** — self-hosted fonts (Google: Unbounded)
+- **Nuxt 4** - SSR framework
+- **Tailwind CSS v4** - styling (via `@tailwindcss/vite`)
+- **@nuxt/icon** + `@iconify-json/lucide` - icons
+- **@nuxt/image** - optimized responsive images (IPX)
+- **@nuxt/fonts** - self-hosted fonts (Google: Unbounded)
 
 ## Getting started
 
@@ -43,15 +43,15 @@ app/
 
 ## Pages
 
-- `/` — landing
-- `/books/[slug]` — book details
-- `/korpa` — cart
-- `/poruci` — checkout
-- `/prijava` · `/registracija` — auth
-- `/sacuvano` — saved items
-- `/kontakt` — contact
-- `/politika-privatnosti` · `/uslovi-koriscenja` — legal
-- `/hvala` — order confirmation
+- `/` - landing
+- `/books/[slug]` - book details
+- `/korpa` - cart
+- `/poruci` - checkout
+- `/prijava` · `/registracija` - auth
+- `/sacuvano` - saved items
+- `/kontakt` - contact
+- `/politika-privatnosti` · `/uslovi-koriscenja` - legal
+- `/hvala` - order confirmation
 
 ## Language
 

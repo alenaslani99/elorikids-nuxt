@@ -1,5 +1,5 @@
 /**
- * Canonical product data — single source of truth for prices and titles.
+ * Canonical product data - single source of truth for prices and titles.
  *
  * The server uses this to validate order items (never trusts client-provided
  * prices). The client can import the same data for display consistency.

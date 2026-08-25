@@ -19,7 +19,7 @@ export function useAuth() {
 
   /**
    * Validate the existing session cookie against the server.
-   * Called once on app init (client-only plugin). No localStorage — the
+   * Called once on app init (client-only plugin). No localStorage - the
    * httpOnly cookie is the single source of truth.
    */
   async function init() {
@@ -45,7 +45,7 @@ export function useAuth() {
       await $fetch('/api/logout', { method: 'POST' })
     }
     catch {
-      // ignore network errors — cookie may already be invalid
+      // ignore network errors - cookie may already be invalid
     }
     auth.value.user = null
   }

@@ -2,7 +2,7 @@
  * Shared validation patterns used across client and server.
  *
  * Lives in `shared/` so it is auto-imported by both the Nuxt app
- * (client) and the Nitro server — single source of truth.
+ * (client) and the Nitro server - single source of truth.
  */
 
 /** Basic email format check (RFC 5322 simplified). */

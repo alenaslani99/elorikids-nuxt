@@ -8,6 +8,13 @@ const { count: savedCount } = useSaved()
 const { isLoggedIn, isReady, user, logout } = useAuth()
 const router = useRouter()
 
+// Only render the logged-in UI after the component has mounted on the
+// client. The server always renders the logged-out branch, so this keeps
+// the first client render identical to SSR and avoids a hydration mismatch
+// (server=logged-out, client=logged-in). It then upgrades in onMounted.
+const mounted = ref(false)
+onMounted(() => { mounted.value = true })
+
 async function handleLogout() {
   await logout()
   router.push('/')
@@ -59,9 +66,11 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
         </p>
         <nav class="flex items-center gap-4">
           <!-- Auth-aware UI: render a stable logged-out state during SSR and
-               until the client-only auth plugin confirms the session. This
-               avoids hydration mismatches (server=logged-out, client=logged-in). -->
-          <template v-if="isLoggedIn && isReady">
+               until the client has mounted. The auth client plugin resolves
+               the session before mount, but we still gate the logged-in branch
+               behind `mounted` so the first client render matches the server
+               (logged-out), then upgrades after hydration. -->
+          <template v-if="mounted && isLoggedIn && isReady">
             <NuxtLink to="/auth/account" class="font-medium transition-colors hover:text-sky">
               <span class="hidden sm:inline">Zdravo, </span>{{ user?.name?.split(' ')[0] }}
             </NuxtLink>

@@ -1,5 +1,5 @@
 /**
- * Order status metadata — shared between client and server.
+ * Order status metadata - shared between client and server.
  *
  * Single source of truth for status labels, badge styling classes,
  * and icon names. Used by: track-order, admin panel, account page.

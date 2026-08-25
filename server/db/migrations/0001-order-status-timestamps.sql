@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
--- 0001 — Replace order_events with status timestamps on orders
+-- 0001 - Replace order_events with status timestamps on orders
 --
 -- Run locally:
 --   npx wrangler d1 execute elorikids-db --local --file server/db/migrations/0001-order-status-timestamps.sql

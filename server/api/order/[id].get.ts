@@ -34,7 +34,7 @@ export default defineEventHandler(async (event): Promise<OrderTrackingResponse> 
     throw createError({ statusCode: 400, statusMessage: 'Broj porudžbine je obavezan.' })
   }
 
-  // Look up by track_number (random, unguessable) — NOT by sequential id
+  // Look up by track_number (random, unguessable) - NOT by sequential id
   const order = await db
     .prepare(
       `SELECT id, track_number, status, customer_name, city, subtotal, shipping, grand_total, created_at,

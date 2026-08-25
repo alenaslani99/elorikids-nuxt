@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
--- 0004 — Simplify orders schema
+-- 0004 - Simplify orders schema
 --
 -- Replaces the seq/id/track_code three-column design with a clean
 -- two-column design:

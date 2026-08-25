@@ -1,4 +1,4 @@
-# elorikids.rs — robots.txt
+# elorikids.rs - robots.txt
 # All SEO-critical pages (/, /about-us, /faq, /legal/**, /books/**, /blog/**)
 # are SSR and fully crawlable.
 

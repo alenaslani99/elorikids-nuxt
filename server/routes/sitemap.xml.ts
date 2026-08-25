@@ -4,7 +4,7 @@ import { posts } from '~/composables/usePosts'
 const SITE = 'https://elorikids.rs'
 
 // Static SEO-critical pages (SSR-rendered).
-// SPA-only routes (/admin, /shop, /auth/account, /track-order) are excluded —
+// SPA-only routes (/admin, /shop, /auth/account, /track-order) are excluded -
 // they have no SEO value and return empty client-rendered shells.
 const staticUrls: { loc: string; priority: string; lastmod?: string }[] = [
   { loc: '/', priority: '1.0', lastmod: '2026-08-23' },

@@ -67,7 +67,7 @@ const { data: ordersData, refresh: refreshOrders } = await useAsyncData<AdminOrd
   },
 )
 
-// Non-null after the 404 guard above — safe to access in template
+// Non-null after the 404 guard above - safe to access in template
 const status = computed(() => adminStatus.value!)
 
 // Derived data from the paginated response
@@ -120,7 +120,7 @@ async function updateStatus(order: AdminOrder, newStatus: string) {
     await refreshOrders()
   }
   catch (e: any) {
-    // Revert is implicit — refresh didn't happen on failure
+    // Revert is implicit - refresh didn't happen on failure
   }
   finally {
     updatingOrderId.value = null
@@ -151,7 +151,7 @@ async function onGateDone() {
   await refreshOrders()
 }
 
-// Filter tabs — counts come from the server (all orders, not just current page)
+// Filter tabs - counts come from the server (all orders, not just current page)
 const filterTabs = computed(() => [
   { key: 'all', label: 'Sve', count: allCount.value },
   { key: 'received', label: 'Primljene', count: serverStatusCounts.value.received },

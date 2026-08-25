@@ -3,7 +3,7 @@
  *
  * /admin is SPA-only (ssr: false in nuxt.config), so this runs on the
  * client after the auth plugin has resolved the session. Non-owners get
- * a 404 here — the page never renders for them.
+ * a 404 here - the page never renders for them.
  *
  * Not logged in → redirect to login.
  * Logged in but not owner → 404 (page doesn't exist for them).

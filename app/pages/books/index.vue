@@ -54,7 +54,7 @@ useHead({
       title="Naše knjige"
       badge="Knjige"
       badge-class="bg-sky/40 text-navy"
-      subtitle="Tri interaktivne piši-briši knjige, dizajnirane za decu od 2 do 6 godina. Svaka je prilagođena razvojnom uzrastu deteta — od prvih boja do lavirinta za predškolce."
+      subtitle="Tri interaktivne piši-briši knjige, dizajnirane za decu od 2 do 6 godina. Svaka je prilagođena razvojnom uzrastu deteta - od prvih boja do lavirinta za predškolce."
       :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Knjige' }]"
     />
 
@@ -120,7 +120,7 @@ useHead({
     <!-- CTA -->
     <AppCtaSection
       title="Imate pitanja?"
-      subtitle="Kontaktirajte nas — rado ćemo vam pomoći da izaberete pravu knjigu za vaše dete."
+      subtitle="Kontaktirajte nas - rado ćemo vam pomoći da izaberete pravu knjigu za vaše dete."
       primary-label=" Kontakt"
       primary-to="/legal/contact"
       secondary-label="Česta pitanja"

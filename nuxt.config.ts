@@ -50,9 +50,9 @@ export default defineNuxtConfig({
     preset: 'cloudflare-module',
   },
   routeRules: {
-    // ── SSR pages (left on by default — SEO-critical, public content) ──
+    // ── SSR pages (left on by default - SEO-critical, public content) ──
     //   /, /about-us, /faq, /legal/**, /books/**
-    //   /blog/** (SEO-critical — blog index and posts must render server-side)
+    //   /blog/** (SEO-critical - blog index and posts must render server-side)
     //   /auth/login, /auth/register (form renders immediately, no flash)
     //
     // ── SPA-only pages (ssr: false) ────────────────────────────────────

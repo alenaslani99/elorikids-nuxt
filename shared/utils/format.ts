@@ -30,7 +30,7 @@ export function formatDateLong(iso: string): string {
   return `${d.getDate()}. ${MONTHS_LONG[d.getMonth()]} ${d.getFullYear()}.`
 }
 
-/** Alias for formatDateLong — kept for backward compatibility. */
+/** Alias for formatDateLong - kept for backward compatibility. */
 export const formatDate = formatDateLong
 
 /**

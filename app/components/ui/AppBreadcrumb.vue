@@ -18,17 +18,17 @@ defineProps<{
 
 <template>
   <nav :class="navClass" aria-label="Breadcrumb">
-    <ol class="flex items-center gap-2 text-sm text-navy/50">
+    <ol class="flex flex-wrap items-center gap-2 text-sm text-navy/50">
       <template v-for="(item, index) in items" :key="index">
-        <li>
+        <li class="min-w-0">
           <NuxtLink
             v-if="item.to"
             :to="item.to"
-            class="transition-colors hover:text-blue"
+            class="block max-w-[40ch] truncate transition-colors hover:text-blue sm:max-w-none"
           >
             {{ item.label }}
           </NuxtLink>
-          <span v-else class="font-medium text-navy">{{ item.label }}</span>
+          <span v-else class="block max-w-[40ch] truncate font-medium text-navy sm:max-w-none">{{ item.label }}</span>
         </li>
         <li v-if="index < items.length - 1" aria-hidden="true">›</li>
       </template>

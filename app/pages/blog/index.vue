@@ -27,7 +27,7 @@ const rest = computed(() => posts.filter(p => p.slug !== (featured.value?.slug ?
       title="Učenje, igra i odrastanje"
       badge="Blog"
       badge-class="bg-coral/20 text-coral"
-      subtitle="Saveti, priče i uvidi o razvoju deteta, piši-briši knjigama i učenju kroz igru — od onih koji to svakodnevno rade."
+      subtitle="Saveti, priče i uvidi o razvoju deteta, piši-briši knjigama i učenju kroz igru - od onih koji to svakodnevno rade."
       :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Blog' }]"
     />
 

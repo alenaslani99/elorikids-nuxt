@@ -1,6 +1,6 @@
 /**
  * Edge-compatible password hashing and session token utilities.
- * Uses Web Crypto API (PBKDF2-SHA256) — no Node-only dependencies,
+ * Uses Web Crypto API (PBKDF2-SHA256) - no Node-only dependencies,
  * works on Cloudflare Workers.
  */
 

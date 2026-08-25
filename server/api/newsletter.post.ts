@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Neispravna adresa e-pošte.' })
   }
 
-  // Insert OR IGNORE — duplicate emails are silently accepted (idempotent)
+  // Insert OR IGNORE - duplicate emails are silently accepted (idempotent)
   await db
     .prepare('INSERT OR IGNORE INTO newsletter_subscribers (email) VALUES (?)')
     .bind(email)

@@ -5,7 +5,7 @@
  *   - 'setup':  first-time configuration of the security question + answer
  *   - 'verify':  answer the security question to elevate the session
  *
- * Emits 'done' when setup or verification succeeds — the parent
+ * Emits 'done' when setup or verification succeeds - the parent
  * page then re-checks the admin status.
  */
 const props = defineProps<{

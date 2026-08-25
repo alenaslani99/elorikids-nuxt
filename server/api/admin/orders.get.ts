@@ -35,7 +35,7 @@ export interface AdminOrdersResponse {
 const DEFAULT_PAGE_SIZE = 10
 
 /**
- * Returns paginated orders with line items — admin/owner view.
+ * Returns paginated orders with line items - admin/owner view.
  * Supports server-side filtering by status and search query.
  * Requires an elevated owner session.
  *

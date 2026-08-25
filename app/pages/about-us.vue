@@ -20,19 +20,19 @@ const values = [
   {
     icon: 'lucide:heart',
     title: 'Ljubav u svakom detalju',
-    description: 'Svaku knjigu kreiramo od nule — od prve skice do poslednje ilustracije. Nema kopiranih materijala, samo originalni sadržaj napravljen sa ljubavlju prema deci.',
+    description: 'Svaku knjigu kreiramo od nule - od prve skice do poslednje ilustracije. Nema kopiranih materijala, samo originalni sadržaj napravljen sa ljubavlju prema deci.',
     accent: 'coral',
   },
   {
     icon: 'lucide:leaf',
     title: 'Održivost',
-    description: 'Piši-briši sistem znači da jedna knjiga zamenjuje stotine radnih listova. Manje papira, manje otpada, više učenja — iznova i iznova.',
+    description: 'Piši-briši sistem znači da jedna knjiga zamenjuje stotine radnih listova. Manje papira, manje otpada, više učenja - iznova i iznova.',
     accent: 'mint',
   },
   {
     icon: 'lucide:baby',
     title: 'Prilagođeno uzrastu',
-    description: 'Svaka knjiga prati razvojni stadijum deteta — od prepoznavanja boja sa 2 godine do lavirinta i koncentracije pred školu.',
+    description: 'Svaka knjiga prati razvojni stadijum deteta - od prepoznavanja boja sa 2 godine do lavirinta i koncentracije pred školu.',
     accent: 'blue',
   },
   {
@@ -54,13 +54,13 @@ const milestones = [
   {
     icon: 'lucide:lightbulb',
     title: 'Ideja',
-    text: 'Kao roditelji, tražili smo nešto što nije ekran — nešto što decu drži pažnjom, uči kroz igru i traje.',
+    text: 'Kao roditelji, tražili smo nešto što nije ekran - nešto što decu drži pažnjom, uči kroz igru i traje.',
     accent: 'yellow',
   },
   {
     icon: 'lucide:pen-tool',
     title: 'Kreacija',
-    text: 'Počeli smo da crtamo i osmišljavamo zadate — svaki ručno ilustrovan, prilagođen uzrastu i pun boja.',
+    text: 'Počeli smo da crtamo i osmišljavamo zadate - svaki ručno ilustrovan, prilagođen uzrastu i pun boja.',
     accent: 'coral',
   },
   {
@@ -85,7 +85,7 @@ const milestoneAccent: Record<string, string> = {
       title="Priča koja počinje decom"
       badge="O nama"
       badge-class="bg-coral/20 text-coral"
-      subtitle="elorikids je rođen iz jednostavne želje — da deci ponudimo nešto lepše od ekrana. Interaktivne piši-briši knjige koje budu radoznalost, razvijaju veštine i čine učenje zabavnim."
+      subtitle="elorikids je rođen iz jednostavne želje - da deci ponudimo nešto lepše od ekrana. Interaktivne piši-briši knjige koje budu radoznalost, razvijaju veštine i čine učenje zabavnim."
       :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'O nama' }]"
     />
 
@@ -103,14 +103,14 @@ const milestoneAccent: Record<string, string> = {
             </h2>
             <div class="mt-6 space-y-4 text-lg leading-relaxed text-navy/70">
               <p>
-                Sve je počelo kao roditeljska dilema — kako decu uzrasta 2 do 6 godina zaokupiti
+                Sve je počelo kao roditeljska dilema - kako decu uzrasta 2 do 6 godina zaokupiti
                 nečim što je zabavno, edukativno i nije još jedan ekran? Odgovor smo pronašli u
                 piši-briši sistemu: laminiranim, vodootpornim stranicama koje se mogu brisati
                 i koristiti iznova.
               </p>
               <p>
                 Svaku knjigu kreiramo od nule. Zadaci su ručno ilustrovani, pažljivo prilagođeni
-                uzrastu i puni boja. Nema kopiranih materijala — sve nastaje sa ljubavlju, za našu
+                uzrastu i puni boja. Nema kopiranih materijala - sve nastaje sa ljubavlju, za našu
                 decu i njihove potrebe.
               </p>
               <p>

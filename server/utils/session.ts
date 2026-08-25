@@ -1,5 +1,5 @@
 /**
- * Session management — opaque tokens stored in a `sessions` table.
+ * Session management - opaque tokens stored in a `sessions` table.
  * Enables immediate server-side revocation (logout).
  */
 import type { D1Database } from '@cloudflare/workers-types'

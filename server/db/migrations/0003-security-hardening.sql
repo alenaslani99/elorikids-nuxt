@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
--- 0003 — Security hardening: order ID redesign + rate limiting
+-- 0003 - Security hardening: order ID redesign + rate limiting
 --
 -- Changes:
 --   1. Orders get an auto-increment `seq` PK (eliminates race condition)
@@ -16,7 +16,7 @@
 -- `seq` is the real PK: monotonic, assigned by SQLite, no race.
 -- `track_code` is the public-facing random ID shown to customers
 --   (format: EK-YYYY-NNNNNN-XXXXXX where XXXXXX is random alphanumeric).
--- The old `id` column (EK-YYYY-000001) becomes legacy data — kept for
+-- The old `id` column (EK-YYYY-000001) becomes legacy data - kept for
 -- backwards compat but `track_code` is the new lookup key.
 
 ALTER TABLE orders ADD COLUMN seq INTEGER;

@@ -2,7 +2,7 @@
 useHead({
   title: 'Česta pitanja - elorikids',
   meta: [
-    { name: 'description', content: 'Odgovori na najčešća pitanja o elorikids knjigama — piši-briši sistem, uzrasti, bezbednost, dostava i povrat robe.' },
+    { name: 'description', content: 'Odgovori na najčešća pitanja o elorikids knjigama - piši-briši sistem, uzrasti, bezbednost, dostava i povrat robe.' },
     { property: 'og:title', content: 'Česta pitanja | elorikids' },
     { property: 'og:description', content: 'Odgovori na najčešća pitanja o elorikids knjigama.' },
     { property: 'og:type', content: 'website' },
