@@ -24,7 +24,8 @@ const form = reactive({
   name: '',
   phone: '',
   email: '',
-  address: '',
+  street: '',
+  streetNumber: '',
   city: '',
   postal: '',
   note: '',
@@ -41,7 +42,7 @@ watch(user, (u) => {
 const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
 const submitted = ref(false)
 
-const { emailRegex, nameRegex, serbianPhoneRegex: phoneRegex, postalRegex } = useValidation()
+const { emailRegex, nameRegex, serbianPhoneRegex: phoneRegex, postalRegex, streetNumberRegex } = useValidation()
 
 const nameError = computed(() =>
   submitted.value && (!form.name.trim() || !nameRegex.test(form.name.trim())) ? 'Unesite ime i prezime (najmanje dve reči).' : '',
@@ -54,9 +55,15 @@ const emailError = computed(() => {
   if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
   return ''
 })
-const addressError = computed(() =>
-  submitted.value && !form.address.trim() ? 'Unesite adresu dostave.' : '',
+const streetError = computed(() =>
+  submitted.value && !form.street.trim() ? 'Unesite ulicu.' : '',
 )
+const streetNumberError = computed(() => {
+  if (!submitted.value) return ''
+  if (!form.streetNumber.trim()) return 'Unesite broj.'
+  if (!streetNumberRegex.test(form.streetNumber.trim())) return 'Format: broj, broj/broj ili BB.'
+  return ''
+})
 const cityError = computed(() =>
   submitted.value && !form.city.trim() ? 'Unesite grad.' : '',
 )
@@ -80,7 +87,7 @@ async function handleSubmit() {
   reset()
   submitted.value = true
 
-  if (nameError.value || phoneError.value || emailError.value || addressError.value || cityError.value || postalError.value || noteError.value) {
+  if (nameError.value || phoneError.value || emailError.value || streetError.value || streetNumberError.value || cityError.value || postalError.value || noteError.value) {
     return
   }
 
@@ -94,7 +101,8 @@ async function handleSubmit() {
           name: form.name,
           phone: form.phone,
           email: form.email,
-          address: form.address,
+          street: form.street,
+          streetNumber: form.streetNumber,
           city: form.city,
           postal: form.postal,
           note: form.note,
@@ -184,18 +192,31 @@ async function handleSubmit() {
                   />
                 </div>
 
-                <!-- Address -->
-                <AppInput
-                  id="address"
-                  v-model="form.address"
-                  label="Adresa *"
-                  type="text"
-                  autocomplete="street-address"
-                  placeholder="Bulevar oslobođenja 12"
-                  :disabled="status === 'loading'"
-                  :error="addressError"
-                  capitalize
-                />
+                <!-- Street + Number -->
+                <div class="grid gap-5 sm:grid-cols-[1fr_140px]">
+                  <AppInput
+                    id="street"
+                    v-model="form.street"
+                    label="Ulica *"
+                    type="text"
+                    autocomplete="address-line1"
+                    placeholder="Bulevar Oslobodjenja"
+                    :disabled="status === 'loading'"
+                    :error="streetError"
+                    capitalize
+                  />
+                  <AppInput
+                    id="streetNumber"
+                    v-model="form.streetNumber"
+                    label="Broj *"
+                    type="text"
+                    autocomplete="address-line2"
+                    inputmode="text"
+                    placeholder="13, 66/10, BB"
+                    :disabled="status === 'loading'"
+                    :error="streetNumberError"
+                  />
+                </div>
 
                 <!-- City + Postal -->
                 <div class="grid gap-5 sm:grid-cols-2">

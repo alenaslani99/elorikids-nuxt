@@ -1,7 +1,7 @@
 import { createError, defineEventHandler, readBody, getRequestHeaders } from 'h3'
 import { useDb } from '../utils/db'
 import { getSessionUser } from '../utils/session'
-import { emailRegex, serbianPhoneRegex, nameRegex, postalRegex } from '~~/shared/utils/validation'
+import { emailRegex, serbianPhoneRegex, nameRegex, postalRegex, streetNumberRegex } from '~~/shared/utils/validation'
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '~~/shared/utils/orders'
 import { getProduct, MAX_ORDER_ITEMS } from '~~/shared/utils/products'
 import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
@@ -19,7 +19,8 @@ interface Customer {
   name: string
   phone: string
   email: string
-  address: string
+  street: string
+  streetNumber: string
   city: string
   postal: string
   note?: string
@@ -56,7 +57,8 @@ export default defineEventHandler(async (event) => {
   const name = body?.customer?.name?.trim()
   const phone = body?.customer?.phone?.trim()
   const email = body?.customer?.email?.trim().toLowerCase()
-  const address = body?.customer?.address?.trim()
+  const street = body?.customer?.street?.trim()
+  const streetNumber = body?.customer?.streetNumber?.trim()
   const city = body?.customer?.city?.trim()
   const postal = body?.customer?.postal?.trim()
   const note = body?.customer?.note?.trim() || null
@@ -70,9 +72,15 @@ export default defineEventHandler(async (event) => {
   if (!email || !emailRegex.test(email) || email.length > LIMITS.email) {
     throw createError({ statusCode: 400, statusMessage: 'Ispravna adresa e-pošte je obavezna.' })
   }
-  if (!address || address.length > LIMITS.address) {
-    throw createError({ statusCode: 400, statusMessage: 'Adresa dostave je obavezna.' })
+  if (!street || street.length > LIMITS.street) {
+    throw createError({ statusCode: 400, statusMessage: 'Ulica je obavezna.' })
   }
+  if (!streetNumber || !streetNumberRegex.test(streetNumber) || streetNumber.length > LIMITS.streetNumber) {
+    throw createError({ statusCode: 400, statusMessage: 'Broj je obavezan. Format: broj, broj/broj ili BB.' })
+  }
+  // Normalize "bb" -> "BB" for consistent display/storage.
+  const normalizedStreetNumber = streetNumber.toUpperCase()
+  const address = `${street} ${normalizedStreetNumber}`
   if (!city || city.length > LIMITS.city) {
     throw createError({ statusCode: 400, statusMessage: 'Grad je obavezan.' })
   }

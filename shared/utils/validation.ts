@@ -19,3 +19,6 @@ export const postalRegex = /^[1-9]\d{4}$/
 
 /** Full name: at least two words of Serbian/Latin letters. */
 export const nameRegex = /^[a-zA-ZšđčćžŠĐČĆŽ]+(?:\s+[a-zA-ZšđčćžŠĐČĆŽ]+)+$/
+
+/** Street number: digits, digits/digits, or BB (case-insensitive). */
+export const streetNumberRegex = /^(\d+|\d+\/\d+|bb)$/i

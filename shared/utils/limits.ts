@@ -10,6 +10,8 @@ export const LIMITS = {
   email: 254, // RFC 5321 max
   password: 128,
   phone: 30,
+  street: 150,
+  streetNumber: 20,
   address: 200,
   city: 100,
   postal: 10,
