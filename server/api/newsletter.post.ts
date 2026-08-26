@@ -54,5 +54,5 @@ export default defineEventHandler(async (event) => {
     console.error(`[newsletter] Failed to send welcome email to ${email}:`, err)
   }
 
-  return { ok: true, message: 'Hvala na prijavi! 📚' }
+  return { ok: true, message: 'Hvala na prijavi! Proverite mejl.' }
 })

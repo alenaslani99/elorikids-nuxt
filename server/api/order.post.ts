@@ -186,6 +186,7 @@ export default defineEventHandler(async (event) => {
     const { subject, html, text } = buildOrderMail({
       customerName: name,
       email,
+      phone,
       trackNumber,
       items: validatedItems.map((i) => ({
         title: i.title,
