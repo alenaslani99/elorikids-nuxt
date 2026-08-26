@@ -4,9 +4,9 @@ import type { MediaItem } from '~/composables/useBooks'
 /**
  * MediaGallery - video-first product gallery with a swipeable lightbox.
  *
- * Main view: shows the active media item — a real <video> element (with
+ * Main view: shows the active media item - a real <video> element (with
  * preload="metadata" + #t=0.1 so the browser renders the video's own first
- * frame as the thumbnail, not a separate image) or an image — inside the
+ * frame as the thumbnail, not a separate image) or an image - inside the
  * same rounded-3xl container as before. Dot indicators ("islands") below
  * let the user switch items.
  *
@@ -18,7 +18,7 @@ import type { MediaItem } from '~/composables/useBooks'
  * - Video uses preload="metadata" (first frame only, no full download).
  * - Images use NuxtImg (webp, sized).
  * - Lightbox renders nothing until opened (v-if, not v-show).
- * - No external library — vanilla touch handlers.
+ * - No external library - vanilla touch handlers.
  */
 const props = withDefaults(defineProps<{
   media: MediaItem[]
@@ -75,26 +75,44 @@ watch(lightboxOpen, (open) => {
   if (open) nextTick(() => lightboxEl.value?.focus())
 })
 
-// ── Touch swipe (lightbox only) ──
-const touchDelta = ref(0)
-let touchStartX = 0
+// ── Swipe / drag (touch + mouse) ──
+const dragDelta = ref(0)
+let pointerStartX = 0
+let isPointerDown = false
+let maxDrag = 0
 
-function onTouchStart(e: TouchEvent) {
+function pointerDown(clientX: number, target: EventTarget | null) {
   // Don't swipe when interacting with the video controls
-  if ((e.target as HTMLElement).closest('video')) return
-  touchStartX = e.touches[0]?.clientX ?? 0
+  if ((target as HTMLElement)?.closest('video')) return
+  pointerStartX = clientX
+  isPointerDown = true
+  maxDrag = 0
 }
-function onTouchMove(e: TouchEvent) {
-  if (!touchStartX) return
-  touchDelta.value = (e.touches[0]?.clientX ?? 0) - touchStartX
+function pointerMove(clientX: number) {
+  if (!isPointerDown) return
+  dragDelta.value = clientX - pointerStartX
+  maxDrag = Math.max(maxDrag, Math.abs(dragDelta.value))
 }
-function onTouchEnd() {
-  if (Math.abs(touchDelta.value) > 50) {
-    if (touchDelta.value < 0) next()
+function pointerUp() {
+  if (Math.abs(dragDelta.value) > 50) {
+    if (dragDelta.value < 0) next()
     else prev()
   }
-  touchDelta.value = 0
-  touchStartX = 0
+  dragDelta.value = 0
+  isPointerDown = false
+  pointerStartX = 0
+}
+// Touch wrappers
+function onTouchStart(e: TouchEvent) { pointerDown(e.touches[0]?.clientX ?? 0, e.target) }
+function onTouchMove(e: TouchEvent) { pointerMove(e.touches[0]?.clientX ?? 0) }
+function onTouchEnd() { pointerUp() }
+// Mouse wrappers
+function onMouseDown(e: MouseEvent) { pointerDown(e.clientX, e.target) }
+function onMouseMove(e: MouseEvent) { pointerMove(e.clientX) }
+function onMouseUp() { pointerUp() }
+// Close on backdrop click - but only if the user didn't drag
+function onBackdropClick() {
+  if (maxDrag < 10) closeLightbox()
 }
 
 // ── Accent dot colors ──
@@ -201,19 +219,23 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
               </button>
             </div>
 
-            <!-- Media content (swipe zone) -->
+            <!-- Media content (swipe/drag zone) -->
             <div
               class="flex flex-1 items-center justify-center overflow-hidden px-4"
-              @click.self="closeLightbox"
               @touchstart.passive="onTouchStart"
               @touchmove.passive="onTouchMove"
               @touchend="onTouchEnd"
+              @mousedown="onMouseDown"
+              @mousemove="onMouseMove"
+              @mouseup="onMouseUp"
+              @mouseleave="onMouseUp"
+              @click="onBackdropClick"
             >
               <div
-                class="transition-transform duration-150 ease-out"
-                :style="touchDelta ? { transform: `translateX(${touchDelta}px)` } : undefined"
+                class="transition-transform duration-150 ease-out select-none"
+                :style="dragDelta ? { transform: `translateX(${dragDelta}px)` } : undefined"
               >
-                <!-- Video — only mounts when this slide is active -->
+                <!-- Video - only mounts when this slide is active -->
                 <video
                   v-if="lightboxActive.type === 'video'"
                   :key="lightboxIndex"
@@ -235,11 +257,11 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
               </div>
             </div>
 
-            <!-- Desktop arrows -->
+            <!-- Desktop arrows (hidden on touch screens) -->
             <template v-if="media.length > 1">
               <button
                 type="button"
-                class="absolute left-2 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 md:left-4"
+                class="absolute left-2 top-1/2 hidden size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 md:flex md:left-4"
                 aria-label="Prethodno"
                 @click.stop="prev"
               >
@@ -247,7 +269,7 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
               </button>
               <button
                 type="button"
-                class="absolute right-2 top-1/2 flex size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 md:right-4"
+                class="absolute right-2 top-1/2 hidden size-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 md:flex md:right-4"
                 aria-label="Sledeće"
                 @click.stop="next"
               >
