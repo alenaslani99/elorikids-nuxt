@@ -77,10 +77,7 @@ const newsletterTemplate = `<!doctype html>
               <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
                   <td style="width:56px;height:56px;border-radius:14px;background:rgba(255,200,61,.2);text-align:center;vertical-align:middle;">
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
-                      <path d="M3 7.5C3 5.567 4.567 4 6.5 4h11C19.433 4 21 5.567 21 7.5v9c0 1.933-1.567 3.5-3.5 3.5h-11C4.567 20 3 18.433 3 16.5v-9Z" stroke="#FFC83D" stroke-width="2" fill="none"/>
-                      <path d="m4 7 7.2 5.2a1.6 1.6 0 0 0 1.6 0L20 7" stroke="#FFC83D" stroke-width="2" stroke-linecap="round" fill="none"/>
-                    </svg>
+                    <img src="https://elorikids.rs/mail-envelope.png" width="28" height="28" alt="" style="display:inline-block;vertical-align:middle;">
                   </td>
                 </tr>
               </table>
@@ -107,9 +104,7 @@ const newsletterTemplate = `<!doctype html>
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width:40px;height:40px;border-radius:12px;background:rgba(37,135,232,.1);text-align:center;vertical-align:middle;">
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
-                            <path d="M7 21h10m-5-4v4M5 3h14v11a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V3Zm3 5 2 2 4-4" stroke="#2587E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>
+                          <img src="https://elorikids.rs/mail-book.png" width="22" height="22" alt="" style="display:inline-block;vertical-align:middle;">
                         </td>
                       </tr>
                     </table>
@@ -121,9 +116,7 @@ const newsletterTemplate = `<!doctype html>
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width:40px;height:40px;border-radius:12px;background:rgba(117,214,177,.15);text-align:center;vertical-align:middle;">
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
-                            <path d="M8 3v5m8-5v5M3 11h18M5 7h14a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Zm5 7 1.5 1.5L14 11" stroke="#75D6B1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>
+                          <img src="https://elorikids.rs/mail-calendar.png" width="22" height="22" alt="" style="display:inline-block;vertical-align:middle;">
                         </td>
                       </tr>
                     </table>
@@ -154,11 +147,7 @@ const newsletterTemplate = `<!doctype html>
                 <tr>
                   <td align="center" style="padding:0;">
                     <a href="https://instagram.com/elorikids" class="ig-btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#FFFFFF;border:2px solid #F06A3A;border-radius:999px;padding:13px 28px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#F06A3A;text-align:center;text-decoration:none;">
-                      <svg class="ig-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F06A3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px;">
-                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-                      </svg>@elorikids
+                      <img src="https://elorikids.rs/mail-instagram.png" width="18" height="18" alt="" style="display:inline-block;vertical-align:middle;margin-right:8px;">@elorikids
                     </a>
                   </td>
                 </tr>
@@ -252,20 +241,13 @@ const orderTemplate = `<!doctype html>
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width:60px;height:60px;border-radius:50%;background:#75D6B1;text-align:center;vertical-align:middle;box-shadow:0 4px 14px rgba(18,63,115,.12);">
-                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
-                            <path d="M5 13l4 4L19 7" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                          </svg>
+                          <img src="https://elorikids.rs/mail-check.png" width="32" height="32" alt="" style="display:inline-block;vertical-align:middle;">
                         </td>
                       </tr>
                     </table>
                     <h1 style="margin:14px 0 0;font-size:22px;font-weight:800;color:#123F73;letter-spacing:-.02em;line-height:1.25;">Porudžbina primljena!</h1>
                     <p style="margin:8px 0 0;font-size:14px;font-weight:400;line-height:1.5;color:#0A315E;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A315E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;">
-                        <path d="m7.5 4.27 9 5.15"/>
-                        <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
-                        <path d="m3.3 7 8.7 5 8.7-5"/>
-                        <path d="M12 22V12"/>
-                      </svg>Pošiljka se sprema i uskoro kreće na put.
+                      <img src="https://elorikids.rs/mail-package.png" width="18" height="18" alt="" style="display:inline-block;vertical-align:middle;margin-right:6px;">Pošiljka se sprema i uskoro kreće na put.
                     </p>
                   </td>
                 </tr>
@@ -323,9 +305,7 @@ const orderTemplate = `<!doctype html>
                       {{CITY_LINE}}
                     </p>
                     <p style="margin:10px 0 0;font-size:14px;font-weight:400;line-height:1.55;color:#123F73;">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2587E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-2px;margin-right:6px;">
-                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                      </svg>{{PHONE}}
+                      <img src="https://elorikids.rs/mail-phone.png" width="14" height="14" alt="" style="display:inline-block;vertical-align:-2px;margin-right:6px;">{{PHONE}}
                     </p>
                     {{NOTE_BLOCK}}
                   </td>
