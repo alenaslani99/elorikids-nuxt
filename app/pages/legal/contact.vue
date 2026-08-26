@@ -79,8 +79,8 @@ const contactInfo = [
   {
     icon: 'lucide:mail',
     label: 'E-pošta',
-    value: 'pozdrav@elorikids.rs',
-    href: 'mailto:pozdrav@elorikids.rs',
+    value: 'elorikids@gmail.com',
+    href: 'mailto:elorikids@gmail.com',
     accent: 'bg-blue/10 text-blue',
   },
   {

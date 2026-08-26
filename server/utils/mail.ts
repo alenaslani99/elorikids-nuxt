@@ -566,7 +566,7 @@ export function buildOrderMail(input: OrderMailInput): {
   });
 
   const itemText = input.items
-    .map((i) => `  - ${i.title} × ${i.quantity} — ${formatRsd(i.price * i.quantity)}`)
+    .map((i) => `  - ${i.title} × ${i.quantity} - ${formatRsd(i.price * i.quantity)}`)
     .join("\n");
 
   const text = `Zdravo ${input.customerName},

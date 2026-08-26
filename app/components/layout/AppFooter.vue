@@ -44,8 +44,13 @@ const columns = [
             <a href="https://instagram.com/elorikids" target="_blank" rel="noopener" aria-label="Instagram" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
               <Icon name="lucide:instagram" class="size-4" />
             </a>
-            <a href="https://facebook.com/elorikids" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
+            <a href="https://www.facebook.com/people/Elori-Kids-aktivnosti-za-decu/61586359117432/" target="_blank" rel="noopener" aria-label="Facebook" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
               <Icon name="lucide:facebook" class="size-4" />
+            </a>
+            <a href="https://www.tiktok.com/@elorikids" target="_blank" rel="noopener" aria-label="TikTok" class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-blue hover:text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="size-4" aria-hidden="true">
+                <path d="M19.589 6.825a4.793 4.793 0 0 1-3.77-4.245V2h-3.445v13.167a2.865 2.865 0 0 1-5.314 1.445 2.864 2.864 0 0 1 2.441-4.373c.3 0 .594.046.873.135V9.02a6.146 6.146 0 0 0-.873-.063A6.31 6.31 0 0 0 3.78 17.29a6.31 6.31 0 0 0 5.721 3.71c3.41 0 6.166-2.764 6.166-6.166V8.726a8.18 8.18 0 0 0 4.782 1.526V6.825h-.86z"/>
+              </svg>
             </a>
           </div>
         </div>
