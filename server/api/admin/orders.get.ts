@@ -24,6 +24,8 @@ export interface AdminOrder {
   grandTotal: number
   createdAt: string
   items: AdminOrderItem[]
+  bexShipmentId: number | null
+  bexLabelPrinted: boolean
 }
 
 export interface AdminOrdersResponse {
@@ -73,7 +75,8 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
   const ordersResult = await db
     .prepare(
       `SELECT id, track_number, status, customer_name, email, phone, address, city, postal, note,
-              subtotal, shipping, grand_total, created_at
+              subtotal, shipping, grand_total, created_at,
+              bex_shipment_id, bex_label_printed
        FROM orders
        ${whereClause}
        ORDER BY created_at DESC
@@ -95,6 +98,8 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
       shipping: number
       grand_total: number
       created_at: string
+      bex_shipment_id: number | null
+      bex_label_printed: number
     }>()
 
   // ── Total count for pagination (with same filters) ───────────────
@@ -160,6 +165,8 @@ export default defineEventHandler(async (event): Promise<AdminOrdersResponse> =>
     grandTotal: row.grand_total,
     createdAt: row.created_at,
     items: itemsByOrder.get(String(row.id)) ?? [],
+    bexShipmentId: row.bex_shipment_id,
+    bexLabelPrinted: row.bex_label_printed === 1,
   }))
 
   return {
