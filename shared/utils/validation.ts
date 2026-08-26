@@ -22,3 +22,11 @@ export const nameRegex = /^[a-zA-ZšđčćžŠĐČĆŽ]+(?:\s+[a-zA-Zšđčćž�
 
 /** Street number: digits, digits/digits, or BB (case-insensitive). */
 export const streetNumberRegex = /^(\d+|\d+\/\d+|bb)$/i
+
+/**
+ * Password policy: at least 8 characters including at least one digit.
+ * The lookahead (?=.*\d) requires a digit anywhere; .{8,} enforces length.
+ * Enforced on register; login only checks length as a pre-DB sanity filter
+ * so existing users with older 6-char passwords can still sign in.
+ */
+export const passwordRegex = /^(?=.*\d).{8,}$/

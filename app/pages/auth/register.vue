@@ -23,7 +23,7 @@ const agree = ref(false)
 
 const submitted = ref(false)
 
-const { emailRegex, nameRegex } = useValidation()
+const { emailRegex, nameRegex, passwordRegex } = useValidation()
 
 const nameError = computed(() => {
   if (!submitted.value) return ''
@@ -37,9 +37,12 @@ const emailError = computed(() => {
   if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
   return ''
 })
-const passwordError = computed(() =>
-  submitted.value && (!form.password || form.password.length < 6) ? 'Lozinka mora imati najmanje 6 karaktera.' : '',
-)
+const passwordError = computed(() => {
+  if (!submitted.value) return ''
+  if (!form.password) return 'Unesite lozinku.'
+  if (!passwordRegex.test(form.password)) return 'Najmanje 8 karaktera i bar jedna cifra.'
+  return ''
+})
 const passwordConfirmError = computed(() => {
   if (form.password === form.passwordConfirm) return ''
   if (submitted.value || form.passwordConfirm) return 'Lozinke se ne poklapaju'
@@ -89,15 +92,15 @@ async function handleSubmit() {
   }
 }
 
-// Password strength meter
+// Password strength meter (policy: 8+ chars, 1 digit)
 const passwordStrength = computed(() => {
   const p = form.password
   if (!p) return { score: 0, label: '', color: '' }
   let score = 0
-  if (p.length >= 6) score++
-  if (p.length >= 10) score++
-  if (/[A-Z]/.test(p)) score++
+  if (p.length >= 8) score++
+  if (p.length >= 12) score++
   if (/[0-9]/.test(p)) score++
+  if (/[A-Z]/.test(p)) score++
   if (/[^A-Za-z0-9]/.test(p)) score++
   const map = [
     { label: 'Prekratka', color: 'bg-coral' },
@@ -185,6 +188,9 @@ const passwordStrength = computed(() => {
                 </div>
                 <p class="mt-1 text-xs text-navy/50">
                   Jačina lozinke: <span class="font-medium text-navy">{{ passwordStrength.label }}</span>
+                </p>
+                <p class="mt-0.5 text-xs text-navy/40">
+                  Najmanje 8 karaktera, bar jedna cifra.
                 </p>
               </div>
             </div>

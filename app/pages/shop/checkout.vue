@@ -237,7 +237,7 @@ async function handleSubmit() {
                     label="Poštanski broj *"
                     type="text"
                     inputmode="numeric"
-                    autocomplete="address-level3"
+                    autocomplete="postal-code"
                     placeholder="210000"
                     :error="postalError"
                   />

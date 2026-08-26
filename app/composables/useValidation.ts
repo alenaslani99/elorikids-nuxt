@@ -12,10 +12,11 @@ import {
   postalRegex,
   nameRegex,
   streetNumberRegex,
+  passwordRegex,
 } from '~~/shared/utils/validation'
 
-export { emailRegex, phoneRegex, serbianPhoneRegex, postalRegex, nameRegex, streetNumberRegex }
+export { emailRegex, phoneRegex, serbianPhoneRegex, postalRegex, nameRegex, streetNumberRegex, passwordRegex }
 
 export function useValidation() {
-  return { emailRegex, phoneRegex, serbianPhoneRegex, postalRegex, nameRegex, streetNumberRegex }
+  return { emailRegex, phoneRegex, serbianPhoneRegex, postalRegex, nameRegex, streetNumberRegex, passwordRegex }
 }

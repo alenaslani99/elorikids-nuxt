@@ -3,7 +3,7 @@ import { useDb } from '../utils/db'
 import { hashPassword } from '../utils/crypto'
 import { createSession } from '../utils/session'
 import { isOwnerEmail } from '../utils/admin'
-import { emailRegex, nameRegex } from '~~/shared/utils/validation'
+import { emailRegex, nameRegex, passwordRegex } from '~~/shared/utils/validation'
 import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
 import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../utils/rateLimit'
 
@@ -40,8 +40,8 @@ export default defineEventHandler(async (event) => {
   if (!email || !emailRegex.test(email) || email.length > LIMITS.email) {
     throw createError({ statusCode: 400, statusMessage: 'Ispravna adresa e-pošte je obavezna.' })
   }
-  if (!password || password.length < 6 || password.length > LIMITS.password) {
-    throw createError({ statusCode: 400, statusMessage: 'Lozinka mora imati najmanje 6 karaktera.' })
+  if (!password || !passwordRegex.test(password) || password.length > LIMITS.password) {
+    throw createError({ statusCode: 400, statusMessage: 'Lozinka mora imati najmanje 8 karaktera i sadržati bar jednu cifru.' })
   }
 
   // Check if email already exists

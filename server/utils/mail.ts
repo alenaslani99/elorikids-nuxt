@@ -32,6 +32,8 @@ const newsletterTemplate = `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-scheme" content="light only">
   <title>Dobrodošli u elorikids porodicu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,6 +42,9 @@ const newsletterTemplate = `<!doctype html>
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
   <style>
+    /* Force light mode: prevent iOS/Apple Mail dark-mode auto-inversion */
+    :root { color-scheme: light only; supported-color-schemes: light only; }
+    html { background:#FFFDF7; }
     table { border-collapse: collapse; }
     img { display: block; border: 0; outline: 0; }
     a { text-decoration: none; }
@@ -55,19 +60,19 @@ const newsletterTemplate = `<!doctype html>
     .btn:hover .arrow { transform: translateX(4px); }
   </style>
 </head>
-<body style="margin:0;padding:0;background:#FFFDF7;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;color:#123F73;">
+<body style="margin:0;padding:0;background:#FFFDF7;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;color:#123F73;">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#FFFDF7;line-height:1px;">
     Hvala što ste se prijavili! Od sada ćete prvi saznati o novim knjigama i akcijama.
     &#847; z&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
   </div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFDF7;padding:24px 16px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFDF7;padding:24px 16px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
     <tr>
-      <td align="center" style="font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-        <table role="presentation" class="shell" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(18,63,115,.08);font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+      <td align="center" style="font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
+        <table role="presentation" class="shell" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(18,63,115,.08);font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
           <tr>
-            <td style="padding:36px 28px 32px;background:#123F73;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:36px 28px 32px;background:#123F73;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <p style="margin:0 0 28px;font-size:24px;font-weight:800;letter-spacing:-.02em;">
-                <span style="color:#FFFFFF;">elori</span><span style="color:#FFC83D;">kids</span>
+                <img src="https://elorikids.rs/logo.png" alt="elorikids" height="40" style="display:block;height:40px;width:auto;max-width:100%;border:0;">
               </p>
               <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
@@ -84,7 +89,7 @@ const newsletterTemplate = `<!doctype html>
             </td>
           </tr>
           <tr>
-            <td style="padding:32px 28px 8px;background:#FFFFFF;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:32px 28px 8px;background:#FFFFFF;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <p style="margin:0 0 16px;font-size:16px;font-weight:400;line-height:1.65;color:#123F73;">Zdravo,</p>
               <p style="margin:0 0 16px;font-size:16px;font-weight:400;line-height:1.65;color:#123F73;">
                 Hvala što ste se prijavili na našu newsletter listu. Od sada ćete
@@ -133,11 +138,11 @@ const newsletterTemplate = `<!doctype html>
                     <!--[if mso]>
                     <v:rect xmlns:v="urn:schemas-microsoft-com:vml" href="https://elorikids.rs" style="height:52px;" strokecolor="#FFC83D" fillcolor="#FFC83D">
                       <w:anchorlock/>
-                      <center style="font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#123F73;">Pogledaj knjige →</center>
+                      <center style="font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#123F73;">Pogledaj knjige →</center>
                     </v:rect>
                     <![endif]-->
                     <!--[if !mso]><!-->
-                    <a href="https://elorikids.rs" class="btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#FFC83D;border-radius:999px;padding:16px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#123F73;text-align:center;text-decoration:none;">Pogledaj knjige <span class="arrow">&rarr;</span></a>
+                    <a href="https://elorikids.rs" class="btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#FFC83D;border-radius:999px;padding:16px 28px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#123F73;text-align:center;text-decoration:none;">Pogledaj knjige <span class="arrow">&rarr;</span></a>
                     <!--<![endif]-->
                   </td>
                 </tr>
@@ -148,7 +153,7 @@ const newsletterTemplate = `<!doctype html>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0 0;">
                 <tr>
                   <td align="center" style="padding:0;">
-                    <a href="https://instagram.com/elorikids" class="ig-btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#FFFFFF;border:2px solid #F06A3A;border-radius:999px;padding:13px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#F06A3A;text-align:center;text-decoration:none;">
+                    <a href="https://instagram.com/elorikids" class="ig-btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#FFFFFF;border:2px solid #F06A3A;border-radius:999px;padding:13px 28px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#F06A3A;text-align:center;text-decoration:none;">
                       <svg class="ig-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F06A3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px;">
                         <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
@@ -161,7 +166,7 @@ const newsletterTemplate = `<!doctype html>
             </td>
           </tr>
           <tr>
-            <td style="padding:28px 28px 32px;background:#0A315E;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:28px 28px 32px;background:#0A315E;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <p style="margin:0 0 8px;font-size:11px;font-weight:400;line-height:1.6;color:rgba(199,217,234,.6);">
                 Ovaj mejl ste dobili jer ste se prijavili na elorikids.rs sa adresom
                 <strong style="color:#B9E3F8;">{{EMAIL}}</strong>.<br>
@@ -185,12 +190,16 @@ const orderTemplate = `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light only">
+  <meta name="supported-color-scheme" content="light only">
   <title>Porudžbina {{TRACK_NUMBER}} primljena</title>
   <!-- Unbounded loads in Apple Mail / iOS / Thunderbird; Gmail & Outlook
-       strip <link> and fall back to Helvetica/Arial. The layout below is
-       designed to look intentional with either font — brand identity is
-       carried by color blocks, weight hierarchy, and uppercase tracking,
-       not by the font's letter shapes. -->
+       strip <link> and fall back to Roboto (Gmail's built-in geometric
+       sans), then Helvetica/Arial. The layout below is designed to look
+       intentional with any of these — brand identity is carried by color
+       blocks, weight hierarchy, and uppercase tracking, not by the font's
+       letter shapes. The logo image guarantees the wordmark in Unbounded
+       everywhere. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -198,6 +207,9 @@ const orderTemplate = `<!doctype html>
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
   <style>
+    /* Force light mode: prevent iOS/Apple Mail dark-mode auto-inversion */
+    :root { color-scheme: light only; supported-color-schemes: light only; }
+    html { background:#FFFDF7; }
     table { border-collapse: collapse; }
     img { display: block; border: 0; outline: 0; }
     a { text-decoration: none; }
@@ -210,33 +222,33 @@ const orderTemplate = `<!doctype html>
     .btn:hover .arrow { transform: translateX(4px); }
   </style>
 </head>
-<body style="margin:0;padding:0;background:#FFFDF7;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;color:#123F73;">
+<body style="margin:0;padding:0;background:#FFFDF7;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;color:#123F73;">
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#FFFDF7;line-height:1px;">
     Hvala na poverenju! Vaša porudžbina je primljena i sprema se za slanje. Plaćanje je pouzećem.
     &#847; z&#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847; &#847;
   </div>
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFDF7;padding:24px 16px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFDF7;padding:24px 16px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
     <tr>
-      <td align="center" style="font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-        <table role="presentation" class="shell" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(18,63,115,.08);font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+      <td align="center" style="font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
+        <table role="presentation" class="shell" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(18,63,115,.08);font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
           <tr>
-            <td style="padding:30px 28px 26px;background:#123F73;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:30px 28px 26px;background:#123F73;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em;">
-                <span style="color:#FFFFFF;">elori</span><span style="color:#FFC83D;">kids</span>
+                <img src="https://elorikids.rs/logo.png" alt="elorikids" height="40" style="display:block;height:40px;width:auto;max-width:100%;border:0;">
               </p>
               <p style="margin:6px 0 0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#B9E3F8;">Potvrda porudžbine</p>
             </td>
           </tr>
           <tr>
-            <td style="padding:0;background:#123F73;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:0;background:#123F73;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <div style="height:3px;line-height:3px;font-size:0;background:#FFC83D;">&nbsp;</div>
             </td>
           </tr>
           <tr>
-            <td style="padding:0;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:0;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                 <tr>
-                  <td align="center" style="padding:36px 28px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+                  <td align="center" style="padding:36px 28px 28px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="width:60px;height:60px;border-radius:50%;background:#75D6B1;text-align:center;vertical-align:middle;box-shadow:0 4px 14px rgba(18,63,115,.12);">
@@ -261,22 +273,22 @@ const orderTemplate = `<!doctype html>
             </td>
           </tr>
           <tr>
-            <td style="padding:32px 28px 8px;background:#FFFFFF;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:32px 28px 8px;background:#FFFFFF;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <p style="margin:0 0 14px;font-size:16px;font-weight:400;line-height:1.6;color:#123F73;">Zdravo <strong>{{CUSTOMER_NAME}}</strong>,</p>
               <p style="margin:0 0 28px;font-size:15px;font-weight:400;line-height:1.65;color:rgba(18,63,115,.7);">
                 Vaša porudžbina je uspešno primljena! Hvala na poverenju. Plaćanje je
                 <strong style="color:#F06A3A;">pouzećem</strong> — gotovinom pri preuzimanju.
               </p>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;border-radius:14px;margin:0 0 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;border-radius:14px;margin:0 0 28px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                 <tr>
-                  <td style="padding:16px 20px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+                  <td style="padding:16px 20px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                     <p style="margin:0 0 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#0A315E;">Broj porudžbine</p>
                     <p style="margin:0;font-size:20px;font-weight:800;color:#123F73;letter-spacing:-.01em;">{{TRACK_NUMBER}}</p>
                   </td>
                 </tr>
               </table>
               <p style="margin:0 0 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#7a8aa0;">Vaše knjige</p>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                 <thead>
                   <tr style="font-size:10px;color:#7a8aa0;text-transform:uppercase;letter-spacing:.08em;">
                     <th style="padding:0 0 10px;text-align:left;font-weight:600;">Knjiga</th>
@@ -302,9 +314,9 @@ const orderTemplate = `<!doctype html>
                   </tr>
                 </tfoot>
               </table>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0 0;background:#FFFFFF;border:2px solid #C7D9EA;border-radius:14px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0 0;background:#FFFFFF;border:2px solid #C7D9EA;border-radius:14px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                 <tr>
-                  <td style="padding:18px 20px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+                  <td style="padding:18px 20px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
                     <p style="margin:0 0 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#7a8aa0;">Adresa dostave</p>
                     <p style="margin:0;font-size:15px;font-weight:400;line-height:1.6;color:#123F73;">
                       {{ADDRESS}}<br>
@@ -325,11 +337,11 @@ const orderTemplate = `<!doctype html>
                     <!--[if mso]>
                     <v:rect xmlns:v="urn:schemas-microsoft-com:vml" href="{{TRACK_URL}}" style="height:52px;" strokecolor="#2587E8" fillcolor="#2587E8">
                       <w:anchorlock/>
-                      <center style="font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;">Prati pošiljku →</center>
+                      <center style="font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;">Prati pošiljku →</center>
                     </v:rect>
                     <![endif]-->
                     <!--[if !mso]><!-->
-                    <a href="{{TRACK_URL}}" class="btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#2587E8;border-radius:999px;padding:16px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;text-align:center;text-decoration:none;">Prati pošiljku <span class="arrow">&rarr;</span></a>
+                    <a href="{{TRACK_URL}}" class="btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#2587E8;border-radius:999px;padding:16px 28px;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;text-align:center;text-decoration:none;">Prati pošiljku <span class="arrow">&rarr;</span></a>
                     <!--<![endif]-->
                   </td>
                 </tr>
@@ -337,7 +349,7 @@ const orderTemplate = `<!doctype html>
             </td>
           </tr>
           <tr>
-            <td style="padding:28px 28px 32px;background:#0A315E;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+            <td style="padding:28px 28px 32px;background:#0A315E;font-family:'Unbounded','Roboto','Helvetica Neue',Arial,sans-serif;">
               <p style="margin:0 0 8px;font-size:11px;font-weight:400;line-height:1.6;color:rgba(199,217,234,.6);">
                 Dobili ste ovaj mejl jer je porudžbina
                 <strong style="color:#B9E3F8;">{{TRACK_NUMBER}}</strong> napravljena sa ovom adresom.<br>
