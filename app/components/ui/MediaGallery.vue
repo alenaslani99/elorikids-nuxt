@@ -109,8 +109,11 @@ function onPointerUp(e: PointerEvent) {
   pointerId = null
   pointerStartX = 0
 }
-// Close on backdrop tap/click — but only if the user didn't drag
-function onBackdropClick() {
+// Close on backdrop tap/click — but only if the user didn't drag and
+// didn't tap the video or its native controls (otherwise the lightbox
+// would close the instant they hit play on mobile).
+function onBackdropClick(e: Event) {
+  if ((e.target as HTMLElement)?.closest('video')) return
   if (maxDrag < 10) closeLightbox()
 }
 

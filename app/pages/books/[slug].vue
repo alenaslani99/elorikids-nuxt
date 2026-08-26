@@ -427,16 +427,15 @@ useHead({
             :to="`/books/${related.slug}`"
             class="group flex gap-4 rounded-2xl border-2 border-cloud/40 bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-lg"
           >
-            <div class="flex aspect-[3/4] w-24 shrink-0 items-center justify-center rounded-xl" :class="{
-              'bg-mint/20': related.accent === 'mint',
-              'bg-purple/20': related.accent === 'purple',
-              'bg-coral/20': related.accent === 'coral',
-            }">
-              <Icon name="lucide:book-open" class="size-10 opacity-40" :class="{
-                'text-mint': related.accent === 'mint',
-                'text-purple': related.accent === 'purple',
-                'text-coral': related.accent === 'coral',
-              }" />
+            <div class="aspect-[3/4] w-24 shrink-0 overflow-hidden rounded-xl bg-cloud/30">
+              <NuxtImg
+                :src="`/${related.img}`"
+                :alt="related.title"
+                width="96"
+                height="128"
+                format="webp"
+                class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
             </div>
             <div class="flex flex-col">
               <span class="text-xs font-medium text-navy/50">{{ related.ageRange }}</span>
