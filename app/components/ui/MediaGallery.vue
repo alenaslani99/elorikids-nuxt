@@ -102,16 +102,32 @@ function pointerUp() {
   isPointerDown = false
   pointerStartX = 0
 }
+// Track last touch so we can ignore the synthetic mouse events
+// browsers fire after a touch sequence (mousedown → mouseup → click).
+let lastTouchTime = 0
 // Touch wrappers
-function onTouchStart(e: TouchEvent) { pointerDown(e.touches[0]?.clientX ?? 0, e.target) }
+function onTouchStart(e: TouchEvent) {
+  lastTouchTime = Date.now()
+  pointerDown(e.touches[0]?.clientX ?? 0, e.target)
+}
 function onTouchMove(e: TouchEvent) { pointerMove(e.touches[0]?.clientX ?? 0) }
 function onTouchEnd() { pointerUp() }
-// Mouse wrappers
-function onMouseDown(e: MouseEvent) { pointerDown(e.clientX, e.target) }
-function onMouseMove(e: MouseEvent) { pointerMove(e.clientX) }
-function onMouseUp() { pointerUp() }
-// Close on backdrop click - but only if the user didn't drag
+// Mouse wrappers — skip synthetic events fired after a touch
+function onMouseDown(e: MouseEvent) {
+  if (Date.now() - lastTouchTime < 500) return
+  pointerDown(e.clientX, e.target)
+}
+function onMouseMove(e: MouseEvent) {
+  if (Date.now() - lastTouchTime < 500) return
+  pointerMove(e.clientX)
+}
+function onMouseUp() {
+  if (Date.now() - lastTouchTime < 500) return
+  pointerUp()
+}
+// Close on backdrop click (mouse only — touch has its own close button)
 function onBackdropClick() {
+  if (Date.now() - lastTouchTime < 500) return
   if (maxDrag < 10) closeLightbox()
 }
 
