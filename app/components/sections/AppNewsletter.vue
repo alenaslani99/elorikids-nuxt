@@ -95,7 +95,7 @@ watch(email, () => {
           {{ errorMessage }}
         </p>
         <p v-else-if="status === 'success'" class="mt-3 text-sm font-medium text-mint" role="status">
-          Hvala! Proverite vašu e-poštu da potvrdite prijavu.
+          Hvala na prijavi! 📚 Poslali smo vam pozdravni mejl.
         </p>
       </div>
 

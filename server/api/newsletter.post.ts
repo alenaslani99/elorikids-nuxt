@@ -42,5 +42,17 @@ export default defineEventHandler(async (event) => {
 
   console.log(`[newsletter] New subscription: ${email}`)
 
-  return { ok: true, message: 'Hvala na prijavi!' }
+  // ── Send thank-you email (no double opt-in, just a welcome) ──────
+  // Email is best-effort: a failure must never block the subscription
+  // or surface to the user. We log it so we notice in production.
+  try {
+    const { sendEmail, buildNewsletterMail } = await import('../utils/mail')
+    const { subject, html, text } = buildNewsletterMail({ email })
+    await sendEmail(event, email, subject, html, { text })
+    console.log(`[newsletter] Welcome email sent to ${email}`)
+  } catch (err) {
+    console.error(`[newsletter] Failed to send welcome email to ${email}:`, err)
+  }
+
+  return { ok: true, message: 'Hvala na prijavi! 📚' }
 })

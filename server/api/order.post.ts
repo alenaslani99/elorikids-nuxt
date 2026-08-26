@@ -3,7 +3,7 @@ import { useDb } from '../utils/db'
 import { getSessionUser } from '../utils/session'
 import { emailRegex, serbianPhoneRegex, nameRegex, postalRegex, streetNumberRegex } from '~~/shared/utils/validation'
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '~~/shared/utils/orders'
-import { getProduct, MAX_ORDER_ITEMS } from '~~/shared/utils/products'
+import { MAX_ORDER_ITEMS } from '~~/shared/utils/products'
 import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
 import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../utils/rateLimit'
 import { generateTrackNumber } from '../utils/crypto'
@@ -100,15 +100,36 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Previše artikala u porudžbini.' })
   }
 
-  // --- Look up canonical prices from server-side product table ---
+  // --- Look up canonical prices/titles from the DB ---
   // Never trust client-provided prices. The client `price` field is ignored.
+  // The current price = newest product_prices row with effective_from <= now.
+  const slugs = items.map((i) => String(i.slug))
+  const placeholders = slugs.map(() => '?').join(', ')
+  const priceRows = await db
+    .prepare(
+      `SELECT p.id, p.slug, p.title, pr.amount AS price, pr.is_sale
+       FROM products p
+       LEFT JOIN product_prices pr ON pr.product_id = p.id
+         AND pr.id = (
+           SELECT id FROM product_prices
+           WHERE product_id = p.id AND effective_from <= datetime('now')
+           ORDER BY effective_from DESC, id DESC LIMIT 1
+         )
+       WHERE p.slug IN (${placeholders}) AND p.active = 1`,
+    )
+    .bind(...slugs)
+    .all<{ id: number, slug: string, title: string, price: number | null, is_sale: number }>()
+
+  const priceMap = new Map(priceRows.results?.map((r) => [r.slug, r]) ?? [])
+
   const validatedItems = items.map((item) => {
-    const product = getProduct(item.slug)
-    if (!product) {
+    const product = priceMap.get(String(item.slug))
+    if (!product || product.price == null) {
       throw createError({ statusCode: 400, statusMessage: `Nepoznat proizvod: ${item.slug}` })
     }
     const quantity = Math.max(1, Math.floor(Number(item.quantity) || 1))
     return {
+      id: product.id,
       slug: product.slug,
       title: product.title,
       price: product.price,
@@ -145,15 +166,48 @@ export default defineEventHandler(async (event) => {
   const orderId = insertResult.meta.last_row_id as number
 
   // --- Insert order items ---
+  // Stores product_id for analytics; slug/title/price are a snapshot
+  // so the order history stays intact if a product is later deleted.
   const itemStmts = validatedItems.map((item) =>
     db
-      .prepare('INSERT INTO order_items (order_id, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?)')
-      .bind(orderId, item.slug, item.title, item.price, item.quantity),
+      .prepare('INSERT INTO order_items (order_id, product_id, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?, ?)')
+      .bind(orderId, item.id, item.slug, item.title, item.price, item.quantity),
   )
 
   await db.batch(itemStmts)
 
   console.log(`[order] #${orderId} (track: ${trackNumber}) - ${name} <${email}> - ${grandTotal} RSD (${validatedItems.length} items)`)
+
+  // ── Send order confirmation email ─────────────────────────────────
+  // Best-effort: an email failure must never break a successful order.
+  // The order is already in the DB; we log the error instead of failing.
+  try {
+    const { sendEmail, buildOrderMail } = await import('../utils/mail')
+    const { subject, html, text } = buildOrderMail({
+      customerName: name,
+      email,
+      trackNumber,
+      items: validatedItems.map((i) => ({
+        title: i.title,
+        quantity: i.quantity,
+        price: i.price,
+      })),
+      subtotal,
+      shipping,
+      grandTotal,
+      address,
+      city,
+      postal,
+      note,
+    })
+    await sendEmail(event, email, subject, html, {
+      text,
+      from: 'porudzbine@elorikids.rs',
+    })
+    console.log(`[order] Confirmation email sent to ${email} (track: ${trackNumber})`)
+  } catch (err) {
+    console.error(`[order] Failed to send confirmation email to ${email}:`, err)
+  }
 
   // Return the track_number as the customer-facing "orderId"
   return { ok: true, orderId: trackNumber }
