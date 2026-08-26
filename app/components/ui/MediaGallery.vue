@@ -18,7 +18,7 @@ import type { MediaItem } from '~/composables/useBooks'
  * - Video uses preload="metadata" (first frame only, no full download).
  * - Images use NuxtImg (webp, sized).
  * - Lightbox renders nothing until opened (v-if, not v-show).
- * - No external library - vanilla touch handlers.
+ * - No external library - unified Pointer Events API.
  */
 const props = withDefaults(defineProps<{
   media: MediaItem[]
@@ -75,59 +75,42 @@ watch(lightboxOpen, (open) => {
   if (open) nextTick(() => lightboxEl.value?.focus())
 })
 
-// ── Swipe / drag (touch + mouse) ──
+// ── Swipe / drag — unified Pointer Events API ──
+// One event stream for touch + mouse + pen. No synthetic mouse
+// events to fight, no separate handlers. touch-action: pan-y on
+// the zone lets vertical scroll/refresh work but stops the browser
+// from hijacking the horizontal swipe (the real reason swiping felt
+// "impossible" — the browser was stealing the gesture).
 const dragDelta = ref(0)
+let pointerId: number | null = null
 let pointerStartX = 0
-let isPointerDown = false
 let maxDrag = 0
 
-function pointerDown(clientX: number, target: EventTarget | null) {
+function onPointerDown(e: PointerEvent) {
   // Don't swipe when interacting with the video controls
-  if ((target as HTMLElement)?.closest('video')) return
-  pointerStartX = clientX
-  isPointerDown = true
+  if ((e.target as HTMLElement)?.closest('video')) return
+  pointerId = e.pointerId
+  pointerStartX = e.clientX
   maxDrag = 0
+  ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
 }
-function pointerMove(clientX: number) {
-  if (!isPointerDown) return
-  dragDelta.value = clientX - pointerStartX
+function onPointerMove(e: PointerEvent) {
+  if (e.pointerId !== pointerId) return
+  dragDelta.value = e.clientX - pointerStartX
   maxDrag = Math.max(maxDrag, Math.abs(dragDelta.value))
 }
-function pointerUp() {
+function onPointerUp(e: PointerEvent) {
+  if (e.pointerId !== pointerId) return
   if (Math.abs(dragDelta.value) > 50) {
     if (dragDelta.value < 0) next()
     else prev()
   }
   dragDelta.value = 0
-  isPointerDown = false
+  pointerId = null
   pointerStartX = 0
 }
-// Track last touch so we can ignore the synthetic mouse events
-// browsers fire after a touch sequence (mousedown → mouseup → click).
-let lastTouchTime = 0
-// Touch wrappers
-function onTouchStart(e: TouchEvent) {
-  lastTouchTime = Date.now()
-  pointerDown(e.touches[0]?.clientX ?? 0, e.target)
-}
-function onTouchMove(e: TouchEvent) { pointerMove(e.touches[0]?.clientX ?? 0) }
-function onTouchEnd() { pointerUp() }
-// Mouse wrappers — skip synthetic events fired after a touch
-function onMouseDown(e: MouseEvent) {
-  if (Date.now() - lastTouchTime < 500) return
-  pointerDown(e.clientX, e.target)
-}
-function onMouseMove(e: MouseEvent) {
-  if (Date.now() - lastTouchTime < 500) return
-  pointerMove(e.clientX)
-}
-function onMouseUp() {
-  if (Date.now() - lastTouchTime < 500) return
-  pointerUp()
-}
-// Close on backdrop click (mouse only — touch has its own close button)
+// Close on backdrop tap/click — but only if the user didn't drag
 function onBackdropClick() {
-  if (Date.now() - lastTouchTime < 500) return
   if (maxDrag < 10) closeLightbox()
 }
 
@@ -238,13 +221,11 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
             <!-- Media content (swipe/drag zone) -->
             <div
               class="flex flex-1 items-center justify-center overflow-hidden px-4"
-              @touchstart.passive="onTouchStart"
-              @touchmove.passive="onTouchMove"
-              @touchend="onTouchEnd"
-              @mousedown="onMouseDown"
-              @mousemove="onMouseMove"
-              @mouseup="onMouseUp"
-              @mouseleave="onMouseUp"
+              style="touch-action: pan-y"
+              @pointerdown="onPointerDown"
+              @pointermove="onPointerMove"
+              @pointerup="onPointerUp"
+              @pointercancel="onPointerUp"
               @click="onBackdropClick"
             >
               <div
