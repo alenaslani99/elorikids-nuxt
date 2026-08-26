@@ -186,6 +186,11 @@ const orderTemplate = `<!doctype html>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="x-apple-disable-message-reformatting">
   <title>Porudžbina {{TRACK_NUMBER}} primljena</title>
+  <!-- Unbounded loads in Apple Mail / iOS / Thunderbird; Gmail & Outlook
+       strip <link> and fall back to Helvetica/Arial. The layout below is
+       designed to look intentional with either font — brand identity is
+       carried by color blocks, weight hierarchy, and uppercase tracking,
+       not by the font's letter shapes. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -196,7 +201,6 @@ const orderTemplate = `<!doctype html>
     table { border-collapse: collapse; }
     img { display: block; border: 0; outline: 0; }
     a { text-decoration: none; }
-    .body { min-width: 100% !important; }
     body, table, td, p, span, a, strong, em, h1, h2, h3, div, center, th {
       font-family: 'Unbounded', 'Helvetica Neue', Arial, sans-serif;
     }
@@ -216,29 +220,34 @@ const orderTemplate = `<!doctype html>
       <td align="center" style="font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
         <table role="presentation" class="shell" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 4px 20px rgba(18,63,115,.08);font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
           <tr>
-            <td style="padding:32px 28px;background:#123F73;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-              <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.02em;">
+            <td style="padding:30px 28px 26px;background:#123F73;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <p style="margin:0;font-size:24px;font-weight:800;letter-spacing:-.01em;">
                 <span style="color:#FFFFFF;">elori</span><span style="color:#FFC83D;">kids</span>
               </p>
-              <p style="margin:6px 0 0;font-size:13px;font-weight:400;color:#B9E3F8;">Potvrda porudžbine</p>
+              <p style="margin:6px 0 0;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:#B9E3F8;">Potvrda porudžbine</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0;background:#123F73;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <div style="height:3px;line-height:3px;font-size:0;background:#FFC83D;">&nbsp;</div>
             </td>
           </tr>
           <tr>
             <td style="padding:0;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
                 <tr>
-                  <td align="center" style="padding:32px 28px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+                  <td align="center" style="padding:36px 28px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
                     <table role="presentation" cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="width:64px;height:64px;border-radius:50%;background:#75D6B1;text-align:center;vertical-align:middle;box-shadow:0 4px 14px rgba(18,63,115,.12);">
-                          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
+                        <td style="width:60px;height:60px;border-radius:50%;background:#75D6B1;text-align:center;vertical-align:middle;box-shadow:0 4px 14px rgba(18,63,115,.12);">
+                          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" style="display:inline-block;vertical-align:middle;">
                             <path d="M5 13l4 4L19 7" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                           </svg>
                         </td>
                       </tr>
                     </table>
-                    <h1 style="margin:16px 0 0;font-size:24px;font-weight:800;color:#123F73;letter-spacing:-.02em;">Porudžbina primljena!</h1>
-                    <p style="margin:6px 0 0;font-size:15px;font-weight:400;line-height:1.5;color:#0A315E;">
+                    <h1 style="margin:14px 0 0;font-size:22px;font-weight:800;color:#123F73;letter-spacing:-.02em;line-height:1.25;">Porudžbina primljena!</h1>
+                    <p style="margin:8px 0 0;font-size:14px;font-weight:400;line-height:1.5;color:#0A315E;">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A315E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;">
                         <path d="m7.5 4.27 9 5.15"/>
                         <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/>
@@ -253,23 +262,23 @@ const orderTemplate = `<!doctype html>
           </tr>
           <tr>
             <td style="padding:32px 28px 8px;background:#FFFFFF;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-              <p style="margin:0 0 16px;font-size:16px;font-weight:400;line-height:1.65;color:#123F73;">Zdravo <strong>{{CUSTOMER_NAME}}</strong>,</p>
-              <p style="margin:0 0 24px;font-size:16px;font-weight:400;line-height:1.65;color:rgba(18,63,115,.7);">
+              <p style="margin:0 0 14px;font-size:16px;font-weight:400;line-height:1.6;color:#123F73;">Zdravo <strong>{{CUSTOMER_NAME}}</strong>,</p>
+              <p style="margin:0 0 28px;font-size:15px;font-weight:400;line-height:1.65;color:rgba(18,63,115,.7);">
                 Vaša porudžbina je uspešno primljena! Hvala na poverenju. Plaćanje je
-                <strong style="color:#F06A3A;">pouzećem</strong> - gotovinom pri preuzimanju.
+                <strong style="color:#F06A3A;">pouzećem</strong> — gotovinom pri preuzimanju.
               </p>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;border-radius:16px;margin:0 0 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#B9E3F8;border-radius:14px;margin:0 0 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
                 <tr>
                   <td style="padding:16px 20px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-                    <p style="margin:0 0 4px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#0A315E;">Broj porudžbine</p>
+                    <p style="margin:0 0 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#0A315E;">Broj porudžbine</p>
                     <p style="margin:0;font-size:20px;font-weight:800;color:#123F73;letter-spacing:-.01em;">{{TRACK_NUMBER}}</p>
                   </td>
                 </tr>
               </table>
-              <p style="margin:0 0 12px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#7a8aa0;">Vaše knjige</p>
+              <p style="margin:0 0 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#7a8aa0;">Vaše knjige</p>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
                 <thead>
-                  <tr style="font-size:12px;color:#7a8aa0;text-transform:uppercase;letter-spacing:.04em;">
+                  <tr style="font-size:10px;color:#7a8aa0;text-transform:uppercase;letter-spacing:.08em;">
                     <th style="padding:0 0 10px;text-align:left;font-weight:600;">Knjiga</th>
                     <th class="qty" style="padding:0 0 10px;text-align:center;font-weight:600;">Kom.</th>
                     <th class="price" style="padding:0 0 10px;text-align:right;font-weight:600;">Cena</th>
@@ -293,10 +302,10 @@ const orderTemplate = `<!doctype html>
                   </tr>
                 </tfoot>
               </table>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0 0;background:#FFFFFF;border:2px solid #C7D9EA;border-radius:16px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:28px 0 0;background:#FFFFFF;border:2px solid #C7D9EA;border-radius:14px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
                 <tr>
                   <td style="padding:18px 20px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;">
-                    <p style="margin:0 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#7a8aa0;">Adresa dostave</p>
+                    <p style="margin:0 0 4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:#7a8aa0;">Adresa dostave</p>
                     <p style="margin:0;font-size:15px;font-weight:400;line-height:1.6;color:#123F73;">
                       {{ADDRESS}}<br>
                       {{CITY_LINE}}
@@ -320,7 +329,7 @@ const orderTemplate = `<!doctype html>
                     </v:rect>
                     <![endif]-->
                     <!--[if !mso]><!-->
-                    <a href="{{TRACK_URL}}" class="btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#2587E8;border-radius:999px;padding:16px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:16px;font-weight:700;color:#FFFFFF;text-align:center;text-decoration:none;">Prati pošiljku <span class="arrow">&rarr;</span></a>
+                    <a href="{{TRACK_URL}}" class="btn" style="display:inline-block;box-sizing:border-box;width:100%;max-width:280px;background:#2587E8;border-radius:999px;padding:16px 28px;font-family:'Unbounded','Helvetica Neue',Arial,sans-serif;font-size:15px;font-weight:700;color:#FFFFFF;text-align:center;text-decoration:none;">Prati pošiljku <span class="arrow">&rarr;</span></a>
                     <!--<![endif]-->
                   </td>
                 </tr>
@@ -333,7 +342,7 @@ const orderTemplate = `<!doctype html>
                 Dobili ste ovaj mejl jer je porudžbina
                 <strong style="color:#B9E3F8;">{{TRACK_NUMBER}}</strong> napravljena sa ovom adresom.<br>
                 Za pitanja i odgovore pišite na
-                <a href="mailto:elorikids@gmail.rs" style="color:#75D6B1;">elorikids@gmail.rs</a>.
+                <a href="mailto:pozdrav@elorikids.rs" style="color:#75D6B1;">pozdrav@elorikids.rs</a>.
               </p>
               <p style="margin:12px 0 0;font-size:11px;font-weight:400;color:rgba(199,217,234,.5);">
                 © 2026 elorikids · <a href="https://elorikids.rs" style="color:#75D6B1;">elorikids.rs</a>
@@ -549,7 +558,7 @@ export function buildOrderMail(input: OrderMailInput): {
                     </p>`
     : "";
 
-  const trackUrl = `https://elorikids.rs/track-order?n=${encodeURIComponent(input.trackNumber)}`;
+  const trackUrl = `https://elorikids.rs/track-order?id=${encodeURIComponent(input.trackNumber)}`;
 
   const html = fillTemplate(orderTemplate, {
     TRACK_NUMBER: escapeHtml(input.trackNumber),
