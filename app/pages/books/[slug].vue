@@ -106,23 +106,12 @@ useHead({
       <div class="grid gap-10 lg:grid-cols-2 lg:gap-16">
         <!-- Gallery -->
         <div class="lg:sticky lg:top-32 lg:self-start">
-          <!-- Product image -->
-          <div class="relative overflow-hidden rounded-3xl shadow-lg">
-            <NuxtImg
-              :src="`/${book.img}`"
-              :alt="`Naslovna strana - ${book.title}, interaktivna piši-briši knjiga za uzrast ${book.ageRange}`"
-              class="aspect-[4/5] w-full object-cover"
-              width="400"
-              height="500"
-              format="webp"
-              loading="lazy"
-            />
-            <span
-              class="absolute left-4 top-4 rounded-full bg-white/90 px-4 py-1.5 text-sm font-semibold text-navy shadow-sm"
-            >
-              {{ book.badge }}
-            </span>
-          </div>
+          <!-- Video-first media gallery with swipeable lightbox -->
+          <MediaGallery
+            :media="book.media"
+            :badge="book.badge"
+            :accent="book.accent"
+          />
         </div>
 
         <!-- Product info -->

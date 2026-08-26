@@ -24,6 +24,51 @@ CREATE TABLE IF NOT EXISTS sessions (
 CREATE INDEX IF NOT EXISTS idx_sessions_token   ON sessions(token);
 CREATE INDEX IF NOT EXISTS idx_sessions_user   ON sessions(user_id);
 
+-- ─── Categories (self-referential tree) ────────────────────────
+-- parent_id → categories.id for nested categories (unlimited depth).
+CREATE TABLE IF NOT EXISTS categories (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug       TEXT NOT NULL UNIQUE,
+  name       TEXT NOT NULL,
+  parent_id  INTEGER REFERENCES categories(id) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_categories_parent ON categories(parent_id);
+
+-- ─── Products ──────────────────────────────────────────────────
+-- slug is the public key (matches shared/utils/products.ts).
+-- active=0 soft-hides a product without deleting it.
+CREATE TABLE IF NOT EXISTS products (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug        TEXT NOT NULL UNIQUE,
+  title       TEXT NOT NULL,
+  category_id INTEGER REFERENCES categories(id) ON DELETE RESTRICT,
+  active      INTEGER NOT NULL DEFAULT 1,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_products_active   ON products(active);
+
+-- ─── Product prices (append-only history) ──────────────────────
+-- Current selling price = newest row with effective_from <= now.
+-- is_sale=1 marks a sale price. effective_from allows scheduling.
+CREATE TABLE IF NOT EXISTS product_prices (
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id     INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  amount         INTEGER NOT NULL,                  -- RSD, integer
+  is_sale        INTEGER NOT NULL DEFAULT 0,        -- 1 = sale price
+  effective_from TEXT NOT NULL DEFAULT (datetime('now')),
+  created_at     TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Optimized for the "latest price for a product" query.
+CREATE INDEX IF NOT EXISTS idx_prices_current
+  ON product_prices(product_id, effective_from DESC, id DESC);
+
 -- ─── Orders ────────────────────────────────────────────────────
 -- `id`           is the auto-increment integer PK (internal).
 -- `track_number` is the public tracking ID: 'EK-2026-a3f9c2' (unguessable).
@@ -58,16 +103,21 @@ CREATE INDEX IF NOT EXISTS idx_orders_track_number ON orders(track_number);
 
 -- ─── Order items (line items per order) ────────────────────────
 -- `order_id` references orders.id (the integer PK).
+-- `product_id` optionally links to products for sales analytics. It is
+-- nullable + ON DELETE SET NULL so order history survives a product
+-- deletion; the slug/title/price snapshot always stays.
 CREATE TABLE IF NOT EXISTS order_items (
-  id        INTEGER PRIMARY KEY AUTOINCREMENT,
-  order_id  INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-  slug      TEXT NOT NULL,
-  title     TEXT NOT NULL,
-  price     INTEGER NOT NULL,
-  quantity  INTEGER NOT NULL
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  order_id   INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+  product_id INTEGER REFERENCES products(id) ON DELETE SET NULL,
+  slug       TEXT NOT NULL,
+  title      TEXT NOT NULL,
+  price      INTEGER NOT NULL,
+  quantity   INTEGER NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_order   ON order_items(order_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id);
 
 -- ─── Newsletter subscribers ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS newsletter_subscribers (

@@ -3,9 +3,16 @@ export interface BookActivity {
   description: string
 }
 
+export interface MediaItem {
+  type: 'video' | 'image'
+  src: string
+  alt?: string
+}
+
 export interface Book {
   slug: string
   img: string
+  media: MediaItem[]
   title: string
   subtitle: string
   ageRange: string
@@ -25,6 +32,11 @@ export const books: Book[] = [
     slug: 'prvi-koraci',
     title: 'Prvi koraci',
     img: 'first-book.jpg',
+    // Video first, then the cover image. Drop the .mp4 in /public to activate.
+    media: [
+      { type: 'video', src: '/prvi-koraci.mp4', alt: 'Pregled knjige Prvi koraci' },
+      { type: 'image', src: '/first-book.jpg', alt: 'Naslovna strana - Prvi koraci' },
+    ],
     subtitle: 'Boje, veličine i životinje za najmlađe istraživače',
     ageRange: '2–3 godine',
     ageSlug: '2-3-godine',
@@ -50,6 +62,10 @@ export const books: Book[] = [
   {
     slug: 'ucimo-kroz-igru',
     img: 'second-book.jpg',
+    media: [
+      { type: 'video', src: '/ucimo-kroz-igru.mp4', alt: 'Pregled knjige Učimo kroz igru' },
+      { type: 'image', src: '/second-book.jpg', alt: 'Naslovna strana - Učimo kroz igru' },
+    ],
     title: 'Učimo kroz igru',
     subtitle: 'Sortiranje, grupisanje i logičke veze',
     ageRange: '3–4 godine',
@@ -76,6 +92,10 @@ export const books: Book[] = [
   {
     slug: 'priprema-za-skolu',
     img: 'third-book.jpg',
+    media: [
+      { type: 'video', src: '/priprema-za-skolu.mp4', alt: 'Pregled knjige Priprema za školu' },
+      { type: 'image', src: '/third-book.jpg', alt: 'Naslovna strana - Priprema za školu' },
+    ],
     title: 'Priprema za školu',
     subtitle: 'Lavirinti, logika i koncentracija za buduće đake',
     ageRange: '4–6 godine',

@@ -127,6 +127,53 @@ async function updateStatus(order: AdminOrder, newStatus: string) {
   }
 }
 
+// ── Bex shipping ─────────────────────────────────────────────────
+const bexLoadingId = ref<string | null>(null)
+
+async function sendToBex(order: AdminOrder) {
+  bexLoadingId.value = order.id
+  try {
+    await $fetch(`/api/admin/orders/${order.id}/bex-ship`, { method: 'POST' })
+    await refreshOrders()
+  }
+  catch (e: any) {
+    const msg = e?.data?.statusMessage || 'Slanje u Bex nije uspelo.'
+    if (import.meta.client) alert(msg)
+  }
+  finally {
+    bexLoadingId.value = null
+  }
+}
+
+async function printBexLabel(order: AdminOrder) {
+  bexLoadingId.value = order.id
+  try {
+    const pdf = await $fetch<Blob>(`/api/admin/orders/${order.id}/bex-label`, {
+      responseType: 'blob',
+    })
+    const url = URL.createObjectURL(pdf)
+    if (import.meta.client) {
+      const win = window.open(url, '_blank')
+      // Fallback: download directly if popup blocked
+      if (!win) {
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `bex-${order.id}.pdf`
+        a.click()
+      }
+      setTimeout(() => URL.revokeObjectURL(url), 30_000)
+    }
+    await refreshOrders()
+  }
+  catch (e: any) {
+    const msg = e?.data?.statusMessage || 'Preuzimanje adresnice nije uspelo.'
+    if (import.meta.client) alert(msg)
+  }
+  finally {
+    bexLoadingId.value = null
+  }
+}
+
 // ── Lock panel ───────────────────────────────────────────────────
 async function lockPanel() {
   try {
@@ -374,6 +421,40 @@ const filterTabs = computed(() => [
                     <span class="size-1.5 rounded-full" :class="getOrderStatusMeta(key).dotClass" />
                     {{ getOrderStatusMeta(key).label }}
                   </button>
+                </div>
+
+                <!-- Bex shipping actions -->
+                <div class="mt-3 border-t border-cloud/40 pt-3">
+                  <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-navy/40">
+                    Bex
+                  </p>
+                  <!-- Not sent yet -->
+                  <button
+                    v-if="!order.bexShipmentId"
+                    type="button"
+                    :disabled="bexLoadingId === order.id"
+                    class="inline-flex items-center gap-2 rounded-full border-2 border-blue px-3 py-1.5 text-xs font-semibold text-blue transition-colors hover:bg-blue hover:text-white disabled:opacity-50"
+                    @click="sendToBex(order)"
+                  >
+                    <Icon name="lucide:send" class="size-3.5" />
+                    {{ bexLoadingId === order.id ? 'Slanje...' : 'Pošalji u Bex' }}
+                  </button>
+                  <!-- Sent: label download -->
+                  <div v-else class="flex flex-col gap-2">
+                    <div class="flex items-center gap-1.5 text-xs font-semibold text-green">
+                      <Icon name="lucide:check-circle" class="size-3.5" />
+                      Poslato u Bex
+                    </div>
+                    <button
+                      type="button"
+                      :disabled="bexLoadingId === order.id"
+                      class="inline-flex items-center gap-2 rounded-full border-2 border-navy/40 px-3 py-1.5 text-xs font-semibold text-navy transition-colors hover:border-navy hover:bg-navy hover:text-white disabled:opacity-50"
+                      @click="printBexLabel(order)"
+                    >
+                      <Icon name="lucide:printer" class="size-3.5" />
+                      {{ bexLoadingId === order.id ? 'Preuzimanje...' : 'Štampaj adresnicu' }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
