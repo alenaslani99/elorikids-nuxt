@@ -32,4 +32,5 @@ export const RATE_LIMITS = {
   contact: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per ip
   newsletter: { maxAttempts: 5, windowMs: 60 * 60_000 }, // 5 per hour per ip
   order: { maxAttempts: 10, windowMs: 60 * 60_000 }, // 10 per hour per ip
+  track: { maxAttempts: 30, windowMs: 15 * 60_000 }, // 30 per 15 min per ip (GET lookup, unguessable id)
 } as const

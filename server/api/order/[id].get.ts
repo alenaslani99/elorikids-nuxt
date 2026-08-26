@@ -1,5 +1,7 @@
-import { createError, defineEventHandler, getRouterParam } from 'h3'
+import { createError, defineEventHandler, getRouterParam, getRequestHeaders } from 'h3'
 import { useDb } from '../../utils/db'
+import { RATE_LIMITS } from '~~/shared/utils/limits'
+import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../../utils/rateLimit'
 
 export interface OrderTrackingResponse {
   id: string
@@ -28,6 +30,19 @@ export interface OrderTrackingResponse {
 
 export default defineEventHandler(async (event): Promise<OrderTrackingResponse> => {
   const db = useDb(event)
+
+  // ── Rate limiting (per IP) ────────────────────────────────────
+  const headers = getRequestHeaders(event)
+  const ip = getClientIp(headers)
+  const rl = await checkRateLimit(db, `track:${ip}`, 'track', RATE_LIMITS.track.maxAttempts, RATE_LIMITS.track.windowMs)
+  if (rl.limited) {
+    throw createError({
+      statusCode: 429,
+      statusMessage: `Preveliki broj pokušaja. Pokušajte ponovo za ${Math.ceil(rl.retryAfterSec / 60)} minuta.`,
+    })
+  }
+  await maybeCleanupRateLimits(db)
+
   const trackCode = String(getRouterParam(event, 'id') ?? '').trim()
 
   if (!trackCode) {
