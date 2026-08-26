@@ -1,0 +1,26 @@
+# elorikids
+
+> elorikids.rs je srpski brend edukativnih radnih sveski za decu uzrasta 2 do 6 godina. Knjige koriste "piši-briši" sistem na laminiranim, vodootpornim stranicama — dete može da piše i briše više puta, bez straha od greške. Sve ilustracije su originalne i ručno rađene, prilagođene uzrastu deteta. Pristup je učenje kroz igru: boje, veličine, sortiranje, logika, lavirinti i priprema za školu.
+
+## Knjige (proizvodi)
+
+Sve knjige imaju 32 stranice, laminirane vodootporne stranice i piši-briši sistem. Cena svake knjige je 2.000 RSD.
+
+- [Prvi koraci](https://elorikids.rs/books/prvi-koraci): Radna sveska za uzrast 2-3 godine. Boje, veličine i životinje za najmlađe istraživače. Razvija osnove logičkog razmišljanja kroz igru.
+- [Učimo kroz igru](https://elorikids.rs/books/ucimo-kroz-igru): Radna sveska za uzrast 3-4 godine. Sortiranje, grupisanje i logičke veze sa voćem, povrćem, igračkama i životinjama.
+- [Priprema za školu](https://elorikids.rs/books/priprema-za-skolu): Radna sveska za uzrast 4-6 godine. Lavirinti, pronalaženje razlika i asocijacije za pripremu za polazak u školu.
+
+## Ključne stranice
+
+- [Početna](https://elorikids.rs/): Pregled svih knjiga i brenda elorikids.
+- [Sve knjige](https://elorikids.rs/books): Katalog svih radnih sveski sa prikazom po uzrastu.
+- [O nama](https://elorikids.rs/about-us): Priča o brendu, misiji i pristupu učenju kroz igru.
+- [Česta pitanja](https://elorikids.rs/faq): Odgovori o piši-briši sistemu, uzrastima, bezbednosti, dostavi i povratu robe.
+- [Blog](https://elorikids.rs/blog): Članci o razvoju dece, učenju kroz igru i pripremi za školu.
+- [Kontakt](https://elorikids.rs/legal/contact): Kontakt forma i informacije za poručivanje.
+- [Politika privatnosti](https://elorikids.rs/legal/privacy-policy): Obrada podataka i privatnost korisnika.
+- [Uslovi korišćenja](https://elorikids.rs/legal/terms): Uslovi kupovine i korišćenja sajta.
+
+## Mašinski čitljivi podaci
+
+- [Katalog proizvoda](https://elorikids.rs/products.md): Struktuirani podaci o knjigama (cene, uzrasti, karakteristike) u markdown formatu — za AI agente koji porede proizvode bez renderovanja stranice.

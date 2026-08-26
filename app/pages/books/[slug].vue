@@ -39,6 +39,34 @@ function decQty() {
   if (quantity.value > 1) quantity.value--
 }
 
+// --- AI-citation FAQ (invisible — JSON-LD only, no visible UI) ---
+const activityList = computed(() =>
+  book.value!.activities.map(a => a.title).join(', ')
+)
+
+const bookFaqs = computed(() => [
+  {
+    q: `Za koji uzrast je ${book.value!.title}?`,
+    a: `${book.value!.title} je namenjena deci uzrasta ${book.value!.ageRange}. ${book.value!.description}`,
+  },
+  {
+    q: `Šta dete uči u knjizi ${book.value!.title}?`,
+    a: `Kroz ${book.value!.title} dete razvija: ${activityList.value}. ${book.value!.subtitle}.`,
+  },
+  {
+    q: `Da li se stranice knjige ${book.value!.title} mogu brisati?`,
+    a: 'Da. Sve elorikids knjige koriste piši-briši sistem sa laminiranim, vodootpornim stranicama. Dete može da piše i briše više puta, bez straha od greške.',
+  },
+  {
+    q: `Koliko stranica ima ${book.value!.title}?`,
+    a: `${book.value!.title} ima 32 stranice sa raznovrsnim zadacima koji podstiču kreativnost i radoznalost.`,
+  },
+  {
+    q: `Koliko košta ${book.value!.title}?`,
+    a: `Cena knjige ${book.value!.title} je ${book.value!.price.toLocaleString('sr-RS')} RSD.`,
+  },
+])
+
 // --- SEO + structured data ---
 useHead({
   title: `${book.value!.title} - ${book.value!.ageRange} | elorikids`,
@@ -87,6 +115,18 @@ useHead({
           { '@type': 'ListItem', position: 2, name: 'Knjige', item: 'https://elorikids.rs/books' },
           { '@type': 'ListItem', position: 3, name: book.value!.title, item: `https://elorikids.rs/books/${book.value!.slug}` },
         ],
+      }),
+    },
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: bookFaqs.value.map(f => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
       }),
     },
   ],

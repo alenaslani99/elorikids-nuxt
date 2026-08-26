@@ -15,6 +15,9 @@ const staticUrls: { loc: string; priority: string; lastmod?: string }[] = [
   { loc: '/legal/contact', priority: '0.5', lastmod: '2026-08-23' },
   { loc: '/legal/privacy-policy', priority: '0.3', lastmod: '2026-08-23' },
   { loc: '/legal/terms', priority: '0.3', lastmod: '2026-08-23' },
+  // ── Machine-readable files for AI agents (see public/llms.txt, public/products.md)
+  { loc: '/llms.txt', priority: '0.4', lastmod: '2026-08-26' },
+  { loc: '/products.md', priority: '0.4', lastmod: '2026-08-26' },
 ]
 
 function urlEntry(loc: string, priority: string, lastmod?: string) {
