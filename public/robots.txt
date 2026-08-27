@@ -13,6 +13,13 @@ User-agent: anthropic-ai
 User-agent: Google-Extended
 User-agent: Bingbot
 Allow: /
+
+# ── Content Signals (https://contentsignals.org) ──
+# Declares AI content-usage preferences:
+#   - ai-train=no: do not use our content to train AI models
+#   - search=yes:  allow our content to appear in search results
+#   - ai-input=yes: allow our content as AI input (answering questions, RAG, agentic use)
+Content-Signal: ai-train=no, search=yes, ai-input=yes
 Disallow: /admin
 Disallow: /shop/cart
 Disallow: /shop/checkout

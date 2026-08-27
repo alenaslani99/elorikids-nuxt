@@ -55,6 +55,14 @@ export default defineNuxtConfig({
     //   /blog/** (SEO-critical - blog index and posts must render server-side)
     //   /auth/login, /auth/register (form renders immediately, no flash)
     //
+    // ── Homepage Link headers (RFC 8288 / RFC 9727 §3) ──────────────────
+    //   Points agents to machine-readable resources for discovery.
+    '/': {
+      headers: {
+        Link: '</llms.txt>; rel="describedby", </products.md>; rel="describedby", </sitemap.xml>; rel="describedby"',
+      },
+    },
+    //
     // ── SPA-only pages (ssr: false) ────────────────────────────────────
     //   No SEO value / requires client session / post-action flows.
     //   The client auth plugin resolves the session before render, so
