@@ -3,15 +3,8 @@ main = ".output/server/index.mjs"
 compatibility_date = "2025-07-15"
 assets = { directory = ".output/public", binding = "ASSETS" }
 
-# ─── D1 Database ───────────────────────────────────────────────
-# 1. Create the database:
-#      npx wrangler d1 create elorikids-db
-# 2. Paste the database_id below (from the command output).
-# 3. Apply the schema:
-#      npx wrangler d1 execute elorikids-db --remote --file server/db/schema.sql
-#    For local dev:
-#      npx wrangler d1 execute elorikids-db --local --file server/db/schema.sql
-# ──────────────────────────────────────────────────────────────
+workers_dev = false
+
 [[d1_databases]]
 binding = "DB"
 database_name = "elorikids-db"
