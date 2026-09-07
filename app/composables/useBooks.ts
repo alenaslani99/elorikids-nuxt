@@ -7,6 +7,7 @@ export interface MediaItem {
   type: "video" | "image";
   src: string;
   alt?: string;
+  poster?: string;
 }
 
 export interface Book {
@@ -34,11 +35,12 @@ export const books: Book[] = [
     img: "prvi-koraci.jpeg",
     // Video first, then the cover image. Drop the .mp4 in /public to activate.
     media: [
-      // {
-      //   type: "video",
-      //   src: "/prvi-koraci.mp4",
-      //   alt: "Pregled knjige Prvi koraci",
-      // },
+      {
+        type: "video",
+        src: "/prvi-koraci.mp4",
+        poster: "/prvi-koraci-poster.jpg",
+        alt: "Pregled knjige Prvi koraci",
+      },
       {
         type: "image",
         src: "/prvi-koraci.jpeg",
@@ -100,11 +102,12 @@ export const books: Book[] = [
     slug: "ucimo-kroz-igru",
     img: "ucimo-kroz-igru.jpeg",
     media: [
-      // {
-      //   type: "video",
-      //   src: "/ucimo-kroz-igru.mp4",
-      //   alt: "Pregled knjige Učimo kroz igru",
-      // },
+      {
+        type: "video",
+        src: "/ucimo-kroz-igru.mp4",
+        poster: "/ucimo-kroz-igru-poster.jpg",
+        alt: "Pregled knjige Učimo kroz igru",
+      },
       {
         type: "image",
         src: "/ucimo-kroz-igru.jpeg",

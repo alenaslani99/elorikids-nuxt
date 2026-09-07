@@ -4,18 +4,18 @@ import type { MediaItem } from '~/composables/useBooks'
 /**
  * MediaGallery - video-first product gallery with a swipeable lightbox.
  *
- * Main view: shows the active media item - a real <video> element (with
- * preload="metadata" + #t=0.1 so the browser renders the video's own first
- * frame as the thumbnail, not a separate image) or an image - inside the
- * same rounded-3xl container as before. Dot indicators ("islands") below
- * let the user switch items.
+ * Main view: shows the active media item - a <video> element with a poster
+ * image and preload="none" (zero video bytes until the user opens the
+ * lightbox and hits play) or an image - inside the same rounded-3xl
+ * container as before. Dot indicators ("islands") below let the user
+ * switch items.
  *
  * Lightbox: fullscreen overlay, swipe on mobile, arrows + keyboard on
  * desktop, dot indicators, position counter. The lightbox itself is v-if
  * (zero cost when closed).
  *
  * Performance:
- * - Video uses preload="metadata" (first frame only, no full download).
+ * - Thumbnail video uses preload="none" + poster (no .mp4 bytes on page load).
  * - Images use NuxtImg (webp, sized).
  * - Lightbox renders nothing until opened (v-if, not v-show).
  * - No external library - unified Pointer Events API.
@@ -135,13 +135,14 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
       :aria-label="isVideo ? 'Otvori video pregled' : 'Otvori sliku'"
       @click="openLightbox"
     >
-      <!-- Video: real <video> element so the browser shows the video's own
-           first frame as the thumbnail (preload="metadata" + #t=0.1). -->
+      <!-- Video: poster image shows instantly (preload="none" never touches
+           the .mp4 until the user opens the lightbox and hits play). -->
       <template v-if="isVideo">
         <video
-          :src="`${active.src}#t=0.1`"
+          :src="active.src"
+          :poster="active.poster"
           :alt="active.alt"
-          preload="metadata"
+          preload="none"
           muted
           playsinline
           class="aspect-[4/5] w-full object-cover"
@@ -239,7 +240,8 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
                 <video
                   v-if="lightboxActive.type === 'video'"
                   :key="lightboxIndex"
-                  :src="`${lightboxActive.src}#t=0.1`"
+                  :src="lightboxActive.src"
+                  :poster="lightboxActive.poster"
                   controls
                   playsinline
                   preload="metadata"
