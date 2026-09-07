@@ -5,6 +5,11 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/icon', '@nuxt/fonts', '@nuxt/image'],
+  features: {
+    // Inline page-critical CSS into SSR HTML: removes the render-blocking
+    // /_nuxt/entry.*.css request from the critical path (Lighthouse: ~340ms).
+    inlineStyles: true,
+  },
   components: [
     { path: '~/components', pathPrefix: false },
   ],
@@ -33,6 +38,11 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
+        // Preload the Unbounded latin woff2 used by the hero H1: it chained
+        // ~940ms behind the CSS in the critical path. NOTE: the filename hash
+        // is content-based — if @nuxt/fonts output changes, update this URL
+        // (find the ~45KB file in .output/public/_fonts/ after build).
+        { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous', href: '/_fonts/kszk12Vcoz7vUH9r_CDxDeuw-zVu9AAWJDILFh6BHz0-l1qIasRKkG0aY8Frl8gdWxoe7LM3laaQ4OM17i2YYi8.woff2' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon_io/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon_io/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon_io/favicon-16x16.png' },

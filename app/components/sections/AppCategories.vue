@@ -23,7 +23,7 @@ const books: BookCard[] = [
         activities: ["Svet boja", "Veliko i malo", "Životinje", "Uparivanje"],
         accent: "mint",
         icon: "lucide:palette",
-        image: "prvi-koraci.jpeg",
+        image: "prvi-koraci-640.webp",
         alt: "Prvi koraci - interaktivna piši-briši knjiga za decu od 2 do 3 godine",
     },
     {
@@ -36,7 +36,7 @@ const books: BookCard[] = [
         activities: ["Sortiranje", "Kategorije", "Povezivanje", "Logika"],
         accent: "purple",
         icon: "lucide:shapes",
-        image: "ucimo-kroz-igru.jpeg",
+        image: "ucimo-kroz-igru-640.webp",
         alt: "Učimo kroz igru - interaktivna piši-briši knjiga za decu od 3 do 4 godine",
     },
     {
@@ -54,7 +54,7 @@ const books: BookCard[] = [
         ],
         accent: "coral",
         icon: "lucide:graduation-cap",
-        image: "priprema-za-skolu.jpeg",
+        image: "priprema-za-skolu-640.webp",
         alt: "Priprema za školu - interaktivna piši-briši knjiga za decu od 4 do 6 godine",
     },
 ];
@@ -127,18 +127,19 @@ const accentClasses: Record<
                     class="group flex flex-col rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     :class="accentClasses[book.accent].hover"
                 >
-                    <!-- Book image -->
+                    <!-- Book image: plain <img> with pre-generated .webp.
+                         NuxtImg's _ipx optimizer doesn't run on Cloudflare
+                         Workers and would silently serve the ~300KB original. -->
                     <div class="mb-6 overflow-hidden rounded-2xl">
-                        <NuxtImg
+                        <img
                             :src="`/${book.image}`"
                             :alt="book.alt"
                             :class="[
                                 'aspect-[4/3] w-full object-cover ring-2 transition-transform duration-300 group-hover:scale-105',
                                 accentClasses[book.accent].imageRing,
                             ]"
-                            width="400"
-                            height="300"
-                            :modifiers="{ format: 'webp' }"
+                            width="640"
+                            height="853"
                             loading="lazy"
                         />
                     </div>

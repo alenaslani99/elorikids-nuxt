@@ -34,14 +34,18 @@
         </div>
 
         <!-- Visual -->
+        <!-- Plain <img> (not NuxtImg): the _ipx optimizer doesn't run on
+             Cloudflare Workers, so NuxtImg silently serves the 1280px
+             original. These pre-generated .webp variants are ~5x smaller. -->
         <div class="relative">
-          <NuxtImg
-            src="/elorikids-1.jpg"
+          <img
+            src="/elorikids-1-1024.webp"
+            srcset="/elorikids-1-640.webp 640w, /elorikids-1-1024.webp 1024w"
+            sizes="(max-width: 1023px) 100vw, 600px"
             alt="Elorikids interaktivne piši-briši knjige za decu od 2 do 6 godina"
+            width="1024"
+            height="1536"
             class="aspect-square w-full rounded-3xl object-cover shadow-xl"
-            width="400"
-            height="400"
-            format="webp"
             loading="eager"
             fetchpriority="high"
           />

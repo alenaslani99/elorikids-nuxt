@@ -45,10 +45,14 @@ useHead({
 <template>
   <div>
     <AppHero />
-    <AppCategories />
-    <AppActivities />
-    <AppValueProps />
-    <AppTestimonials />
-    <AppFaq />
+    <!-- Below-fold sections hydrate on visibility: their JS is excluded
+         from initial hydration, cutting mobile TBT (~1100ms). SSR HTML
+         still renders for SEO; anchor links (#categories etc.) trigger
+         hydration via scroll intersection. -->
+    <LazyAppCategories hydrate-on-visible />
+    <LazyAppActivities hydrate-on-visible />
+    <LazyAppValueProps hydrate-on-visible />
+    <LazyAppTestimonials hydrate-on-visible />
+    <LazyAppFaq hydrate-on-visible />
   </div>
 </template>
