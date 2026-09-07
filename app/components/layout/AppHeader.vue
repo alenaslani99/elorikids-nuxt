@@ -150,14 +150,14 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
         <div class="ml-auto flex items-center gap-1 sm:gap-2 md:ml-0">
           <NuxtLink to="/shop/saved" aria-label="Sačuvano" class="relative flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10">
             <Icon name="lucide:heart" class="size-5" />
-            <span v-if="savedCount > 0" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[10px] font-bold text-white">{{ savedCount }}</span>
+            <span v-if="savedCount > 0" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral-dark px-1 text-[10px] font-bold text-white">{{ savedCount }}</span>
           </NuxtLink>
           <NuxtLink to="/auth/account" aria-label="Nalog" class="hidden h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10 sm:flex">
             <Icon name="lucide:user" class="size-5" />
           </NuxtLink>
           <NuxtLink to="/shop/cart" aria-label="Korpa" class="relative flex h-11 w-11 items-center justify-center rounded-full text-white transition-colors hover:bg-white/10">
             <Icon name="lucide:shopping-bag" class="size-5" />
-            <span v-if="cartCount > 0" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral px-1 text-[10px] font-bold text-white">{{ cartCount }}</span>
+            <span v-if="cartCount > 0" class="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-coral-dark px-1 text-[10px] font-bold text-white">{{ cartCount }}</span>
           </NuxtLink>
         </div>
       </div>
@@ -168,7 +168,7 @@ onBeforeUnmount(() => document.removeEventListener('click', onClickOutside))
       <div class="mx-auto flex h-12 max-w-7xl items-center gap-1 overflow-x-auto px-4 sm:px-6 lg:px-8">
         <NuxtLink to="/" exact-active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40  hover:text-navy">Početna</NuxtLink>
         <NuxtLink to="/legal/contact" active-class="bg-sky/40 text-navy" class="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-navy-dark transition-colors hover:bg-sky/40 hover:text-navy">Kontakt</NuxtLink>
-        <NuxtLink to="/books" class="ml-auto flex items-center gap-1 whitespace-nowrap rounded-lg bg-coral px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral/90">
+        <NuxtLink to="/books" class="ml-auto flex items-center gap-1 whitespace-nowrap rounded-lg bg-coral-dark px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-coral-dark/90">
           Interaktivne knjige
         </NuxtLink>
       </div>

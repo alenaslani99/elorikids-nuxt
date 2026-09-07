@@ -66,12 +66,12 @@ const columns = [
       </div>
 
       <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
-        <p class="text-sm text-cloud/60">
+        <p class="text-sm text-cloud/70">
           © {{ year }} elorikids. Sva prava zadržana.
         </p>
         <div class="flex gap-6">
-          <NuxtLink to="/legal/privacy-policy" class="text-sm text-cloud/60 transition-colors hover:text-sky">Politika privatnosti</NuxtLink>
-          <NuxtLink to="/legal/terms" class="text-sm text-cloud/60 transition-colors hover:text-sky">Uslovi korišćenja</NuxtLink>
+          <NuxtLink to="/legal/privacy-policy" class="text-sm text-cloud/70 transition-colors hover:text-sky">Politika privatnosti</NuxtLink>
+          <NuxtLink to="/legal/terms" class="text-sm text-cloud/70 transition-colors hover:text-sky">Uslovi korišćenja</NuxtLink>
         </div>
       </div>
     </div>

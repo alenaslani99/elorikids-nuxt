@@ -19,7 +19,7 @@
           <div class="flex flex-wrap gap-4">
             <NuxtLink
               to="/#categories"
-              class="inline-flex items-center gap-2 rounded-full bg-blue px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
+              class="inline-flex items-center gap-2 rounded-full bg-blue-dark px-6 py-3 font-semibold text-white transition-colors hover:bg-navy"
             >
               Pogledaj knjige
               <Icon name="lucide:arrow-right" class="size-5" />
@@ -39,12 +39,12 @@
              original. These pre-generated .webp variants are ~5x smaller. -->
         <div class="relative">
           <img
-            src="/elorikids-1-1024.webp"
-            srcset="/elorikids-1-640.webp 640w, /elorikids-1-1024.webp 1024w"
+            src="/elorikids-1-640sq.webp"
+            srcset="/elorikids-1-640sq.webp 640w, /elorikids-1-1024sq.webp 1024w"
             sizes="(max-width: 1023px) 100vw, 600px"
             alt="Elorikids interaktivne piši-briši knjige za decu od 2 do 6 godina"
-            width="1024"
-            height="1536"
+            width="640"
+            height="640"
             class="aspect-square w-full rounded-3xl object-cover shadow-xl"
             loading="eager"
             fetchpriority="high"

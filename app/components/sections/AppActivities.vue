@@ -69,7 +69,7 @@ function flip(index: number) {
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Section header -->
       <div class="mx-auto mb-12 max-w-2xl text-center">
-        <span class="inline-block rounded-full bg-coral/20 px-4 py-1.5 text-sm font-semibold text-coral">
+        <span class="inline-block rounded-full bg-coral/20 px-4 py-1.5 text-sm font-semibold text-coral-dark">
           Igramo se!
         </span>
         <h2 class="font-unbounded mt-4 text-3xl font-extrabold text-navy md:text-4xl lg:text-5xl">
@@ -87,7 +87,7 @@ function flip(index: number) {
           :key="activity.title"
           type="button"
           class="group [perspective:1200px]"
-          :aria-label="`Prikaži više o: ${activity.title}`"
+          :aria-expanded="flipped[index] ? 'true' : 'false'"
           @click="flip(index)"
         >
           <div
@@ -132,7 +132,7 @@ function flip(index: number) {
       </div>
 
       <!-- Hint -->
-      <p class="mt-8 text-center text-sm text-navy/50">
+      <p class="mt-8 text-center text-sm text-navy/75">
         <Icon name="lucide:hand" class="mr-1 inline size-4" />
         Dodirni bilo koju pločicu da je okreneš
       </p>

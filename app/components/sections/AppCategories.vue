@@ -23,7 +23,7 @@ const books: BookCard[] = [
         activities: ["Svet boja", "Veliko i malo", "Životinje", "Uparivanje"],
         accent: "mint",
         icon: "lucide:palette",
-        image: "prvi-koraci-640.webp",
+        image: "prvi-koraci-640x480.webp",
         alt: "Prvi koraci - interaktivna piši-briši knjiga za decu od 2 do 3 godine",
     },
     {
@@ -36,7 +36,7 @@ const books: BookCard[] = [
         activities: ["Sortiranje", "Kategorije", "Povezivanje", "Logika"],
         accent: "purple",
         icon: "lucide:shapes",
-        image: "ucimo-kroz-igru-640.webp",
+        image: "ucimo-kroz-igru-640x480.webp",
         alt: "Učimo kroz igru - interaktivna piši-briši knjiga za decu od 3 do 4 godine",
     },
     {
@@ -54,7 +54,7 @@ const books: BookCard[] = [
         ],
         accent: "coral",
         icon: "lucide:graduation-cap",
-        image: "priprema-za-skolu-640.webp",
+        image: "priprema-za-skolu-640x480.webp",
         alt: "Priprema za školu - interaktivna piši-briši knjiga za decu od 4 do 6 godine",
     },
 ];
@@ -139,8 +139,10 @@ const accentClasses: Record<
                                 accentClasses[book.accent].imageRing,
                             ]"
                             width="640"
-                            height="853"
+                            height="480"
                             loading="lazy"
+                            decoding="async"
+                            sizes="(max-width: 768px) 100vw, 400px"
                         />
                     </div>
 
@@ -170,7 +172,7 @@ const accentClasses: Record<
                     >
                         {{ book.title }}
                     </h3>
-                    <p class="text-sm font-medium text-navy/50">
+                    <p class="text-sm font-medium text-navy/75">
                         {{ book.subtitle }}
                     </p>
 
@@ -184,7 +186,7 @@ const accentClasses: Record<
                         <li
                             v-for="activity in book.activities"
                             :key="activity"
-                            class="flex items-center gap-2 text-sm text-navy/60"
+                            class="flex items-center gap-2 text-sm text-navy/75"
                         >
                             <Icon
                                 name="lucide:check"
@@ -224,7 +226,7 @@ const accentClasses: Record<
                                 Piši-briši sistem
                             </h4>
                             <p
-                                class="mt-1 text-xs leading-relaxed text-navy/60"
+                                class="mt-1 text-xs leading-relaxed text-navy/75"
                             >
                                 Laminirane, vodootporne stranice za višestruko
                                 korišćenje.
@@ -241,7 +243,7 @@ const accentClasses: Record<
                                 Originalni sadržaj
                             </h4>
                             <p
-                                class="mt-1 text-xs leading-relaxed text-navy/60"
+                                class="mt-1 text-xs leading-relaxed text-navy/75"
                             >
                                 Ručno ilustrovani zadaci, kreirani sa ljubavlju.
                             </p>
@@ -257,7 +259,7 @@ const accentClasses: Record<
                                 Učenje kroz igru
                             </h4>
                             <p
-                                class="mt-1 text-xs leading-relaxed text-navy/60"
+                                class="mt-1 text-xs leading-relaxed text-navy/75"
                             >
                                 Zabava na prvom mestu - učenje dolazi prirodno.
                             </p>
@@ -273,7 +275,7 @@ const accentClasses: Record<
                                 32 stranice
                             </h4>
                             <p
-                                class="mt-1 text-xs leading-relaxed text-navy/60"
+                                class="mt-1 text-xs leading-relaxed text-navy/75"
                             >
                                 Raznovrsni zadaci koji podstiču radoznalost.
                             </p>

@@ -36,9 +36,9 @@ const testimonials: Testimonial[] = [
 ]
 
 const accentClasses: Record<Testimonial['accent'], { bg: string, text: string, ring: string }> = {
-  blue: { bg: 'bg-blue/10', text: 'text-blue', ring: 'ring-blue/20' },
-  coral: { bg: 'bg-coral/10', text: 'text-coral', ring: 'ring-coral/20' },
-  mint: { bg: 'bg-mint/15', text: 'text-mint', ring: 'ring-mint/20' },
+  blue: { bg: 'bg-blue/10', text: 'text-blue-dark', ring: 'ring-blue/20' },
+  coral: { bg: 'bg-coral/10', text: 'text-coral-dark', ring: 'ring-coral/20' },
+  mint: { bg: 'bg-mint/15', text: 'text-mint-dark', ring: 'ring-mint/20' },
 }
 
 const initials = (name: string) =>
@@ -54,7 +54,7 @@ const initials = (name: string) =>
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <!-- Section header -->
       <div class="mx-auto mb-12 max-w-2xl text-center">
-        <span class="inline-block rounded-full bg-purple/20 px-4 py-1.5 text-sm font-semibold text-purple">
+        <span class="inline-block rounded-full bg-purple/20 px-4 py-1.5 text-sm font-semibold text-purple-dark">
           Iskustva roditelja
         </span>
         <h2 class="font-unbounded mt-4 text-3xl font-extrabold text-navy md:text-4xl">
@@ -104,7 +104,7 @@ const initials = (name: string) =>
             </div>
             <div>
               <p class="font-semibold text-navy">{{ t.name }}</p>
-              <p class="text-sm text-navy/50">
+              <p class="text-sm text-navy/75">
                 {{ t.city }} · kupac knjige „{{ t.book }}"
               </p>
             </div>

@@ -70,7 +70,26 @@ export default defineNuxtConfig({
     '/': {
       headers: {
         Link: '</llms.txt>; rel="describedby", </products.md>; rel="describedby", </sitemap.xml>; rel="describedby"',
+        // HTML must revalidate: prevents stale SSR referencing old hashed
+        // /_nuxt/* chunks after a new deploy (Lighthouse 404 BVVkIIX0.js).
+        'Cache-Control': 'public, max-age=0, must-revalidate',
+        // Security hardening (Lighthouse best-practices informative).
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+        'X-Frame-Options': 'SAMEORIGIN',
+        'Content-Security-Policy': "frame-ancestors 'self'",
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
       },
+    },
+    // ── Immutable hashed/static assets (1y) ─────────────────────────────
+    //   Explicit (Nitro/Cloudflare already defaults _nuxt to immutable,
+    //   but explicit guards against regressions and stale-HTML skew).
+    '/_nuxt/**': {
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' },
+    },
+    '/_fonts/**': {
+      headers: { 'Cache-Control': 'public, max-age=31536000, immutable' },
     },
     //
     // ── SPA-only pages (ssr: false) ────────────────────────────────────
