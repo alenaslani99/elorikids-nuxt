@@ -15,6 +15,16 @@ useHead({
   ],
   link: [
     { rel: 'canonical', href: 'https://elorikids.rs/' },
+    // Preload LCP hero image: cuts resourceLoadDelay (~60ms in Lighthouse).
+    // Matches AppHero srcset/sizes so mobile picks the 640w variant.
+    {
+      rel: 'preload',
+      as: 'image',
+      href: '/elorikids-1-640sq.webp',
+      imagesrcset: '/elorikids-1-640sq.webp 640w, /elorikids-1-1024sq.webp 1024w',
+      imagesizes: '(max-width: 1023px) 100vw, 600px',
+      fetchpriority: 'high',
+    },
   ],
   script: [
     {
