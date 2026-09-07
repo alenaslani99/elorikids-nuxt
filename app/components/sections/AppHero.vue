@@ -42,7 +42,8 @@
             width="400"
             height="400"
             format="webp"
-            loading="lazy"
+            loading="eager"
+            fetchpriority="high"
           />
         </div>
       </div>
