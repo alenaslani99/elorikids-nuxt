@@ -28,5 +28,5 @@ html {
 body {
   background-color: var(--color-cream);
   color: var(--color-navy);
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-unbounded);
 }
