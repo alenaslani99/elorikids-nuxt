@@ -40,7 +40,7 @@
         <div class="relative">
           <img
             src="/elorikids-1-640sq.webp"
-            srcset="/elorikids-1-640sq.webp 640w, /elorikids-1-1024sq.webp 1024w"
+            srcset="/elorikids-1-480sq.webp 480w, /elorikids-1-640sq.webp 640w, /elorikids-1-1024sq.webp 1024w"
             sizes="(max-width: 1023px) 100vw, 600px"
             alt="Elorikids interaktivne piši-briši knjige za decu od 2 do 6 godina"
             width="640"

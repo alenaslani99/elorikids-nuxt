@@ -132,14 +132,15 @@ const accentClasses: Record<
                          Workers and would silently serve the ~300KB original. -->
                     <div class="mb-6 overflow-hidden rounded-2xl">
                         <img
-                            :src="`/${book.image}`"
+                            :src="`/${book.image.replace('640x480', '400x300')}`"
+                            :srcset="`/${book.image.replace('640x480', '400x300')} 400w, /${book.image} 640w`"
                             :alt="book.alt"
                             :class="[
                                 'aspect-[4/3] w-full object-cover ring-2 transition-transform duration-300 group-hover:scale-105',
                                 accentClasses[book.accent].imageRing,
                             ]"
-                            width="640"
-                            height="480"
+                            width="400"
+                            height="300"
                             loading="lazy"
                             decoding="async"
                             sizes="(max-width: 768px) 100vw, 400px"

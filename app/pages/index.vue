@@ -21,7 +21,7 @@ useHead({
       rel: 'preload',
       as: 'image',
       href: '/elorikids-1-640sq.webp',
-      imagesrcset: '/elorikids-1-640sq.webp 640w, /elorikids-1-1024sq.webp 1024w',
+      imagesrcset: '/elorikids-1-480sq.webp 480w, /elorikids-1-640sq.webp 640w, /elorikids-1-1024sq.webp 1024w',
       imagesizes: '(max-width: 1023px) 100vw, 600px',
       fetchpriority: 'high',
     },
