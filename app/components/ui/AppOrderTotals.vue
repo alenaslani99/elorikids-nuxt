@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
 })
 
 const shippingLabel = computed(() =>
-  props.shipping === 0 ? 'Besplatno' : `${props.shipping.toLocaleString('sr-RS')} RSD`,
+  props.shipping === 0 ? 'Besplatno' : '+ dostava',
 )
 </script>
 
