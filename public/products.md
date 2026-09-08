@@ -5,9 +5,9 @@ Mašinski čitljiv katalog edukativnih radnih sveski za decu. Sve cene su u srps
 ## Prvi koraci
 
 - **URL**: https://elorikids.rs/books/prvi-koraci
-- **Cena**: 2.000 RSD
+- **Cena**: ~~2.000 RSD~~ **1.800 RSD**
 - **Uzrast**: 2-3 godine
-- **Broj stranica**: 32
+- **Broj stranica**: 24
 - **Format**: Laminirano, vodootporno, piši-briši
 - **Opis**: Idealna prva radna sveska za najmlađe. Kroz šarene ilustracije i jednostavne zadatke, dete upoznaje boje, veličine i životinje. Svaka stranica je prilagođena malim rukama i razvija osnove logičkog razmišljanja kroz igru.
 - **Aktivnosti**: Boje (uparivanje predmeta sa bojama), veličine (poređenje veličina), životinje (domaće i divlje, uparivanje roditelja i mladunaca), uparivanje parova
@@ -16,9 +16,9 @@ Mašinski čitljiv katalog edukativnih radnih sveski za decu. Sve cene su u srps
 ## Učimo kroz igru
 
 - **URL**: https://elorikids.rs/books/ucimo-kroz-igru
-- **Cena**: 2.000 RSD
+- **Cena**: ~~2.000 RSD~~ **1.800 RSD**
 - **Uzrast**: 3-4 godine
-- **Broj stranica**: 32
+- **Broj stranica**: 24
 - **Format**: Laminirano, vodootporno, piši-briši
 - **Opis**: Knjiga koja razvija sposobnost sortiranja, grupisanja i povezivanja. Kroz zanimljive zadatke sa voćem, povrćem, igračkama i životinjama, dete uči da prepoznaje šta pripada gde i kako stvari idu zajedno.
 - **Aktivnosti**: Sortiranje (voće i povrće), kategorije (grupisanje po tipu), povezivanje parova, logika (šeme i zaključivanje)
@@ -27,9 +27,9 @@ Mašinski čitljiv katalog edukativnih radnih sveski za decu. Sve cene su u srps
 ## Priprema za školu
 
 - **URL**: https://elorikids.rs/books/priprema-za-skolu
-- **Cena**: 2.000 RSD
+- **Cena**: ~~2.000 RSD~~ **1.800 RSD**
 - **Uzrast**: 4-6 godine
-- **Broj stranica**: 32
+- **Broj stranica**: 24
 - **Format**: Laminirano, vodootporno, piši-briši
 - **Opis**: Poslednja knjiga u seriji — priprema za polazak u školu. Lavirinti, pronalaženje razlika i asocijacije razvijaju strpljenje, pažnju i logičko razmišljanje. Sve što dete treba da savlada pre prvog školskog zvona.
 - **Aktivnosti**: Lavirinti, pronalaženje razlika, asocijacije (povezivanje predmeta), koncentracija (zadaci fokusa)

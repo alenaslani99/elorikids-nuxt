@@ -4,7 +4,7 @@
 
 ## Knjige (proizvodi)
 
-Sve knjige imaju 32 stranice, laminirane vodootporne stranice i piši-briši sistem. Cena svake knjige je 2.000 RSD.
+Sve knjige imaju 24 stranice, laminirane vodootporne stranice i piši-briši sistem. Cena svake knjige je 1.800 RSD (sniženo sa 2.000 RSD).
 
 - [Prvi koraci](https://elorikids.rs/books/prvi-koraci): Radna sveska za uzrast 2-3 godine. Boje, veličine i životinje za najmlađe istraživače. Razvija osnove logičkog razmišljanja kroz igru.
 - [Učimo kroz igru](https://elorikids.rs/books/ucimo-kroz-igru): Radna sveska za uzrast 3-4 godine. Sortiranje, grupisanje i logičke veze sa voćem, povrćem, igračkama i životinjama.

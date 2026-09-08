@@ -27,7 +27,7 @@ const props: ValueProp[] = [
   },
   {
     icon: 'lucide:book-open',
-    title: '32 stranice',
+    title: '24 stranice',
     description: 'Raznovrsni zadaci koji podstiču kreativnost i radoznalost. Svaka stranica donosi novu aktivnost koja razvija motoriku, logiku i maštu vašeg deteta.',
     accent: 'mint',
   },

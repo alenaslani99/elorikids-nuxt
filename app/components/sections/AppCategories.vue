@@ -272,7 +272,7 @@ const accentClasses: Record<
                         />
                         <div>
                             <h4 class="text-sm font-semibold text-navy">
-                                32 stranice
+                                24 stranice
                             </h4>
                             <p
                                 class="mt-1 text-xs leading-relaxed text-navy/75"

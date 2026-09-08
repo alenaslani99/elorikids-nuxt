@@ -56,7 +56,7 @@ export const books: Book[] = [
     oldPrice: 2000,
     description:
       "Idealna prva radna sveska za najmlađe. Kroz šarene ilustracije i jednostavne zadatke, dete upoznaje boje, veličine i životinje. Svaka stranica je prilagođena malim rukama i razvija osnove logičkog razmišljanja kroz igru.",
-    features: ["32 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
+    features: ["24 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
     activities: [
       {
         title: "Svet boja",
@@ -93,7 +93,7 @@ export const books: Book[] = [
         text: "Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.",
       },
       {
-        title: "32 stranice",
+        title: "24 stranice",
         text: "Raznovrsni zadaci koji podstiču kreativnost i radoznalost.",
       },
     ],
@@ -125,7 +125,7 @@ export const books: Book[] = [
     oldPrice: 2000,
     description:
       "Knjiga koja razvija sposobnost sortiranja, grupisanja i povezivanja. Kroz zanimljive zadatke sa voćem, povrćem, igračkama i životinjama, dete uči da prepoznaje šta pripada gde i kako stvari idu zajedno.",
-    features: ["32 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
+    features: ["24 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
     activities: [
       {
         title: "Sortiranje",
@@ -160,7 +160,7 @@ export const books: Book[] = [
         text: "Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.",
       },
       {
-        title: "32 stranice",
+        title: "24 stranice",
         text: "Raznovrsni zadaci koji podstiču kreativnost i radoznalost.",
       },
     ],
@@ -192,7 +192,7 @@ export const books: Book[] = [
     oldPrice: 2000,
     description:
       "Poslednja knjiga u seriji - priprema za polazak u školu. Lavirinti, pronalaženje razlika i asocijacije razvijaju strpljenje, pažnju i logičko razmišljanje. Sve što dete treba da savlada pre prvog školskog zvona.",
-    features: ["32 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
+    features: ["24 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
     activities: [
       {
         title: "Lavirinti",
@@ -227,7 +227,7 @@ export const books: Book[] = [
         text: "Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.",
       },
       {
-        title: "32 stranice",
+        title: "24 stranice",
         text: "Raznovrsni zadaci koji podstiču kreativnost i radoznalost.",
       },
     ],

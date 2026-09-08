@@ -63,7 +63,7 @@ const bookFaqs = computed(() => [
     },
     {
         q: `Koliko stranica ima ${book.value!.title}?`,
-        a: `${book.value!.title} ima 32 stranice sa raznovrsnim zadacima koji podstiču kreativnost i radoznalost.`,
+        a: `${book.value!.title} ima 24 stranice sa raznovrsnim zadacima koji podstiču kreativnost i radoznalost.`,
     },
     {
         q: `Koliko košta ${book.value!.title}?`,
