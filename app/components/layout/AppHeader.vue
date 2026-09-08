@@ -201,6 +201,12 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
                                             }}</span>
                                         </p>
                                     </div>
+                                    <span
+                                        v-if="book.oldPrice > book.price"
+                                        class="ml-auto shrink-0 rounded-full bg-coral px-2 py-0.5 text-[11px] font-bold text-white"
+                                    >
+                                        -10%
+                                    </span>
                                 </button>
                             </li>
                         </ul>
