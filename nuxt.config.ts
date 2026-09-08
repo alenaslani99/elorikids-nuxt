@@ -38,11 +38,14 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary_large_image' },
       ],
       link: [
-        // Preload the Unbounded latin woff2 used by the hero H1: it chained
-        // ~940ms behind the CSS in the critical path. NOTE: the filename hash
-        // is content-based — if @nuxt/fonts output changes, update this URL
-        // (find the ~45KB file in .output/public/_fonts/ after build).
+        // Preload the Unbounded latin + latin-ext woff2 used by the hero H1:
+        // they chained ~940ms behind the CSS in the critical path. Latin-ext
+        // carries Serbian diacritics (čćžšđ, e.g. "učenje") - without it those
+        // glyphs swap in late and shift the headline (CLS). NOTE: the filename
+        // hashes are content-based — if @nuxt/fonts output changes, update
+        // these URLs (find the files in .output/public/_fonts/ after build).
         { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous', href: '/_fonts/kszk12Vcoz7vUH9r_CDxDeuw-zVu9AAWJDILFh6BHz0-l1qIasRKkG0aY8Frl8gdWxoe7LM3laaQ4OM17i2YYi8.woff2' },
+        { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous', href: '/_fonts/MiXDbwb61fmWwPdI-lVOtVixmpLsL_HaW34KK9OcxSk-BkwPMavM7x3CQSlp9twqo7mkQHFKzfXtvf0Q1F1C0sc.woff2' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon_io/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon_io/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon_io/favicon-16x16.png' },

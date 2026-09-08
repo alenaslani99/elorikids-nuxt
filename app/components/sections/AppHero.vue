@@ -8,7 +8,7 @@
       <div class="grid items-center gap-12 lg:grid-cols-2">
         <!-- Text -->
         <div>
-          <h1 class="font-unbounded mb-6 text-4xl font-extrabold leading-tight text-navy md:text-5xl lg:text-6xl">
+          <h1 class="font-unbounded mb-6 text-balance text-4xl font-extrabold leading-tight text-navy md:text-5xl lg:text-6xl">
             Knjige koje deci čine učenje zabavnim
           </h1>
 
