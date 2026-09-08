@@ -45,7 +45,7 @@ export default defineNuxtConfig({
         // hashes are content-based — if @nuxt/fonts output changes, update
         // these URLs (find the files in .output/public/_fonts/ after build).
         { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous', href: '/_fonts/kszk12Vcoz7vUH9r_CDxDeuw-zVu9AAWJDILFh6BHz0-l1qIasRKkG0aY8Frl8gdWxoe7LM3laaQ4OM17i2YYi8.woff2' },
-        { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous', href: '/_fonts/MiXDbwb61fmWwPdI-lVOtVixmpLsL_HaW34KK9OcxSk-BkwPMavM7x3CQSlp9twqo7mkQHFKzfXtvf0Q1F1C0sc.woff2' },
+        { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: 'anonymous', href: '/_fonts/xJ3E-P_YyxQozBk-LSKho30vBh8p2BM9_Nyr9bLfcfg-gsUhBK1eL7K2W7ELQG0Yo1Igd_qHYCrfipiZ91c6NLE.woff2' },
         { rel: 'icon', type: 'image/x-icon', href: '/favicon_io/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon_io/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon_io/favicon-16x16.png' },
