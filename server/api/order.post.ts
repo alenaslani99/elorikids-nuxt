@@ -2,7 +2,6 @@ import { createError, defineEventHandler, readBody, getRequestHeaders } from 'h3
 import { useDb } from '../utils/db'
 import { getSessionUser } from '../utils/session'
 import { emailRegex, serbianPhoneRegex, nameRegex, postalRegex, streetNumberRegex } from '~~/shared/utils/validation'
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from '~~/shared/utils/orders'
 import { MAX_ORDER_ITEMS } from '~~/shared/utils/products'
 import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
 import { checkRateLimit, getClientIp, maybeCleanupRateLimits } from '../utils/rateLimit'
@@ -137,10 +136,13 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  // --- Recompute totals server-side ---
+  // --- Totals: no flat shipping fee ---
+  // Below FREE_SHIPPING_THRESHOLD the courier charges by destination,
+  // so shipping is never added online: grandTotal = books subtotal.
+  // Stored shipping is always 0 going forward (old orders keep 350).
   const subtotal = validatedItems.reduce((sum, i) => sum + i.price * i.quantity, 0)
-  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE
-  const grandTotal = subtotal + shipping
+  const shipping = 0
+  const grandTotal = subtotal
 
   // --- Determine if user is logged in ---
   const sessionUser = await getSessionUser(event, db)

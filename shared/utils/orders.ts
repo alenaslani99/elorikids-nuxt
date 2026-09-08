@@ -6,7 +6,12 @@
  */
 
 /** Orders at or above this amount ship for free (RSD). */
-export const FREE_SHIPPING_THRESHOLD = 5000
+export const FREE_SHIPPING_THRESHOLD = 4500
 
-/** Flat shipping fee for orders below the free-shipping threshold (RSD). */
-export const SHIPPING_FEE = 350
+/**
+ * NOTE: there is intentionally no flat shipping fee. Below the
+ * free-shipping threshold the courier charges by destination
+ * ("+ dostava"), so shipping is NEVER added to online totals:
+ * grandTotal = subtotal, and the stored order shipping is always 0.
+ * (Historical orders placed before this change keep their 350 RSD fee.)
+ */

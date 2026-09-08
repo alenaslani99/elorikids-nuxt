@@ -19,6 +19,7 @@
  * dashboard; any address on it works (hello@, kontakt@, porudzbine@...).
  */
 import type { H3Event } from "h3";
+import { FREE_SHIPPING_THRESHOLD } from "~~/shared/utils/orders";
 
 // ── Email templates (inlined) ────────────────────────────────────────
 // These mirror /email-templates/*.html (the design reference). Kept here
@@ -557,7 +558,7 @@ export function buildOrderMail(input: OrderMailInput): {
     CUSTOMER_NAME: escapeHtml(input.customerName),
     ITEM_ROWS: itemRows,
     SUBTOTAL: formatRsd(input.subtotal),
-    SHIPPING: input.shipping === 0 ? "Besplatno" : formatRsd(input.shipping),
+    SHIPPING: input.shipping > 0 ? formatRsd(input.shipping) : (input.subtotal >= FREE_SHIPPING_THRESHOLD ? "Besplatno" : "+ dostava"),
     GRAND_TOTAL: formatRsd(input.grandTotal),
     ADDRESS: escapeHtml(input.address),
     CITY_LINE: `${escapeHtml(input.postal)} ${escapeHtml(input.city)}`,
@@ -580,7 +581,7 @@ Artikli:
 ${itemText}
 
 Međuzbir: ${formatRsd(input.subtotal)}
-Dostava: ${input.shipping === 0 ? "Besplatno" : formatRsd(input.shipping)}
+Dostava: ${input.shipping > 0 ? formatRsd(input.shipping) : (input.subtotal >= FREE_SHIPPING_THRESHOLD ? "Besplatno" : "+ dostava")}
 Ukupno: ${formatRsd(input.grandTotal)}
 
 Adresa dostave:

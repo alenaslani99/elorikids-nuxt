@@ -5,7 +5,7 @@ useHead({
         {
             name: "description",
             content:
-                "Pregled vaše korpe - interaktivne piši-briši knjige za decu. Besplatna dostava za porudžbine preko 5.000 RSD.",
+                "Pregled vaše korpe - interaktivne piši-briši knjige za decu. Besplatna dostava za porudžbine preko 4.500 RSD.",
         },
         { name: "robots", content: "noindex, nofollow" },
     ],
@@ -15,7 +15,8 @@ const { items, total, shipping, grandTotal, increment, decrement, removeItem } =
     useCart();
 const { getBook } = useBooks();
 
-const FREE_SHIPPING_THRESHOLD = 4500;
+// Free-shipping threshold comes from shared/utils/orders (auto-imported).
+
 const remainingForFreeShipping = computed(() =>
     Math.max(0, FREE_SHIPPING_THRESHOLD - total.value),
 );
@@ -269,7 +270,7 @@ const shippingProgress = computed(() =>
                                             class="size-5 shrink-0 text-blue"
                                         />
                                         Besplatna dostava za porudžbine preko
-                                        5.000 RSD
+                                        4.500 RSD
                                     </div>
                                     <div
                                         class="flex items-center gap-3 text-sm text-navy/60"

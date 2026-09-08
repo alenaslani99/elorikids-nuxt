@@ -240,7 +240,7 @@ const { activeSection } = useScrollspy(sections)
                       Besplatna dostava
                     </p>
                     <p class="mt-1 text-sm text-navy/60">
-                      Za porudžbine preko 5.000 RSD.
+                      Za porudžbine preko 4.500 RSD.
                     </p>
                   </div>
                   <div class="rounded-2xl bg-white p-4 ring-1 ring-cloud/40">
@@ -249,7 +249,7 @@ const { activeSection } = useScrollspy(sections)
                       Trošak dostave
                     </p>
                     <p class="mt-1 text-sm text-navy/60">
-                      350 RSD za porudžbine ispod 5.000 RSD.
+                      Za porudžbine ispod 4.500 RSD trošak dostave zavisi od mesta isporuke i plaća se kuriru.
                     </p>
                   </div>
                   </div>

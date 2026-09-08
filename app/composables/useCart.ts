@@ -49,9 +49,10 @@ export function useCart() {
 
   const items = computed(() => cart.value.items)
 
-  const shipping = computed(() =>
-    cart.value.items.length === 0 || total.value >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE,
-  )
+  // No flat shipping fee: below FREE_SHIPPING_THRESHOLD the courier
+  // charges by destination ("+ dostava"), so shipping is never added
+  // to online totals. grandTotal = books subtotal, always.
+  const shipping = computed(() => 0)
   const grandTotal = computed(() => total.value + shipping.value)
 
   function addItem(slug: string, title: string, price: number, quantity = 1) {

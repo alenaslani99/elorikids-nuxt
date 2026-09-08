@@ -384,7 +384,7 @@ const filterTabs = computed(() => [
                   </ul>
                   <div class="mt-2 flex items-center justify-between border-t border-cloud/40 pt-2 text-sm">
                     <span class="text-navy/50">
-                      Dostava: {{ order.shipping === 0 ? 'Besplatno' : `${order.shipping.toLocaleString('sr-RS')} RSD` }}
+                      Dostava: {{ order.shipping > 0 ? `${order.shipping.toLocaleString('sr-RS')} RSD` : (order.subtotal >= FREE_SHIPPING_THRESHOLD ? 'Besplatno' : '+ dostava') }}
                     </span>
                     <span class="font-bold text-navy">
                       {{ order.grandTotal.toLocaleString('sr-RS') }} RSD

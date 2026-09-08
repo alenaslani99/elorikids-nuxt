@@ -206,7 +206,7 @@ onMounted(() => {
               </div>
               <div class="flex justify-between text-navy/60">
                 <span>Dostava</span>
-                <span>{{ foundOrder.totals.shipping === 0 ? 'Besplatno' : `${foundOrder.totals.shipping.toLocaleString('sr-RS')} RSD` }}</span>
+                <span>{{ foundOrder.totals.shipping > 0 ? `${foundOrder.totals.shipping.toLocaleString('sr-RS')} RSD` : (foundOrder.totals.subtotal >= FREE_SHIPPING_THRESHOLD ? 'Besplatno' : '+ dostava') }}</span>
               </div>
               <div class="mt-1 flex justify-between font-bold text-navy">
                 <span>Ukupno</span>

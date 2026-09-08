@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { FREE_SHIPPING_THRESHOLD } from '~~/shared/utils/orders'
+
 const props = withDefaults(defineProps<{
   total: number
   shipping: number
@@ -10,8 +12,11 @@ const props = withDefaults(defineProps<{
   showCount: false,
 })
 
+// No flat shipping fee: the courier charges by destination below the
+// free-shipping threshold, so the row never shows an amount.
+const isFreeShipping = computed(() => props.total >= FREE_SHIPPING_THRESHOLD)
 const shippingLabel = computed(() =>
-  props.shipping === 0 ? 'Besplatno' : '+ dostava',
+  isFreeShipping.value ? 'Besplatno' : '+ dostava',
 )
 </script>
 
@@ -24,7 +29,7 @@ const shippingLabel = computed(() =>
       </div>
       <div class="flex justify-between">
         <dt>Dostava</dt>
-        <dd class="whitespace-nowrap font-medium" :class="shipping === 0 ? 'text-mint' : 'text-navy'">
+        <dd class="whitespace-nowrap font-medium" :class="isFreeShipping ? 'text-mint' : 'text-navy'">
           {{ shippingLabel }}
         </dd>
       </div>
