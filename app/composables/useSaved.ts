@@ -1,3 +1,5 @@
+import { PRODUCTS } from '~~/shared/utils/products'
+
 export interface SavedItem {
   slug: string
   title: string
@@ -13,6 +15,8 @@ interface SavedState {
 
 const STORAGE_KEY = 'elorikids-saved'
 
+// Canonical prices - re-syncs stored items so price changes (sales)
+// are reflected in the saved list.
 export function useSaved() {
   const saved = useState<SavedState>('saved', () => ({ items: [] }))
 
@@ -23,7 +27,10 @@ export function useSaved() {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (parsed?.items && Array.isArray(parsed.items)) {
-          saved.value.items = parsed.items
+          saved.value.items = parsed.items.map((i: SavedItem) => ({
+            ...i,
+            price: PRODUCTS[i.slug]?.price ?? i.price,
+          }))
         }
       }
     }

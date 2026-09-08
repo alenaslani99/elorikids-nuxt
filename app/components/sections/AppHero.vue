@@ -36,7 +36,7 @@
         <!-- Visual -->
         <!-- Plain <img> (not NuxtImg): the _ipx optimizer doesn't run on
              Cloudflare Workers, so NuxtImg silently serves the 1280px
-             original. These pre-generated .webp variants are ~5x smaller. -->
+             original. These pre-generated .webp variants are ~3x smaller. -->
         <div class="relative">
           <img
             src="/elorikids-1-640sq.webp"

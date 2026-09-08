@@ -103,8 +103,11 @@ useHead({
 
               <!-- Price -->
               <div class="mt-6 flex items-center justify-between">
-                <span class="text-lg font-bold text-navy">
+                <span class="flex items-baseline gap-2 text-lg font-bold text-navy">
                   {{ book.price.toLocaleString('sr-RS') }} RSD
+                  <span class="text-sm font-medium text-navy/40 line-through">
+                    {{ book.oldPrice.toLocaleString('sr-RS') }} RSD
+                  </span>
                 </span>
                 <span class="inline-flex items-center gap-2 font-semibold text-navy transition-colors group-hover:text-blue">
                   Saznaj više

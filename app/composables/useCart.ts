@@ -1,3 +1,5 @@
+import { PRODUCTS } from '~~/shared/utils/products'
+
 export interface CartItem {
   slug: string
   title: string
@@ -11,6 +13,12 @@ interface CartState {
 
 const STORAGE_KEY = 'elorikids-cart'
 
+// Canonical prices - re-syncs stored items so price changes (sales)
+// apply to existing carts. Server re-validates from DB at checkout.
+function syncPrices(items: CartItem[]): CartItem[] {
+  return items.map(i => ({ ...i, price: PRODUCTS[i.slug]?.price ?? i.price }))
+}
+
 export function useCart() {
   const cart = useState<CartState>('cart', () => ({ items: [] }))
 
@@ -21,7 +29,7 @@ export function useCart() {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (parsed?.items && Array.isArray(parsed.items)) {
-          cart.value.items = parsed.items
+          cart.value.items = syncPrices(parsed.items)
         }
       }
     }
@@ -49,6 +57,7 @@ export function useCart() {
   function addItem(slug: string, title: string, price: number, quantity = 1) {
     const existing = cart.value.items.find(i => i.slug === slug)
     if (existing) {
+      existing.price = price
       existing.quantity += quantity
     }
     else {

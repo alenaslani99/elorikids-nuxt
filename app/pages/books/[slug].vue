@@ -175,12 +175,18 @@ useHead({
           </p>
 
           <!-- Price -->
-          <div class="mt-6 flex items-baseline gap-3">
+          <div class="mt-6 flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span class="font-unbounded text-4xl font-extrabold text-navy">
               {{ book.price.toLocaleString('sr-RS') }}
               <span class="text-xl font-bold">RSD</span>
             </span>
-            <span class="text-sm text-navy/50">uz besplatnu dostavu</span>
+            <span class="font-unbounded text-xl font-bold text-navy/40 line-through">
+              {{ book.oldPrice.toLocaleString('sr-RS') }} RSD
+            </span>
+            <span class="rounded-full bg-coral px-3 py-1 text-sm font-bold text-white">
+              -10%
+            </span>
+            <span class="w-full text-sm text-navy/50">uz besplatnu dostavu</span>
           </div>
 
           <!-- Short description -->
@@ -445,8 +451,11 @@ useHead({
               <p class="mt-1 line-clamp-2 text-sm text-navy/60">
                 {{ related.subtitle }}
               </p>
-              <span class="mt-auto pt-2 font-bold text-navy">
+              <span class="mt-auto flex items-baseline gap-2 pt-2 font-bold text-navy">
                 {{ related.price.toLocaleString('sr-RS') }} RSD
+                <span class="text-sm font-medium text-navy/40 line-through">
+                  {{ related.oldPrice.toLocaleString('sr-RS') }} RSD
+                </span>
               </span>
             </div>
           </NuxtLink>

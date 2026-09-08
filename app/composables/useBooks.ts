@@ -20,6 +20,7 @@ export interface Book {
   ageSlug: string;
   category: string;
   price: number;
+  oldPrice: number;
   description: string;
   features: string[];
   activities: BookActivity[];
@@ -51,7 +52,8 @@ export const books: Book[] = [
     ageRange: "2–3 godine",
     ageSlug: "2-3-godine",
     category: "2–3 godine",
-    price: 2000,
+    price: 1800,
+    oldPrice: 2000,
     description:
       "Idealna prva radna sveska za najmlađe. Kroz šarene ilustracije i jednostavne zadatke, dete upoznaje boje, veličine i životinje. Svaka stranica je prilagođena malim rukama i razvija osnove logičkog razmišljanja kroz igru.",
     features: ["32 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
@@ -119,7 +121,8 @@ export const books: Book[] = [
     ageRange: "3–4 godine",
     ageSlug: "3-4-godine",
     category: "3–4 godine",
-    price: 2000,
+    price: 1800,
+    oldPrice: 2000,
     description:
       "Knjiga koja razvija sposobnost sortiranja, grupisanja i povezivanja. Kroz zanimljive zadatke sa voćem, povrćem, igračkama i životinjama, dete uči da prepoznaje šta pripada gde i kako stvari idu zajedno.",
     features: ["32 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
@@ -168,11 +171,12 @@ export const books: Book[] = [
     slug: "priprema-za-skolu",
     img: "priprema-za-skolu.jpeg",
     media: [
-      // {
-      //   type: "video",
-      //   src: "/priprema-za-skolu.mp4",
-      //   alt: "Pregled knjige Priprema za školu",
-      // },
+      {
+        type: "video",
+        src: "/priprema-za-skolu.mp4",
+        poster: "/priprema-za-skolu-poster.jpg",
+        alt: "Pregled knjige Priprema za školu",
+      },
       {
         type: "image",
         src: "/priprema-za-skolu.jpeg",
@@ -184,7 +188,8 @@ export const books: Book[] = [
     ageRange: "4–6 godine",
     ageSlug: "4-6-godine",
     category: "4–6 godine",
-    price: 2000,
+    price: 1800,
+    oldPrice: 2000,
     description:
       "Poslednja knjiga u seriji - priprema za polazak u školu. Lavirinti, pronalaženje razlika i asocijacije razvijaju strpljenje, pažnju i logičko razmišljanje. Sve što dete treba da savlada pre prvog školskog zvona.",
     features: ["32 stranice", "Laminirano", "Vodootporno", "Piši-briši"],

@@ -11,12 +11,13 @@ export interface ProductInfo {
   slug: string
   title: string
   price: number
+  oldPrice: number
 }
 
 export const PRODUCTS: Record<string, ProductInfo> = {
-  'prvi-koraci': { slug: 'prvi-koraci', title: 'Prvi koraci', price: 2000 },
-  'ucimo-kroz-igru': { slug: 'ucimo-kroz-igru', title: 'Učimo kroz igru', price: 2000 },
-  'priprema-za-skolu': { slug: 'priprema-za-skolu', title: 'Priprema za školu', price: 2000 },
+  'prvi-koraci': { slug: 'prvi-koraci', title: 'Prvi koraci', price: 1800, oldPrice: 2000 },
+  'ucimo-kroz-igru': { slug: 'ucimo-kroz-igru', title: 'Učimo kroz igru', price: 1800, oldPrice: 2000 },
+  'priprema-za-skolu': { slug: 'priprema-za-skolu', title: 'Priprema za školu', price: 1800, oldPrice: 2000 },
 }
 
 /** Look up a product by slug. Returns undefined if not found. */
