@@ -108,11 +108,6 @@ async function handleSubmit() {
           note: form.note,
         },
         items: items.value.map(i => ({ slug: i.slug, title: i.title, price: i.price, quantity: i.quantity })),
-        totals: {
-          subtotal: total.value,
-          shipping: shipping.value,
-          grandTotal: grandTotal.value,
-        },
       },
     })
 

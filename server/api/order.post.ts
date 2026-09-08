@@ -28,11 +28,6 @@ interface Customer {
 interface OrderBody {
   customer?: Customer
   items?: OrderItemInput[]
-  totals?: {
-    subtotal: number
-    shipping: number
-    grandTotal: number
-  }
 }
 
 export default defineEventHandler(async (event) => {
