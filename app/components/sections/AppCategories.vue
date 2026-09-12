@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import { PRODUCTS } from '~~/shared/utils/products'
+
+function goToBook(slug: string) {
+    navigateTo(`/books/${slug}`);
+}
+
 interface BookCard {
     slug: string;
     title: string;
@@ -95,6 +101,13 @@ const accentClasses: Record<
         imageRing: "ring-coral/30",
     },
 };
+
+const booksWithPrice = books.map((b) => ({
+    ...b,
+    price: PRODUCTS[b.slug]?.price ?? 0,
+    oldPrice: PRODUCTS[b.slug]?.oldPrice ?? 0,
+    productTitle: PRODUCTS[b.slug]?.title ?? b.title,
+}));
 </script>
 
 <template>
@@ -120,12 +133,12 @@ const accentClasses: Record<
 
             <!-- Cards -->
             <div class="grid gap-8 md:grid-cols-3">
-                <NuxtLink
-                    v-for="book in books"
+                <article
+                    v-for="book in booksWithPrice"
                     :key="book.slug"
-                    :to="`/books/${book.slug}`"
-                    class="group flex flex-col rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+                    class="group flex cursor-pointer flex-col rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                     :class="accentClasses[book.accent].hover"
+                    @click="goToBook(book.slug)"
                 >
                     <!-- Book image: plain <img> with pre-generated .webp.
                          NuxtImg's _ipx optimizer doesn't run on Cloudflare
@@ -168,11 +181,13 @@ const accentClasses: Record<
                     </span>
 
                     <!-- Title -->
-                    <h3
-                        class="font-unbounded text-2xl font-extrabold text-navy"
-                    >
-                        {{ book.title }}
-                    </h3>
+                    <NuxtLink :to="`/books/${book.slug}`" @click.stop>
+                        <h3
+                            class="font-unbounded text-2xl font-extrabold text-navy"
+                        >
+                            {{ book.title }}
+                        </h3>
+                    </NuxtLink>
                     <p class="text-sm font-medium text-navy/75">
                         {{ book.subtitle }}
                     </p>
@@ -198,20 +213,36 @@ const accentClasses: Record<
                         </li>
                     </ul>
 
-                    <!-- CTA -->
-                    <div class="mt-auto pt-8">
-                        <span
-                            class="inline-flex items-center gap-2 font-semibold text-navy transition-colors"
-                            :class="accentClasses[book.accent].ring"
-                        >
-                            Saznaj više
-                            <Icon
-                                name="lucide:arrow-right"
-                                class="size-4 transition-transform group-hover:translate-x-1"
+                    <!-- Price + Add to cart -->
+                    <div class="mt-auto space-y-3 pt-8">
+                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span class="text-lg font-bold text-navy">
+                                {{ book.price.toLocaleString('sr-RS') }} RSD
+                            </span>
+                            <span
+                                v-if="book.oldPrice > book.price"
+                                class="text-sm font-medium text-navy/40 line-through"
+                            >
+                                {{ book.oldPrice.toLocaleString('sr-RS') }} RSD
+                            </span>
+                            <span
+                                v-if="book.oldPrice > book.price"
+                                class="rounded-full bg-coral px-3 py-1 text-sm font-bold text-white"
+                            >
+                                -{{ Math.round((1 - book.price / book.oldPrice) * 100) }}%
+                            </span>
+                        </div>
+                        <div @click.stop>
+                            <AddToCartButton
+                                :slug="book.slug"
+                                :title="book.productTitle"
+                                :price="book.price"
+                                compact
+                                class="w-full"
                             />
-                        </span>
+                        </div>
                     </div>
-                </NuxtLink>
+                </article>
             </div>
 
             <!-- Shared selling points -->

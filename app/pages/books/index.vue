@@ -2,6 +2,10 @@
 import { books } from '~/composables/useBooks'
 import { getAccent } from '~/composables/useAccent'
 
+function goToBook(slug: string) {
+  navigateTo(`/books/${slug}`)
+}
+
 useHead({
   title: 'Knjige - elorikids',
   meta: [
@@ -62,11 +66,11 @@ useHead({
     <section class="py-12 lg:py-16">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid gap-8 md:grid-cols-3">
-          <NuxtLink
+          <article
             v-for="book in books"
             :key="book.slug"
-            :to="`/books/${book.slug}`"
-            class="group flex flex-col overflow-hidden rounded-3xl border-2 border-cloud/40 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            class="group flex cursor-pointer flex-col overflow-hidden rounded-3xl border-2 border-cloud/40 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            @click="goToBook(book.slug)"
           >
             <!-- Book image -->
             <div class="overflow-hidden">
@@ -91,9 +95,11 @@ useHead({
               </span>
 
               <!-- Title -->
-              <h2 class="font-unbounded text-2xl font-extrabold text-navy">
-                {{ book.title }}
-              </h2>
+              <NuxtLink :to="`/books/${book.slug}`" @click.stop>
+                <h2 class="font-unbounded text-2xl font-extrabold text-navy">
+                  {{ book.title }}
+                </h2>
+              </NuxtLink>
               <p class="mt-1 text-sm font-medium text-navy/50">{{ book.subtitle }}</p>
 
               <!-- Description -->
@@ -101,21 +107,37 @@ useHead({
                 {{ book.description }}
               </p>
 
-              <!-- Price -->
-              <div class="mt-6 flex items-center justify-between">
-                <span class="flex items-baseline gap-2 text-lg font-bold text-navy">
-                  {{ book.price.toLocaleString('sr-RS') }} RSD
-                  <span class="text-sm font-medium text-navy/40 line-through">
+              <!-- Price + Add to cart -->
+              <div class="mt-6 space-y-3">
+                <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <span class="text-lg font-bold text-navy">
+                    {{ book.price.toLocaleString('sr-RS') }} RSD
+                  </span>
+                  <span
+                    v-if="book.oldPrice && book.oldPrice > book.price"
+                    class="text-sm font-medium text-navy/40 line-through"
+                  >
                     {{ book.oldPrice.toLocaleString('sr-RS') }} RSD
                   </span>
-                </span>
-                <span class="inline-flex items-center gap-2 font-semibold text-navy transition-colors group-hover:text-blue">
-                  Saznaj više
-                  <Icon name="lucide:arrow-right" class="size-4 transition-transform group-hover:translate-x-1" />
-                </span>
+                  <span
+                    v-if="book.oldPrice && book.oldPrice > book.price"
+                    class="rounded-full bg-coral px-3 py-1 text-sm font-bold text-white"
+                  >
+                    -{{ Math.round((1 - book.price / book.oldPrice) * 100) }}%
+                  </span>
+                </div>
+                <div @click.stop>
+                  <AddToCartButton
+                    :slug="book.slug"
+                    :title="book.title"
+                    :price="book.price"
+                    compact
+                    class="w-full"
+                  />
+                </div>
               </div>
             </div>
-          </NuxtLink>
+          </article>
         </div>
       </div>
     </section>
