@@ -5,6 +5,7 @@ const columns = [
   {
     title: 'Kupovina',
     links: [
+      { label: 'Sve knjige', to: '/books' },
       { label: 'Prvi Koraci', to: '/books/prvi-koraci' },
       { label: 'Učimo kroz igru', to: '/books/ucimo-kroz-igru' },
       { label: 'Priprema za školu', to: '/books/priprema-za-skolu' },

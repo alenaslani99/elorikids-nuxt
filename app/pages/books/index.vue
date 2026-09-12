@@ -7,17 +7,17 @@ function goToBook(slug: string) {
 }
 
 useHead({
-  title: 'Knjige - elorikids',
+  title: 'Knjige za decu 2-6 god - interaktivne piši-briši | elorikids',
   meta: [
-    { name: 'description', content: 'Interaktivne piši-briši knjige za decu uzrasta 2 do 6 godina. Laminirane, vodootporne stranice sa originalnim ručno ilustrovanim sadržajem. Prilagođeno uzrastu deteta.' },
-    { property: 'og:title', content: 'Knjige | elorikids' },
-    { property: 'og:description', content: 'Interaktivne piši-briši knjige za decu uzrasta 2 do 6 godina. Prilagođeno uzrastu deteta.' },
+    { name: 'description', content: 'Knjige za decu uzrasta 2-6 godina na jednom mestu: Prvi koraci (2-3 god), Učimo kroz igru (3-4 god), Priprema za školu (4-6 god). Laminirane vodootporne stranice, cene i poručivanje.' },
+    { property: 'og:title', content: 'Knjige za decu 2-6 god - interaktivne piši-briši | elorikids' },
+    { property: 'og:description', content: 'Knjige za decu 2-6 godina: Prvi koraci, Učimo kroz igru, Priprema za školu. Cene, uzrasti i poručivanje na jednom mestu.' },
     { property: 'og:type', content: 'website' },
     { property: 'og:url', content: 'https://elorikids.rs/books' },
     { property: 'og:image', content: 'https://elorikids.rs/elorikids-1.jpg' },
     { name: 'twitter:card', content: 'summary_large_image' },
-    { name: 'twitter:title', content: 'Knjige | elorikids' },
-    { name: 'twitter:description', content: 'Interaktivne piši-briši knjige za decu uzrasta 2 do 6 godina.' },
+    { name: 'twitter:title', content: 'Knjige za decu 2-6 god - interaktivne piši-briši | elorikids' },
+    { name: 'twitter:description', content: 'Knjige za decu po uzrastu: 2-3, 3-4 i 4-6 godina. Cene i poručivanje.' },
   ],
   link: [
     { rel: 'canonical', href: 'https://elorikids.rs/books' },
@@ -58,7 +58,7 @@ useHead({
       title="Naše knjige"
       badge="Knjige"
       badge-class="bg-sky/40 text-navy"
-      subtitle="Tri interaktivne piši-briši knjige, dizajnirane za decu od 2 do 6 godina. Svaka je prilagođena razvojnom uzrastu deteta - od prvih boja do lavirinta za predškolce."
+      subtitle="Tri interaktivne piši-briši knjige za decu od 2 do 6 godina. Svaka je prilagođena razvojnom uzrastu deteta - od prvih boja do lavirinta za predškolce."
       :breadcrumb-items="[{ label: 'Početna', to: '/' }, { label: 'Knjige' }]"
     />
 
@@ -138,6 +138,33 @@ useHead({
               </div>
             </div>
           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buying guide (unique copy so Google snippets don't fall back to header/footer boilerplate) -->
+    <section class="pb-12 lg:pb-16">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="rounded-3xl border-2 border-cloud/40 bg-white p-8 shadow-sm lg:p-10">
+          <h2 class="font-unbounded text-2xl font-extrabold text-navy">
+            Kako da izaberete prave knjige za decu?
+          </h2>
+          <div class="mt-4 space-y-4 leading-relaxed text-navy/70">
+            <p>
+              Knjige za decu najlakše birate prema uzrastu: za najmlađe (2-3 godine) počnite sa
+              <NuxtLink to="/books/prvi-koraci" class="font-semibold text-blue hover:text-navy">Prvim koracima</NuxtLink>
+              - boje, veličine i životinje kroz jednostavne zadatke. Za uzrast 3-4 godine
+              <NuxtLink to="/books/ucimo-kroz-igru" class="font-semibold text-blue hover:text-navy">Učimo kroz igru</NuxtLink>
+              uvodi sortiranje, grupisanje i logičke veze, dok je
+              <NuxtLink to="/books/priprema-za-skolu" class="font-semibold text-blue hover:text-navy">Priprema za školu</NuxtLink>
+              (4-6 godina) puna lavirinta i zadataka koncentracije pred polazak u školu.
+            </p>
+            <p>
+              Sve tri knjige dele isti piši-briši sistem: laminirane, vodootporne stranice
+              koje se brišu i koriste iznova, pa dete vežba bez straha od greške. Poručivanje
+              je preko korpe, plaćanje pouzećem, a dostava stiže za 1-3 radna dana širom Srbije.
+            </p>
+          </div>
         </div>
       </div>
     </section>
