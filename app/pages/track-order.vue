@@ -56,15 +56,27 @@ function buildSteps(order: FoundOrder): DisplayStep[] {
     return steps
   }
 
-  const lastReached = order.timeline[order.timeline.length - 1]?.status
+  const reachedIndex = LIFECYCLE_STEPS.indexOf(order.status as typeof LIFECYCLE_STEPS[number])
 
-  return LIFECYCLE_STEPS.map((s) => {
+  return LIFECYCLE_STEPS.map((s, i) => {
     const meta = getOrderStatusMeta(s)
+    // Anything after the current status is pending — ignore stale timestamps from backward transitions
+    if (reachedIndex !== -1 && i > reachedIndex) {
+      return { status: s, label: meta.label, description: meta.description, at: null, state: 'pending' as const }
+    }
     const at = timelineMap.get(s) ?? null
-    if (at) {
-      if (s === lastReached && order.status !== 'delivered') {
+    if (reachedIndex !== -1) {
+      // order.status is the source of truth (not timeline tail)
+      if (i === reachedIndex) {
+        if (order.status === 'delivered') {
+          return { status: s, label: meta.label, description: meta.description, at, state: 'done' as const }
+        }
         return { status: s, label: meta.label, description: meta.description, at, state: 'current' as const }
       }
+      // Skipped phase (NULL in DB) before the reached status: show green without date
+      return { status: s, label: meta.label, description: meta.description, at, state: 'done' as const }
+    }
+    if (at) {
       return { status: s, label: meta.label, description: meta.description, at, state: 'done' as const }
     }
     return { status: s, label: meta.label, description: meta.description, at: null, state: 'pending' as const }
