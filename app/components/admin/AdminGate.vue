@@ -8,6 +8,8 @@
  * Emits 'done' when setup or verification succeeds - the parent
  * page then re-checks the admin status.
  */
+import { LIMITS } from '~~/shared/utils/limits'
+
 const props = defineProps<{
   mode: 'setup' | 'verify'
   question?: string
@@ -35,8 +37,8 @@ const questionError = computed(() => {
 })
 const answerError = computed(() => {
   if (!setupSubmitted.value) return ''
-  if (!setupForm.answer.trim() || setupForm.answer.trim().length < 3)
-    return 'Odgovor mora imati najmanje 3 karaktera.'
+  if (!setupForm.answer.trim() || setupForm.answer.trim().length < LIMITS.securityAnswerMin)
+    return `Odgovor mora imati najmanje ${LIMITS.securityAnswerMin} karaktera.`
   if (setupForm.answer !== setupForm.confirmAnswer)
     return 'Odgovori se ne poklapaju.'
   return ''

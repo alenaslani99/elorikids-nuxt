@@ -2,7 +2,6 @@ import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../utils/db'
 import { requireOwner, setElevated } from '../../utils/admin'
 import { verifyPassword } from '../../utils/crypto'
-import { getSessionToken } from '../../utils/session'
 import { LIMITS, RATE_LIMITS } from '~~/shared/utils/limits'
 import { checkRateLimit, maybeCleanupRateLimits } from '../../utils/rateLimit'
 
@@ -17,9 +16,8 @@ export default defineEventHandler(async (event) => {
   const db = useDb(event)
   const user = await requireOwner(event, db)
 
-  // ── Rate limiting (per session token) ────────────────────────
-  const token = getSessionToken(event)
-  const rl = await checkRateLimit(db, `elevate:${token}`, 'elevate', RATE_LIMITS.elevate.maxAttempts, RATE_LIMITS.elevate.windowMs)
+  // ── Rate limiting (per user, so re-logging in doesn't reset it) ──
+  const rl = await checkRateLimit(db, `elevate:user:${user.id}`, 'elevate', RATE_LIMITS.elevate.maxAttempts, RATE_LIMITS.elevate.windowMs)
   if (rl.limited) {
     throw createError({
       statusCode: 429,

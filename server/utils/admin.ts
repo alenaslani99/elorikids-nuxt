@@ -45,8 +45,7 @@ export async function requireOwner(event: H3Event, db: D1Database): Promise<Sess
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Morate biti prijavljeni.' })
   }
-  const ownerEmail = getOwnerEmail(event)
-  if (!ownerEmail || user.email !== ownerEmail) {
+  if (!isOwnerEmail(event, user.email)) {
     throw createError({ statusCode: 403, statusMessage: 'Pristup odbijen.' })
   }
   return user

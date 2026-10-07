@@ -24,8 +24,8 @@ export default defineEventHandler(async (event) => {
   if (!question || question.length < 5 || question.length > LIMITS.securityQuestion) {
     throw createError({ statusCode: 400, statusMessage: 'Pitanje mora imati najmanje 5 karaktera.' })
   }
-  if (!answer || answer.length < 3 || answer.length > LIMITS.securityAnswer) {
-    throw createError({ statusCode: 400, statusMessage: 'Odgovor mora imati najmanje 3 karaktera.' })
+  if (!answer || answer.length < LIMITS.securityAnswerMin || answer.length > LIMITS.securityAnswer) {
+    throw createError({ statusCode: 400, statusMessage: `Odgovor mora imati najmanje ${LIMITS.securityAnswerMin} karaktera.` })
   }
 
   // Only allow setup if not already set

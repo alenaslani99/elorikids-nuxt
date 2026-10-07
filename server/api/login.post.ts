@@ -31,6 +31,16 @@ export default defineEventHandler(async (event) => {
       statusMessage: `Preveliki broj pokušaja. Pokušajte ponovo za ${Math.ceil(rl.retryAfterSec / 60)} minuta.`,
     })
   }
+  // Per-email cap across all IPs, so rotating IPs can't brute-force one account.
+  if (email) {
+    const rlEmail = await checkRateLimit(db, `login-email:${email}`, 'login', RATE_LIMITS.loginEmail.maxAttempts, RATE_LIMITS.loginEmail.windowMs)
+    if (rlEmail.limited) {
+      throw createError({
+        statusCode: 429,
+        statusMessage: `Preveliki broj pokušaja. Pokušajte ponovo za ${Math.ceil(rlEmail.retryAfterSec / 60)} minuta.`,
+      })
+    }
+  }
   await maybeCleanupRateLimits(db)
 
   if (!email || !emailRegex.test(email) || email.length > LIMITS.email) {
