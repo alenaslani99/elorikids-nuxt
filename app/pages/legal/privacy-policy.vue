@@ -23,6 +23,7 @@ const cookieRows = [
   { name: 'elorikids-cart, elorikids-saved', provider: 'elorikids', category: 'Neophodni', purpose: 'Sadržaj korpe i sačuvane knjige (lokalno skladište pregledača)', duration: 'Dok ih ne obrišete' },
   { name: '_ga, _ga_*', provider: 'Google', category: 'Analitički', purpose: 'Razlikovanje posetilaca i merenje posećenosti (Google Analytics)', duration: 'Do 2 godine' },
   { name: '_fbp, _fbc', provider: 'Meta', category: 'Marketinški', purpose: 'Merenje uspešnosti oglasa i prikaz relevantnih oglasa (Meta Pixel)', duration: '3 meseca' },
+  { name: '_gcl_au, _gcl_aw', provider: 'Google', category: 'Marketinški', purpose: 'Merenje porudžbina ostvarenih preko Google oglasa (Google Ads)', duration: '3 meseca' },
 ]
 
 const sections = [
@@ -368,7 +369,7 @@ const { activeSection } = useScrollspy(sections)
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:megaphone" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Marketinški kolačići</strong> - omogućuju merenje uspešnosti naših oglasa i prikazivanje relevantnih oglasa na Facebook-u i Instagram-u. Koristimo Meta Pixel. Aktiviraju se samo uz vašu saglasnost.</span>
+                    <span><strong class="text-navy">Marketinški kolačići</strong> - omogućuju merenje uspešnosti naših oglasa i prikazivanje relevantnih oglasa na Facebook-u, Instagram-u i Google-u. Koristimo Meta Pixel i Google Ads. Aktiviraju se samo uz vašu saglasnost.</span>
                   </li>
                 </ul>
 

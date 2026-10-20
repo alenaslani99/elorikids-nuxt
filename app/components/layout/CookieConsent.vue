@@ -29,7 +29,7 @@ const categories = [
     key: 'marketing' as const,
     icon: 'lucide:megaphone',
     title: 'Marketinški kolačići',
-    text: 'Omogućuju merenje uspešnosti oglasa i prikazivanje relevantnih oglasa na Facebook-u i Instagram-u. Meta Pixel.',
+    text: 'Omogućuju merenje uspešnosti oglasa i prikazivanje relevantnih oglasa na Facebook-u, Instagram-u i Google-u. Meta Pixel i Google Ads.',
   },
 ]
 
