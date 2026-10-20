@@ -13,7 +13,17 @@ useHead({
   ],
 })
 
-const lastUpdated = '20. avgust 2026.'
+const lastUpdated = '20. oktobar 2026.'
+
+const { openSettings } = useConsent()
+
+const cookieRows = [
+  { name: 'elorikids_session', provider: 'elorikids', category: 'Neophodni', purpose: 'Održava prijavu na nalog', duration: '30 dana' },
+  { name: 'cookie-consent', provider: 'elorikids', category: 'Neophodni', purpose: 'Pamti vaš izbor kolačića', duration: '1 godina' },
+  { name: 'elorikids-cart, elorikids-saved', provider: 'elorikids', category: 'Neophodni', purpose: 'Sadržaj korpe i sačuvane knjige (lokalno skladište pregledača)', duration: 'Dok ih ne obrišete' },
+  { name: '_ga, _ga_*', provider: 'Google', category: 'Analitički', purpose: 'Razlikovanje posetilaca i merenje posećenosti (Google Analytics)', duration: 'Do 2 godine' },
+  { name: '_fbp, _fbc', provider: 'Meta', category: 'Marketinški', purpose: 'Merenje uspešnosti oglasa i prikaz relevantnih oglasa (Meta Pixel)', duration: '3 meseca' },
+]
 
 const sections = [
   { id: 'uvod', title: '1. Uvod' },
@@ -174,7 +184,7 @@ const { activeSection } = useScrollspy(sections)
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Saglasnost</strong> - za slanje newslettera i marketinških poruka.</span>
+                    <span><strong class="text-navy">Saglasnost</strong> - za slanje newslettera i marketinških poruka, kao i za analitičke i marketinške kolačiće.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
@@ -197,8 +207,8 @@ const { activeSection } = useScrollspy(sections)
                   5. Deljenje podataka sa trećim licima
                 </h2>
                 <p class="mt-3 leading-relaxed text-navy/70">
-                  Vaše lične podatke ne prodajemo niti ih ustupamo trećim licima u marketinške svrhe.
-                  Podatke delimo isključivo sa partnerima koji su neophodni za ispunjavanje vaše porudžbine:
+                  Vaše lične podatke ne prodajemo. Vaše ime, adresu, telefon i e-poštu ne ustupamo trećim licima u marketinške svrhe.
+                  Podatke delimo isključivo sa sledećim partnerima:
                 </p>
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
@@ -212,6 +222,10 @@ const { activeSection } = useScrollspy(sections)
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:landmark" class="mt-0.5 size-5 shrink-0 text-blue" />
                     <span><strong class="text-navy">Državni organi</strong> - isključivo na zakonski zahtev (poreske evidencije).</span>
+                  </li>
+                  <li class="flex items-start gap-2 text-navy/70">
+                    <Icon name="lucide:bar-chart-3" class="mt-0.5 size-5 shrink-0 text-blue" />
+                    <span><strong class="text-navy">Google Ireland Ltd. i Meta Platforms Ireland Ltd.</strong> - samo uz vašu saglasnost za kolačiće, podaci o korišćenju sajta i kupovini (vidi odeljak 9).</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">
@@ -340,26 +354,87 @@ const { activeSection } = useScrollspy(sections)
                   9. Kolačići (cookies)
                 </h2>
                 <p class="mt-3 leading-relaxed text-navy/70">
-                  Naš sajt koristi kolačiće radi pravilnog funkcionisanja i poboljšanja korisničkog iskustva.
-                  Kolačići su male tekstualne datoteke koje se čuvaju u vašem pregledaču.
+                  Kolačići su male tekstualne datoteke koje se čuvaju u vašem pregledaču. Koristimo ih u tri
+                  kategorije:
                 </p>
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:settings" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Neophodni kolačići</strong> - omogućuju osnovne funkcije (korpa, prijava).</span>
+                    <span><strong class="text-navy">Neophodni kolačići</strong> - omogućuju osnovne funkcije (korpa, prijava, pamćenje vašeg izbora kolačića). Uvek su aktivni jer bez njih sajt ne radi, pa za njih nije potrebna saglasnost.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:bar-chart-3" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Analitički kolačići</strong> - anonimno prikupljaju podatke o korišćenju sajta.</span>
+                    <span><strong class="text-navy">Analitički kolačići</strong> - pomažu nam da razumemo kako se sajt koristi (posećene stranice, izvor posete, uređaj). Koristimo Google Analytics. Aktiviraju se samo uz vašu saglasnost.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:megaphone" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Marketinški kolačići</strong> - omogućuju prikazivanje relevantnih oglasa.</span>
+                    <span><strong class="text-navy">Marketinški kolačići</strong> - omogućuju merenje uspešnosti naših oglasa i prikazivanje relevantnih oglasa na Facebook-u i Instagram-u. Koristimo Meta Pixel. Aktiviraju se samo uz vašu saglasnost.</span>
                   </li>
                 </ul>
+
+                <h3 class="mt-8 font-unbounded text-lg font-bold text-navy">
+                  Kako funkcioniše saglasnost
+                </h3>
+                <p class="mt-3 leading-relaxed text-navy/70">
+                  Pri prvoj poseti prikazujemo obaveštenje u kome možete prihvatiti sve kolačiće, odbiti sve
+                  osim neophodnih ili kroz „Podešavanja” izabrati pojedinačne kategorije. Dok ne date
+                  saglasnost, ne učitavamo nijednu analitičku ni marketinšku skriptu. Alate trećih lica
+                  učitavamo preko servisa Google Tag Manager, i to tek nakon vaše saglasnosti.
+                </p>
+                <p class="mt-3 leading-relaxed text-navy/70">
+                  Ako prihvatite analitičke ili marketinške kolačiće, Google-u odnosno Meti se mogu prenositi
+                  podaci o posećenim stranicama, pregledanim knjigama, dodavanju u korpu i završenim
+                  porudžbinama (naziv i cena knjige, ukupna vrednost, broj porudžbine), kao i tehnički podaci
+                  (IP adresa, vrsta uređaja i pregledača). Vaše ime, adresu, telefon i e-poštu ne šaljemo
+                  ovim servisima. Ovi podaci se mogu prenositi i u SAD, na osnovu standardnih ugovornih
+                  klauzula i okvira EU-SAD za zaštitu podataka.
+                </p>
+
+                <h3 class="mt-8 font-unbounded text-lg font-bold text-navy">
+                  Spisak kolačića
+                </h3>
+                <div class="mt-4 overflow-x-auto rounded-2xl border-2 border-cloud/40">
+                  <table class="w-full min-w-[560px] text-left text-sm">
+                    <thead class="bg-sky/20 text-navy">
+                      <tr>
+                        <th class="px-4 py-3 font-semibold">Naziv</th>
+                        <th class="px-4 py-3 font-semibold">Pružalac</th>
+                        <th class="px-4 py-3 font-semibold">Kategorija</th>
+                        <th class="px-4 py-3 font-semibold">Svrha</th>
+                        <th class="px-4 py-3 font-semibold">Trajanje</th>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-cloud/40 text-navy/70">
+                      <tr v-for="row in cookieRows" :key="row.name">
+                        <td class="px-4 py-3 font-mono text-xs text-navy">{{ row.name }}</td>
+                        <td class="px-4 py-3">{{ row.provider }}</td>
+                        <td class="px-4 py-3">{{ row.category }}</td>
+                        <td class="px-4 py-3">{{ row.purpose }}</td>
+                        <td class="px-4 py-3 whitespace-nowrap">{{ row.duration }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h3 class="mt-8 font-unbounded text-lg font-bold text-navy">
+                  Promena ili povlačenje saglasnosti
+                </h3>
+                <p class="mt-3 leading-relaxed text-navy/70">
+                  Saglasnost možete promeniti ili povući u bilo kom trenutku, jednako lako kao što ste je
+                  dali, preko linka „Podešavanja kolačića” u dnu svake stranice ili ovde:
+                </p>
+                <button
+                  type="button"
+                  class="mt-4 inline-flex items-center gap-2 rounded-full bg-blue px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-navy active:scale-[0.98]"
+                  @click="openSettings"
+                >
+                  <Icon name="lucide:cookie" class="size-4" />
+                  Podešavanja kolačića
+                </button>
                 <p class="mt-4 leading-relaxed text-navy/70">
-                  Možete kontrolisati i onemogućiti kolačiće u podešavanjima vašeg pregledača. Imajte na umu da
-                  onemogućavanje neophodnih kolačića može uticati na funkcionalnost sajta.
+                  Povlačenje saglasnosti ne utiče na zakonitost obrade pre povlačenja. Kolačiće možete
+                  obrisati i u podešavanjima vašeg pregledača. Imajte na umu da brisanje neophodnih kolačića
+                  može uticati na funkcionalnost sajta (npr. prazna korpa, odjava sa naloga).
                 </p>
               </div>
 

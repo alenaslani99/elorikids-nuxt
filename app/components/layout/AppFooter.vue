@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const year = new Date().getFullYear()
+const { openSettings } = useConsent()
 
 const columns = [
   {
@@ -70,9 +71,10 @@ const columns = [
         <p class="text-sm text-cloud/70">
           © {{ year }} elorikids. Sva prava zadržana.
         </p>
-        <div class="flex gap-6">
+        <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
           <NuxtLink to="/legal/privacy-policy" class="text-sm text-cloud/70 transition-colors hover:text-sky">Politika privatnosti</NuxtLink>
           <NuxtLink to="/legal/terms" class="text-sm text-cloud/70 transition-colors hover:text-sky">Uslovi korišćenja</NuxtLink>
+          <button type="button" class="text-sm text-cloud/70 transition-colors hover:text-sky" @click="openSettings">Podešavanja kolačića</button>
         </div>
       </div>
     </div>

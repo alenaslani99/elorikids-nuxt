@@ -14,6 +14,12 @@ export default defineNuxtConfig({
     { path: '~/components', pathPrefix: false },
   ],
   css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    public: {
+      // Override per environment with NUXT_PUBLIC_GTM_ID (empty disables GTM).
+      gtmId: 'GTM-5D23CZT5',
+    },
+  },
   fonts: {
     families: [
       { name: 'Unbounded', provider: 'google' },

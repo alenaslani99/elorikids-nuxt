@@ -11,12 +11,14 @@ const props = withDefaults(defineProps<{
 })
 
 const { addItem } = useCart()
+const { addToCart } = useTracking()
 
 const justAdded = ref(false)
 let timeout: ReturnType<typeof setTimeout> | null = null
 
 function handleAddToCart() {
   addItem(props.slug, props.title, props.price, props.quantity)
+  addToCart({ slug: props.slug, title: props.title, price: props.price, quantity: props.quantity })
   justAdded.value = true
   if (timeout) clearTimeout(timeout)
   timeout = setTimeout(() => (justAdded.value = false), 2000)

@@ -15,13 +15,17 @@ const { items, total, shipping, grandTotal, clear } = useCart();
 const { getBook } = useBooks();
 const { user } = useAuth();
 
+const { beginCheckout, purchase } = useTracking();
+
 const router = useRouter();
 
 // Redirect to cart if empty
 onMounted(() => {
     if (items.value.length === 0) {
         router.replace("/shop/cart");
+        return;
     }
+    beginCheckout(items.value);
 });
 
 const form = reactive({
@@ -155,6 +159,8 @@ async function handleSubmit() {
         );
 
         if (res.ok) {
+            // Before clear(): the event needs the ordered items.
+            purchase(res.orderId ?? "", items.value);
             clear();
             status.value = "success";
             router.push(`/shop/thank-you?id=${res.orderId ?? ""}`);

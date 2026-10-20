@@ -17,6 +17,15 @@ if (!book.value) {
 
 const relatedBooks = computed(() => getRelatedBooks(slug.value));
 
+// view_item on open and when navigating between related books.
+const { viewItem } = useTracking();
+function trackView() {
+    const b = book.value;
+    if (b) viewItem({ slug: b.slug, title: b.title, price: b.price, quantity: 1 });
+}
+onMounted(trackView);
+watch(slug, trackView);
+
 // --- Interactive state ---
 const quantity = ref(1);
 const activeTab = ref<"activities" | "selling" | "specs">("activities");
