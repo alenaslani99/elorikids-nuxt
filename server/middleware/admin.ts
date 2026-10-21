@@ -8,9 +8,30 @@
  *
  * The API endpoints (requireOwner / requireElevated) remain the real
  * security boundary; this is about the HTTP response code for the page.
+ *
+ * It also rejects cross-origin writes to /api/admin/** (CSRF defense in
+ * depth on top of the SameSite=Lax session cookie): every mutating admin
+ * request must carry an Origin header matching this host.
  */
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
+
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
+
+  if (url.pathname.startsWith('/api/admin/') && !SAFE_METHODS.has(event.method)) {
+    const origin = getRequestHeader(event, 'origin')
+    let originHost: string | null = null
+    try {
+      originHost = origin ? new URL(origin).host : null
+    }
+    catch {
+      // malformed Origin - treated as missing
+    }
+    if (!originHost || originHost !== url.host) {
+      throw createError({ statusCode: 403, statusMessage: 'Pristup odbijen.' })
+    }
+    return
+  }
 
   // Guard any /admin page navigation (exact or sub-paths)
   if (url.pathname !== '/admin' && !url.pathname.startsWith('/admin/')) return
