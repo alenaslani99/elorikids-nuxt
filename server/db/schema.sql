@@ -69,6 +69,24 @@ CREATE TABLE IF NOT EXISTS product_prices (
 CREATE INDEX IF NOT EXISTS idx_prices_current
   ON product_prices(product_id, effective_from DESC, id DESC);
 
+-- ─── Product images (files in R2, metadata here) ───────────────
+-- File lives in R2 bucket `elorikids-media` at r2_key, served from
+-- https://media.elorikids.rs/<r2_key>. First image by sort_order = cover.
+CREATE TABLE IF NOT EXISTS product_images (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id   INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  kind         TEXT NOT NULL DEFAULT 'image' CHECK (kind IN ('image', 'video')),
+  r2_key       TEXT NOT NULL UNIQUE,
+  poster_key   TEXT,                           -- optional still for a video
+  alt          TEXT,
+  content_type TEXT NOT NULL,
+  size_bytes   INTEGER NOT NULL,
+  sort_order   INTEGER NOT NULL DEFAULT 0,
+  created_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_product_images_product ON product_images(product_id, sort_order);
+
 -- ─── Orders ────────────────────────────────────────────────────
 -- `id`           is the auto-increment integer PK (internal).
 -- `track_number` is the public tracking ID: 'EK-2026-a3f9c2' (unguessable).

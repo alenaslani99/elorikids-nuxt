@@ -8,6 +8,8 @@ export interface MediaItem {
   src: string;
   alt?: string;
   poster?: string;
+  /** NuxtImg provider: 'media' for R2 images (src is the R2 key). */
+  provider?: 'media';
 }
 
 export interface Book {
@@ -34,14 +36,9 @@ export const books: Book[] = [
     slug: "prvi-koraci",
     title: "Prvi koraci",
     img: "prvi-koraci.jpeg",
-    // Video first, then the cover image. Drop the .mp4 in /public to activate.
+    // Fallback gallery only - the real one (video + images) is managed in
+    // the admin panel and served from R2 (see useProductMedia).
     media: [
-      {
-        type: "video",
-        src: "/prvi-koraci.mp4",
-        poster: "/prvi-koraci-poster.jpg",
-        alt: "Pregled knjige Prvi koraci",
-      },
       {
         type: "image",
         src: "/prvi-koraci.jpeg",
@@ -105,12 +102,6 @@ export const books: Book[] = [
     img: "ucimo-kroz-igru.jpeg",
     media: [
       {
-        type: "video",
-        src: "/ucimo-kroz-igru.mp4",
-        poster: "/ucimo-kroz-igru-poster.jpg",
-        alt: "Pregled knjige Učimo kroz igru",
-      },
-      {
         type: "image",
         src: "/ucimo-kroz-igru.jpeg",
         alt: "Naslovna strana - Učimo kroz igru",
@@ -171,12 +162,6 @@ export const books: Book[] = [
     slug: "priprema-za-skolu",
     img: "priprema-za-skolu.jpeg",
     media: [
-      {
-        type: "video",
-        src: "/priprema-za-skolu.mp4",
-        poster: "/priprema-za-skolu-poster.jpg",
-        alt: "Pregled knjige Priprema za školu",
-      },
       {
         type: "image",
         src: "/priprema-za-skolu.jpeg",

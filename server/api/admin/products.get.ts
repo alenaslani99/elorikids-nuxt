@@ -16,6 +16,9 @@ export interface AdminProduct {
   /** What checkout charges right now (newest effective row). */
   currentPrice: number | null
   orderCount: number
+  /** R2 key of the first gallery image (storefront cover), if any. */
+  coverKey: string | null
+  imageCount: number
   createdAt: string
   updatedAt: string
 }
@@ -37,7 +40,11 @@ export default defineEventHandler(async (event): Promise<{ products: AdminProduc
               (SELECT amount FROM product_prices
                WHERE product_id = p.id AND is_sale = 0 AND effective_from <= datetime('now')
                ORDER BY effective_from DESC, id DESC LIMIT 1) AS regular_price,
-              (SELECT COUNT(*) FROM order_items oi WHERE oi.product_id = p.id) AS order_count
+              (SELECT COUNT(*) FROM order_items oi WHERE oi.product_id = p.id) AS order_count,
+              (SELECT r2_key FROM product_images
+               WHERE product_id = p.id AND kind = 'image'
+               ORDER BY sort_order, id LIMIT 1) AS cover_key,
+              (SELECT COUNT(*) FROM product_images WHERE product_id = p.id) AS image_count
        FROM products p
        LEFT JOIN categories c ON c.id = p.category_id
        LEFT JOIN product_prices cur ON cur.id = (
@@ -60,6 +67,8 @@ export default defineEventHandler(async (event): Promise<{ products: AdminProduc
       current_is_sale: number | null
       regular_price: number | null
       order_count: number
+      cover_key: string | null
+      image_count: number
     }>()
 
   return {
@@ -74,6 +83,8 @@ export default defineEventHandler(async (event): Promise<{ products: AdminProduc
       salePrice: row.current_is_sale === 1 ? row.current_price : null,
       currentPrice: row.current_price,
       orderCount: row.order_count,
+      coverKey: row.cover_key,
+      imageCount: row.image_count,
       createdAt: row.created_at,
       updatedAt: row.updated_at,
     })),

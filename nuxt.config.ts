@@ -1,5 +1,8 @@
 import tailwindcss from "@tailwindcss/vite";
 
+/** R2 custom domain (bucket `elorikids-media`, see wrangler.toml). */
+const MEDIA_ORIGIN = 'https://media.elorikids.rs';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
@@ -18,6 +21,28 @@ export default defineNuxtConfig({
     public: {
       // Override per environment with NUXT_PUBLIC_GTM_ID (empty disables GTM).
       gtmId: 'GTM-5D23CZT5',
+      // Public origin of the R2 bucket (product images/videos). Used for
+      // video URLs; images go through the `media` image provider below.
+      mediaBaseUrl: MEDIA_ORIGIN,
+    },
+  },
+  // ── Product media (R2) ─────────────────────────────────────────────
+  // <NuxtImg provider="media" :src="r2Key"> → Cloudflare Image
+  // Transformations on the media domain (/cdn-cgi/image/w=…,f=webp/key).
+  // Marketing images in /public keep using the default provider.
+  image: {
+    providers: {
+      media: { provider: 'cloudflare', options: { baseURL: MEDIA_ORIGIN } },
+    },
+  },
+  // `nuxt dev`: serve originals from the emulated local R2 bucket via
+  // server/routes/media (transformations don't exist on localhost).
+  $development: {
+    runtimeConfig: { public: { mediaBaseUrl: '/media' } },
+    image: {
+      providers: {
+        media: { provider: '~/providers/media-dev.ts', options: { baseURL: '/media' } },
+      },
     },
   },
   fonts: {

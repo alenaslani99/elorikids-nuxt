@@ -17,6 +17,12 @@ if (!book.value) {
 
 const relatedBooks = computed(() => getRelatedBooks(slug.value));
 
+// Gallery/cover from the admin-managed R2 media, falling back to the
+// bundled /public images for products without uploads.
+const { gallery, cover, shareImage } = await useProductMedia();
+const media = computed(() => gallery(book.value!));
+const ogImage = shareImage(book.value!);
+
 // view_item on open and when navigating between related books.
 const { viewItem } = useTracking();
 function trackView() {
@@ -94,14 +100,14 @@ useHead({
         },
         {
             property: "og:image",
-            content: `https://elorikids.rs/${book.value!.img}`,
+            content: ogImage,
         },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:title", content: `${book.value!.title} | elorikids` },
         { name: "twitter:description", content: book.value!.description },
         {
             name: "twitter:image",
-            content: `https://elorikids.rs/${book.value!.img}`,
+            content: ogImage,
         },
     ],
     link: [
@@ -118,7 +124,7 @@ useHead({
                 "@type": "Product",
                 name: book.value!.title,
                 description: book.value!.description,
-                image: `https://elorikids.rs/${book.value!.img}`,
+                image: ogImage,
                 brand: { "@type": "Brand", name: "elorikids" },
                 category: "Children's activity book",
                 offers: {
@@ -192,7 +198,7 @@ useHead({
                 <div class="lg:sticky lg:top-32 lg:self-start">
                     <!-- Video-first media gallery with swipeable lightbox -->
                     <MediaGallery
-                        :media="book.media"
+                        :media="media"
                         :badge="book.badge"
                         :accent="book.accent"
                     />
@@ -583,10 +589,12 @@ useHead({
                             class="aspect-[3/4] w-24 shrink-0 overflow-hidden rounded-xl bg-cloud/30"
                         >
                             <NuxtImg
-                                :src="`/${related.img}`"
+                                :src="cover(related).src"
+                                :provider="cover(related).provider"
                                 :alt="related.title"
                                 width="96"
                                 height="128"
+                                fit="cover"
                                 format="webp"
                                 class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                             />

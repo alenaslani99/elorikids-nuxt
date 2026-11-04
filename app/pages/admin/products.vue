@@ -267,8 +267,8 @@ function formatPrice(amount: number): string {
 
     <div class="mx-auto grid max-w-7xl gap-6 px-4 pb-16 sm:px-6 lg:grid-cols-[1fr_380px] lg:px-8">
       <!-- Form panel (first on mobile, right column on desktop) -->
-      <section class="lg:order-2">
-        <div class="rounded-2xl border-2 border-cloud/40 bg-white p-5 shadow-sm lg:sticky lg:top-6">
+      <section class="space-y-6 lg:order-2 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+        <div class="rounded-2xl border-2 border-cloud/40 bg-white p-5 shadow-sm">
           <div class="mb-4 flex items-center justify-between gap-3">
             <h2 class="font-unbounded text-base font-bold text-navy">
               {{ editingId === null ? 'Novi proizvod' : 'Izmena proizvoda' }}
@@ -381,6 +381,18 @@ function formatPrice(amount: number): string {
             />
           </form>
         </div>
+
+        <!-- Gallery (only for saved products - uploads need a product id) -->
+        <AdminProductImages
+          v-if="editingId !== null"
+          :key="editingId"
+          :product-id="editingId"
+          :product-title="form.title"
+          @changed="refreshProducts"
+        />
+        <p v-else class="rounded-2xl border border-dashed border-cloud/60 bg-white p-4 text-center text-xs text-navy/50">
+          Slike i video dodajete nakon što sačuvate proizvod (dugme „Izmeni”).
+        </p>
       </section>
 
       <!-- Product list -->
@@ -409,6 +421,24 @@ function formatPrice(amount: number): string {
             :class="editingId === p.id ? 'border-blue' : 'border-cloud/40 hover:border-blue/40'"
           >
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div class="relative size-16 shrink-0 overflow-hidden rounded-xl bg-cloud/30">
+                <NuxtImg
+                  v-if="p.coverKey"
+                  provider="media"
+                  :src="p.coverKey"
+                  :alt="p.title"
+                  width="64"
+                  height="64"
+                  fit="cover"
+                  format="webp"
+                  class="size-full object-cover"
+                />
+                <Icon v-else name="lucide:image-off" class="absolute inset-0 m-auto size-6 text-navy/30" />
+                <span
+                  v-if="p.imageCount > 0"
+                  class="absolute bottom-1 right-1 rounded-full bg-navy/80 px-1.5 text-[10px] font-semibold text-white"
+                >{{ p.imageCount }}</span>
+              </div>
               <div class="min-w-0 flex-1">
                 <div class="flex flex-wrap items-center gap-3">
                   <span class="font-unbounded font-bold text-navy">{{ p.title }}</span>

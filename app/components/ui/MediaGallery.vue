@@ -16,7 +16,8 @@ import type { MediaItem } from '~/composables/useBooks'
  *
  * Performance:
  * - Thumbnail video uses preload="none" + poster (no .mp4 bytes on page load).
- * - Images use NuxtImg (webp, sized).
+ * - Images use NuxtImg (webp, sized). Items with provider 'media' are R2
+ *   keys resized by Cloudflare; others are bundled /public files.
  * - Lightbox renders nothing until opened (v-if, not v-show).
  * - No external library - unified Pointer Events API.
  */
@@ -158,10 +159,12 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
       <NuxtImg
         v-else
         :src="active.src"
+        :provider="active.provider"
         :alt="active.alt ?? ''"
         class="aspect-[4/5] w-full object-cover"
         width="400"
         height="500"
+        fit="cover"
         format="webp"
         loading="eager"
       />
@@ -252,6 +255,8 @@ const dot = computed(() => accentDot[props.accent] ?? accentDot.mint!)
                   v-else
                   :key="lightboxIndex"
                   :src="lightboxActive.src"
+                  :provider="lightboxActive.provider"
+                  :modifiers="lightboxActive.provider ? { width: 1600 } : undefined"
                   :alt="lightboxActive.alt ?? ''"
                   class="max-h-[75vh] max-w-full rounded-2xl shadow-2xl"
                   format="webp"

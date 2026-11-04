@@ -6,9 +6,9 @@ import type { D1Database } from '@cloudflare/workers-types'
 import type { H3Event } from 'h3'
 import { CATALOG_LIMITS, slugRegex } from '~~/shared/utils/catalog'
 
-/** Parse the `[id]` route param as a positive integer or throw 400. */
-export function requireIdParam(event: H3Event): number {
-  const raw = String(getRouterParam(event, 'id') ?? '')
+/** Parse a route param (default `[id]`) as a positive integer or throw 400. */
+export function requireIdParam(event: H3Event, name = 'id'): number {
+  const raw = String(getRouterParam(event, name) ?? '')
   const id = Number(raw)
   if (!/^\d+$/.test(raw) || !Number.isSafeInteger(id) || id < 1) {
     throw createError({ statusCode: 400, statusMessage: 'Neispravan ID.' })

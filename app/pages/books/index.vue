@@ -2,6 +2,8 @@
 import { books } from '~/composables/useBooks'
 import { getAccent } from '~/composables/useAccent'
 
+const { cover } = await useProductMedia()
+
 function goToBook(slug: string) {
   navigateTo(`/books/${slug}`)
 }
@@ -75,11 +77,13 @@ useHead({
             <!-- Book image -->
             <div class="overflow-hidden">
               <NuxtImg
-                :src="`/${book.img}`"
+                :src="cover(book).src"
+                :provider="cover(book).provider"
                 :alt="`${book.title} - interaktivna piši-briši knjiga za decu (${book.ageRange})`"
                 class="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 width="400"
                 height="300"
+                fit="cover"
                 format="webp"
                 loading="lazy"
               />

@@ -9,3 +9,10 @@ workers_dev = false
 binding = "DB"
 database_name = "elorikids-db"
 database_id = "6031f579-f2d6-42b1-a927-f420f2918550"
+
+# Product images/videos. Served publicly via the custom domain
+# media.elorikids.rs (connected in the R2 dashboard); the Worker only
+# writes/deletes through this binding. `nuxt dev` emulates it locally.
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "elorikids-media"
