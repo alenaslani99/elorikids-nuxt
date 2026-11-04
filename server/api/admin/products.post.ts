@@ -3,7 +3,8 @@ import { useDb } from '../../utils/db'
 import { bumpCatalogVersion } from '../../utils/storefront'
 import { requireElevated } from '../../utils/admin'
 import {
-  isUniqueViolation, requireCategoryExists, validateOptionalId, validatePricePair, validateSlug, validateText,
+  isUniqueViolation, productContentStatements, requireAgeGroupExists, requireCategoryExists, validateOptionalId,
+  validatePricePair, validateProductContent, validateSlug, validateText,
 } from '../../utils/catalog'
 import { CATALOG_LIMITS } from '~~/shared/utils/catalog'
 
@@ -14,11 +15,13 @@ interface ProductBody {
   active?: boolean
   price?: number
   salePrice?: number | null
+  /** Product page content (subtitle, description, lists...). Optional. */
+  content?: unknown
 }
 
 /**
- * Create a product with its initial price (and optional sale price).
- * Product + price rows are written in one D1 batch (atomic).
+ * Create a product with its initial price (and optional sale price) and
+ * optional page content. Everything is written in one D1 batch (atomic).
  * Requires an elevated owner session.
  */
 export default defineEventHandler(async (event) => {
@@ -32,7 +35,10 @@ export default defineEventHandler(async (event) => {
   const active = body?.active === false ? 0 : 1
   const { price, salePrice } = validatePricePair(body ?? {})
 
+  const content = body?.content === undefined ? null : validateProductContent(body.content)
+
   if (categoryId !== null) await requireCategoryExists(db, categoryId)
+  if (content?.ageGroupId) await requireAgeGroupExists(db, content.ageGroupId)
 
   // Price rows reference the new product by slug, so the whole create
   // is a single transaction - no orphan product without a price.
@@ -50,6 +56,8 @@ export default defineEventHandler(async (event) => {
         .bind(salePrice, slug),
     )
   }
+
+  if (content) stmts.push(...productContentStatements(db, slug, content))
 
   try {
     const results = await db.batch(stmts)

@@ -3,7 +3,8 @@ import { useDb } from '../../../utils/db'
 import { bumpCatalogVersion } from '../../../utils/storefront'
 import { requireElevated } from '../../../utils/admin'
 import {
-  getCurrentPrices, requireCategoryExists, requireIdParam, validateOptionalId, validatePricePair, validateText,
+  getCurrentPrices, productContentStatements, requireAgeGroupExists, requireCategoryExists, requireIdParam,
+  validateOptionalId, validatePricePair, validateProductContent, validateText,
 } from '../../../utils/catalog'
 import { CATALOG_LIMITS } from '~~/shared/utils/catalog'
 
@@ -13,6 +14,11 @@ interface ProductBody {
   active?: boolean
   price?: number
   salePrice?: number | null
+  /**
+   * Product page content. Optional: when omitted (e.g. the activate
+   * toggle in the list) the existing content is left untouched.
+   */
+  content?: unknown
 }
 
 /**
@@ -38,7 +44,9 @@ export default defineEventHandler(async (event) => {
   if (!product) {
     throw createError({ statusCode: 404, statusMessage: 'Proizvod nije pronađen.' })
   }
+  const content = body?.content === undefined ? null : validateProductContent(body.content)
   if (categoryId !== null) await requireCategoryExists(db, categoryId)
+  if (content?.ageGroupId) await requireAgeGroupExists(db, content.ageGroupId)
 
   const stmts = [
     db.prepare(`UPDATE products SET title = ?, category_id = ?, active = ?, updated_at = datetime('now')
@@ -68,6 +76,8 @@ export default defineEventHandler(async (event) => {
       db.prepare('INSERT INTO product_prices (product_id, amount, is_sale) VALUES (?, ?, 0)').bind(id, price),
     )
   }
+
+  if (content) stmts.push(...productContentStatements(db, product.slug, content))
 
   await db.batch(stmts)
 

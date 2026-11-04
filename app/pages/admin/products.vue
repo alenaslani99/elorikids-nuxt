@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import type { AdminProduct } from '~~/server/api/admin/products.get'
 import type { AdminCategory } from '~~/server/api/admin/categories.get'
-import { CATALOG_LIMITS, slugify, slugRegex } from '~~/shared/utils/catalog'
+import type { AdminAgeGroup } from '~~/server/api/admin/age-groups.get'
+import {
+  ACCENT_LABELS, CATALOG_LIMITS, PRODUCT_ACCENTS, slugify, slugRegex, type ProductAccent, type ProductContent,
+} from '~~/shared/utils/catalog'
+import type { RowField } from '~/components/admin/AdminRowsEditor.vue'
 import { formatDateShort as formatDate } from '~~/shared/utils/format'
 
 // Gate, header and nav live in the parent pages/admin.vue
@@ -9,7 +13,11 @@ useHead({ title: 'Proizvodi - Admin panel - elorikids' })
 
 const { errorMessage } = useAdmin()
 
-const [{ data: productsData, refresh: refreshProducts }, { data: categoriesData }] = await Promise.all([
+const [
+  { data: productsData, refresh: refreshProducts },
+  { data: categoriesData },
+  { data: ageGroupsData, refresh: refreshAgeGroups },
+] = await Promise.all([
   useAsyncData(
     'admin-products',
     () => $fetch<{ products: AdminProduct[] }>('/api/admin/products'),
@@ -20,7 +28,14 @@ const [{ data: productsData, refresh: refreshProducts }, { data: categoriesData 
     () => $fetch<{ categories: AdminCategory[] }>('/api/admin/categories'),
     { default: () => ({ categories: [] }) },
   ),
+  useAsyncData(
+    'admin-age-groups',
+    () => $fetch<{ ageGroups: AdminAgeGroup[] }>('/api/admin/age-groups'),
+    { default: () => ({ ageGroups: [] }) },
+  ),
 ])
+
+const ageGroups = computed(() => ageGroupsData.value?.ageGroups ?? [])
 
 const products = computed(() => productsData.value?.products ?? [])
 
@@ -76,6 +91,87 @@ const form = reactive({
 const slugTouched = ref(false)
 const submitted = ref(false)
 
+// ── Page content (subtitle, description, lists) ─────────────────
+function emptyContent() {
+  return {
+    subtitle: '',
+    description: '',
+    badge: '',
+    accent: 'mint' as ProductAccent,
+    ageGroupId: '' as string,
+    sortOrder: '0',
+    features: [] as Record<string, string>[],
+    activities: [] as Record<string, string>[],
+    sellingPoints: [] as Record<string, string>[],
+  }
+}
+const content = reactive(emptyContent())
+const contentLoading = ref(false)
+
+const featureFields: RowField[] = [{ key: 'label', label: 'npr. 24 stranice', max: CATALOG_LIMITS.featureLabel }]
+const activityFields: RowField[] = [
+  { key: 'title', label: 'Naslov aktivnosti', max: CATALOG_LIMITS.itemTitle },
+  { key: 'description', label: 'Opis aktivnosti', max: CATALOG_LIMITS.activityDescription, multiline: true },
+]
+const sellingPointFields: RowField[] = [
+  { key: 'title', label: 'Naslov prednosti', max: CATALOG_LIMITS.itemTitle },
+  { key: 'text', label: 'Tekst prednosti', max: CATALOG_LIMITS.sellingPointText, multiline: true },
+]
+
+function loadContent(c: ProductContent) {
+  Object.assign(content, {
+    subtitle: c.subtitle,
+    description: c.description,
+    badge: c.badge,
+    accent: c.accent,
+    ageGroupId: c.ageGroupId === null ? '' : String(c.ageGroupId),
+    sortOrder: String(c.sortOrder),
+    features: c.features.map(label => ({ label })),
+    activities: c.activities.map(a => ({ ...a })),
+    sellingPoints: c.sellingPoints.map(p => ({ ...p })),
+  })
+}
+
+/** Rows with every field empty are dropped; half-filled rows reach the server and get a clear error. */
+const filled = (rows: Record<string, string>[]) =>
+  rows.map(r => Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v.trim()])))
+    .filter(r => Object.values(r).some(Boolean))
+
+function contentPayload() {
+  return {
+    subtitle: content.subtitle.trim(),
+    description: content.description.trim(),
+    badge: content.badge.trim(),
+    accent: content.accent,
+    ageGroupId: content.ageGroupId ? Number(content.ageGroupId) : null,
+    sortOrder: Number(content.sortOrder) || 0,
+    features: filled(content.features).map(r => r.label),
+    activities: filled(content.activities),
+    sellingPoints: filled(content.sellingPoints),
+  }
+}
+
+// Quick-add an age group without leaving the form
+const newAgeLabel = ref('')
+const ageAdding = ref(false)
+async function addAgeGroup() {
+  const label = newAgeLabel.value.trim()
+  if (!label) return
+  ageAdding.value = true
+  try {
+    const { id } = await $fetch<{ ok: boolean, id: number }>('/api/admin/age-groups', { method: 'POST', body: { label } })
+    await refreshAgeGroups()
+    content.ageGroupId = String(id)
+    newAgeLabel.value = ''
+  }
+  catch (e: any) {
+    setError(errorMessage(e, 'Dodavanje uzrasta nije uspelo.'))
+  }
+  finally {
+    ageAdding.value = false
+  }
+}
+
 watch(() => form.title, (title) => {
   if (editingId.value === null && !slugTouched.value) form.slug = slugify(title)
 })
@@ -113,12 +209,14 @@ const salePriceError = computed(() => {
 function startCreate() {
   editingId.value = null
   Object.assign(form, { title: '', slug: '', categoryId: '', price: '', salePrice: '', active: true })
+  Object.assign(content, emptyContent())
+  contentLoading.value = false
   slugTouched.value = false
   submitted.value = false
   reset()
 }
 
-function startEdit(p: AdminProduct) {
+async function startEdit(p: AdminProduct) {
   editingId.value = p.id
   Object.assign(form, {
     title: p.title,
@@ -131,6 +229,20 @@ function startEdit(p: AdminProduct) {
   submitted.value = false
   reset()
   if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+
+  Object.assign(content, emptyContent())
+  contentLoading.value = true
+  try {
+    const { content: loaded } = await $fetch<{ content: ProductContent }>(`/api/admin/products/${p.id}`)
+    // Ignore a late response if the user already switched products
+    if (editingId.value === p.id) loadContent(loaded)
+  }
+  catch (e: any) {
+    setError(errorMessage(e, 'Učitavanje sadržaja nije uspelo.'))
+  }
+  finally {
+    if (editingId.value === p.id) contentLoading.value = false
+  }
 }
 
 async function handleSubmit() {
@@ -138,6 +250,7 @@ async function handleSubmit() {
   submitted.value = true
   if (titleError.value || slugError.value || priceError.value || salePriceError.value) return
 
+  if (contentLoading.value) return
   status.value = 'loading'
   const body = {
     title: form.title.trim(),
@@ -145,6 +258,7 @@ async function handleSubmit() {
     active: form.active,
     price: Number(form.price),
     salePrice: form.salePrice.trim() ? Number(form.salePrice) : null,
+    content: contentPayload(),
   }
   try {
     if (editingId.value === null) {
@@ -265,7 +379,7 @@ function formatPrice(amount: number): string {
       </div>
     </section>
 
-    <div class="mx-auto grid max-w-7xl gap-6 px-4 pb-16 sm:px-6 lg:grid-cols-[1fr_380px] lg:px-8">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 pb-16 sm:px-6 lg:grid-cols-[1fr_440px] lg:px-8">
       <!-- Form panel (first on mobile, right column on desktop) -->
       <section class="space-y-6 lg:order-2 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
         <div class="rounded-2xl border-2 border-cloud/40 bg-white p-5 shadow-sm">
@@ -365,6 +479,144 @@ function formatPrice(amount: number): string {
                 <span class="block text-xs text-navy/50">Neaktivan proizvod se ne može poručiti.</span>
               </span>
             </label>
+
+            <!-- ── Page content ── -->
+            <div class="space-y-4 border-t-2 border-cloud/30 pt-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-unbounded text-sm font-bold text-navy">
+                  Sadržaj stranice
+                </h3>
+                <span v-if="contentLoading" class="text-xs text-navy/50">Učitavanje...</span>
+              </div>
+
+              <fieldset :disabled="status === 'loading' || contentLoading" class="space-y-4">
+                <AppInput
+                  id="product-subtitle"
+                  v-model="content.subtitle"
+                  label="Podnaslov"
+                  placeholder="npr. Boje, veličine i životinje za najmlađe"
+                />
+
+                <div>
+                  <label for="product-description" class="mb-1.5 block text-sm font-semibold text-navy">Opis</label>
+                  <textarea
+                    id="product-description"
+                    v-model="content.description"
+                    name="product-description"
+                    rows="5"
+                    :maxlength="CATALOG_LIMITS.description"
+                    class="w-full resize-y rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-sm text-navy focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
+                  />
+                  <p class="text-right text-xs text-navy/40">
+                    {{ content.description.length }}/{{ CATALOG_LIMITS.description }}
+                  </p>
+                </div>
+
+                <div>
+                  <label for="product-age-group" class="mb-1.5 block text-sm font-semibold text-navy">Uzrast</label>
+                  <select
+                    id="product-age-group"
+                    v-model="content.ageGroupId"
+                    name="product-age-group"
+                    class="w-full rounded-xl border-2 border-cloud/50 bg-cream px-4 py-3 text-navy focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/20"
+                  >
+                    <option value="">
+                      — Bez uzrasta —
+                    </option>
+                    <option v-for="g in ageGroups" :key="g.id" :value="String(g.id)">
+                      {{ g.label }}
+                    </option>
+                  </select>
+                  <div class="mt-2 flex gap-2">
+                    <input
+                      id="product-new-age"
+                      v-model="newAgeLabel"
+                      name="product-new-age"
+                      type="text"
+                      :maxlength="CATALOG_LIMITS.ageLabel"
+                      placeholder="Novi uzrast, npr. 5–7 godina"
+                      aria-label="Novi uzrast"
+                      class="min-w-0 flex-1 rounded-lg border border-cloud/50 bg-white px-3 py-1.5 text-sm text-navy placeholder:text-navy/40 focus:border-blue focus:outline-none"
+                      @keydown.enter.prevent="addAgeGroup"
+                    >
+                    <button
+                      type="button"
+                      :disabled="ageAdding || !newAgeLabel.trim()"
+                      class="shrink-0 rounded-full border-2 border-cloud/50 px-3 py-1 text-xs font-semibold text-navy/70 hover:border-navy/40 disabled:opacity-40"
+                      @click="addAgeGroup"
+                    >
+                      Dodaj uzrast
+                    </button>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <AppInput
+                    id="product-badge"
+                    v-model="content.badge"
+                    label="Oznaka"
+                    placeholder="npr. Najmlađima"
+                  />
+                  <AppInput
+                    id="product-sort"
+                    v-model="content.sortOrder"
+                    label="Redosled"
+                    placeholder="0"
+                    inputmode="numeric"
+                  />
+                </div>
+
+                <div>
+                  <span class="mb-1.5 block text-sm font-semibold text-navy">Boja</span>
+                  <div class="flex flex-wrap gap-2" role="radiogroup" aria-label="Boja">
+                    <label
+                      v-for="accent in PRODUCT_ACCENTS"
+                      :key="accent"
+                      class="flex cursor-pointer items-center gap-2 rounded-full border-2 px-3 py-1.5 text-sm font-semibold transition-colors"
+                      :class="content.accent === accent ? 'border-navy text-navy' : 'border-cloud/50 text-navy/60'"
+                    >
+                      <input
+                        v-model="content.accent"
+                        type="radio"
+                        name="product-accent"
+                        :value="accent"
+                        class="sr-only"
+                      >
+                      <span
+                        class="size-3 rounded-full"
+                        :class="{ 'bg-mint': accent === 'mint', 'bg-purple': accent === 'purple', 'bg-coral': accent === 'coral' }"
+                      />
+                      {{ ACCENT_LABELS[accent] }}
+                    </label>
+                  </div>
+                </div>
+
+                <AdminRowsEditor
+                  id="product-features"
+                  v-model="content.features"
+                  label="Karakteristike"
+                  :fields="featureFields"
+                  :max-rows="CATALOG_LIMITS.listItems"
+                  add-label="Dodaj karakteristiku"
+                />
+                <AdminRowsEditor
+                  id="product-activities"
+                  v-model="content.activities"
+                  label="Aktivnosti"
+                  :fields="activityFields"
+                  :max-rows="CATALOG_LIMITS.listItems"
+                  add-label="Dodaj aktivnost"
+                />
+                <AdminRowsEditor
+                  id="product-selling-points"
+                  v-model="content.sellingPoints"
+                  label="Prednosti"
+                  :fields="sellingPointFields"
+                  :max-rows="CATALOG_LIMITS.listItems"
+                  add-label="Dodaj prednost"
+                />
+              </fieldset>
+            </div>
 
             <p
               class="min-h-5 text-sm text-coral transition-opacity duration-200"
