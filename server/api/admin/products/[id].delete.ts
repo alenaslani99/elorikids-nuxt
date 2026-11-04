@@ -1,5 +1,6 @@
 import { createError, defineEventHandler } from 'h3'
 import { useDb } from '../../../utils/db'
+import { bumpCatalogVersion } from '../../../utils/storefront'
 import { requireElevated } from '../../../utils/admin'
 import { requireIdParam } from '../../../utils/catalog'
 import { deleteMedia, useMedia } from '../../../utils/media'
@@ -31,5 +32,6 @@ export default defineEventHandler(async (event) => {
   if (keys.length) await deleteMedia(useMedia(event), keys)
 
   console.log(`[admin/products] ${user.email} deleted #${id} "${product.slug}" (${keys.filter(Boolean).length} media files)`)
+  await bumpCatalogVersion(db)
   return { ok: true }
 })

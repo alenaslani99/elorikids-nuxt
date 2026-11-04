@@ -8,6 +8,7 @@ useHead({
 })
 
 const { items, remove, clear } = useSaved()
+const { getBook } = useBooks()
 </script>
 
 <template>
@@ -59,11 +60,14 @@ const { items, remove, clear } = useSaved()
             <div class="relative mb-5 overflow-hidden rounded-2xl">
               <NuxtLink :to="`/books/${item.slug}`">
                 <NuxtImg
-                  :src="`/${item.img}`"
+                  v-if="getBook(item.slug)?.cover"
+                  provider="media"
+                  :src="getBook(item.slug)!.cover!.src"
                   :alt="item.title"
                   class="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                   width="400"
                   height="300"
+                  fit="cover"
                   format="webp"
                   loading="lazy"
                 />

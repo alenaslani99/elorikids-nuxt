@@ -1,5 +1,3 @@
-import { PRODUCTS } from '~~/shared/utils/products'
-
 export interface SavedItem {
   slug: string
   title: string
@@ -15,10 +13,15 @@ interface SavedState {
 
 const STORAGE_KEY = 'elorikids-saved'
 
-// Canonical prices - re-syncs stored items so price changes (sales)
-// are reflected in the saved list.
+// Current catalog prices - re-syncs stored items so price changes
+// (sales) are reflected in the saved list.
 export function useSaved() {
   const saved = useState<SavedState>('saved', () => ({ items: [] }))
+  const { books, getBook } = useBooks()
+
+  function syncPrices(items: SavedItem[]): SavedItem[] {
+    return items.map(i => ({ ...i, price: getBook(i.slug)?.price ?? i.price }))
+  }
 
   // Hydrate from localStorage on client, after mount (avoids SSR hydration mismatch)
   onMounted(() => {
@@ -27,10 +30,7 @@ export function useSaved() {
       if (stored) {
         const parsed = JSON.parse(stored)
         if (parsed?.items && Array.isArray(parsed.items)) {
-          saved.value.items = parsed.items.map((i: SavedItem) => ({
-            ...i,
-            price: PRODUCTS[i.slug]?.price ?? i.price,
-          }))
+          saved.value.items = syncPrices(parsed.items)
         }
       }
     }
@@ -43,6 +43,11 @@ export function useSaved() {
     watch(saved.value, (val) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     }, { deep: true })
+
+    // Catalog may arrive after hydration (client-only pages)
+    watch(books, () => {
+      saved.value.items = syncPrices(saved.value.items)
+    })
   })
 
   const items = computed(() => saved.value.items)

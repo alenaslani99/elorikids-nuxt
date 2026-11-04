@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../utils/db'
+import { bumpCatalogVersion } from '../../utils/storefront'
 import { requireElevated } from '../../utils/admin'
 import {
   isUniqueViolation, requireCategoryExists, validateOptionalId, validatePricePair, validateSlug, validateText,
@@ -54,6 +55,7 @@ export default defineEventHandler(async (event) => {
     const results = await db.batch(stmts)
     const id = results[0]?.meta.last_row_id as number
     console.log(`[admin/products] ${user.email} created #${id} "${slug}" @ ${salePrice ?? price} RSD`)
+    await bumpCatalogVersion(db)
     return { ok: true, id }
   }
   catch (err) {

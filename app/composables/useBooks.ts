@@ -1,3 +1,6 @@
+import { joinURL } from 'ufo'
+import type { StorefrontProduct } from '~~/server/utils/storefront'
+
 export interface BookActivity {
   title: string;
   description: string;
@@ -12,10 +15,14 @@ export interface MediaItem {
   provider?: 'media';
 }
 
+export interface CoverImage {
+  /** R2 key - use with <NuxtImg provider="media">. */
+  src: string;
+  provider: 'media';
+}
+
 export interface Book {
   slug: string;
-  img: string;
-  media: MediaItem[];
   title: string;
   subtitle: string;
   ageRange: string;
@@ -29,202 +36,87 @@ export interface Book {
   sellingPoints: { title: string; text: string }[];
   accent: string;
   badge: string;
+  /** First gallery image (cards, thumbnails); null until one is uploaded. */
+  cover: CoverImage | null;
+  /** Gallery for MediaGallery, in admin order. */
+  media: MediaItem[];
+  /** Absolute image URL for og:image / JSON-LD. */
+  shareImage: string;
 }
 
-export const books: Book[] = [
-  {
-    slug: "prvi-koraci",
-    title: "Prvi koraci",
-    img: "prvi-koraci.jpeg",
-    // Fallback gallery only - the real one (video + images) is managed in
-    // the admin panel and served from R2 (see useProductMedia).
-    media: [
-      {
-        type: "image",
-        src: "/prvi-koraci.jpeg",
-        alt: "Naslovna strana - Prvi koraci",
-      },
-    ],
-    subtitle: "Boje, veličine i životinje za najmlađe istraživače",
-    ageRange: "2–3 godine",
-    ageSlug: "2-3-godine",
-    category: "2–3 godine",
-    price: 1800,
-    oldPrice: 2000,
-    description:
-      "Idealna prva radna sveska za najmlađe. Kroz šarene ilustracije i jednostavne zadatke, dete upoznaje boje, veličine i životinje. Svaka stranica je prilagođena malim rukama i razvija osnove logičkog razmišljanja kroz igru.",
-    features: ["24 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
-    activities: [
-      {
-        title: "Svet boja",
-        description:
-          "Uparivanje predmeta sa bojama (sunce je žuto, list je zelen).",
-      },
-      {
-        title: "Veliko i malo",
-        description:
-          "Poređenje veličina kroz svakodnevne i životinjske primere.",
-      },
-      {
-        title: "Životinje",
-        description:
-          "Domaće i divlje životinje, uparivanje roditelja i mladunaca.",
-      },
-      {
-        title: "Uparivanje",
-        description:
-          "Pronalaženje parova i uparivanje sličnih predmeta za logiku.",
-      },
-    ],
-    sellingPoints: [
-      {
-        title: "Piši-briši sistem",
-        text: "Laminirane, vodootporne stranice omogućavaju višestruko korišćenje. Dete može da vežba isti zadatak bezbroj puta, bez straha od greške. Jednostavno obrišite i počnite ispočetka!",
-      },
-      {
-        title: "Originalni sadržaj",
-        text: "Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala - sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.",
-      },
-      {
-        title: "Učenje kroz igru",
-        text: "Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.",
-      },
-      {
-        title: "24 stranice",
-        text: "Raznovrsni zadaci koji podstiču kreativnost i radoznalost.",
-      },
-    ],
-    accent: "mint",
-    badge: "Najmlađima",
-  },
-  {
-    slug: "ucimo-kroz-igru",
-    img: "ucimo-kroz-igru.jpeg",
-    media: [
-      {
-        type: "image",
-        src: "/ucimo-kroz-igru.jpeg",
-        alt: "Naslovna strana - Učimo kroz igru",
-      },
-    ],
-    title: "Učimo kroz igru",
-    subtitle: "Sortiranje, grupisanje i logičke veze",
-    ageRange: "3–4 godine",
-    ageSlug: "3-4-godine",
-    category: "3–4 godine",
-    price: 1800,
-    oldPrice: 2000,
-    description:
-      "Knjiga koja razvija sposobnost sortiranja, grupisanja i povezivanja. Kroz zanimljive zadatke sa voćem, povrćem, igračkama i životinjama, dete uči da prepoznaje šta pripada gde i kako stvari idu zajedno.",
-    features: ["24 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
-    activities: [
-      {
-        title: "Sortiranje",
-        description: "Sortiranje voća i povrća, prepoznavanje šta pripada gde.",
-      },
-      {
-        title: "Kategorije",
-        description:
-          "Grupisanje predmeta po tipu (igračke, odeća, hrana, ...).",
-      },
-      {
-        title: "Povezivanje",
-        description: "Uparivanje parova životinja, predmeta i pojmova.",
-      },
-      {
-        title: "Logika",
-        description:
-          "Zadaci zaključivanja, pronalaženje šema za razvoj mišljenja.",
-      },
-    ],
-    sellingPoints: [
-      {
-        title: "Piši-briši sistem",
-        text: "Laminirane, vodootporne stranice omogućavaju višestruko korišćenje. Dete može da vežba isti zadatak bezbroj puta, bez straha od greške. Jednostavno obrišite i počnite ispočetka!",
-      },
-      {
-        title: "Originalni sadržaj",
-        text: "Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala - sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.",
-      },
-      {
-        title: "Učenje kroz igru",
-        text: "Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.",
-      },
-      {
-        title: "24 stranice",
-        text: "Raznovrsni zadaci koji podstiču kreativnost i radoznalost.",
-      },
-    ],
-    accent: "purple",
-    badge: "Razvoj logike",
-  },
-  {
-    slug: "priprema-za-skolu",
-    img: "priprema-za-skolu.jpeg",
-    media: [
-      {
-        type: "image",
-        src: "/priprema-za-skolu.jpeg",
-        alt: "Naslovna strana - Priprema za školu",
-      },
-    ],
-    title: "Priprema za školu",
-    subtitle: "Lavirinti, logika i koncentracija za buduće đake",
-    ageRange: "4–6 godine",
-    ageSlug: "4-6-godine",
-    category: "4–6 godine",
-    price: 1800,
-    oldPrice: 2000,
-    description:
-      "Poslednja knjiga u seriji - priprema za polazak u školu. Lavirinti, pronalaženje razlika i asocijacije razvijaju strpljenje, pažnju i logičko razmišljanje. Sve što dete treba da savlada pre prvog školskog zvona.",
-    features: ["24 stranice", "Laminirano", "Vodootporno", "Piši-briši"],
-    activities: [
-      {
-        title: "Lavirinti",
-        description:
-          "Pronalaženje pravog puta razvija strpljenje i logičko razmišljanje.",
-      },
-      {
-        title: "Pronađi razlike",
-        description: "Upoređivanje slika jača pažnju i vizuelnu percepciju.",
-      },
-      {
-        title: "Asocijacije",
-        description:
-          "Povezivanje predmeta koji idu zajedno (četkica+pasta, ključ+vrata).",
-      },
-      {
-        title: "Koncentracija",
-        description: "Zadaci fokusa koji pripremaju za školske obaveze.",
-      },
-    ],
-    sellingPoints: [
-      {
-        title: "Piši-briši sistem",
-        text: "Laminirane, vodootporne stranice omogućavaju višestruko korišćenje. Dete može da vežba isti zadatak bezbroj puta, bez straha od greške. Jednostavno obrišite i počnite ispočetka!",
-      },
-      {
-        title: "Originalni sadržaj",
-        text: "Svaki zadatak je pažljivo osmišljen i ručno ilustrovan. Nema kopiranih materijala - sve je kreirano sa ljubavlju, prilagođeno našoj deci i njihovim potrebama.",
-      },
-      {
-        title: "Učenje kroz igru",
-        text: "Zabava je na prvom mestu - učenje dolazi prirodno. Šareni zadaci, simpatične ilustracije i raznovrsne aktivnosti drže pažnju mališana dok nesvesno usvajaju nova znanja.",
-      },
-      {
-        title: "24 stranice",
-        text: "Raznovrsni zadaci koji podstiču kreativnost i radoznalost.",
-      },
-    ],
-    accent: "coral",
-    badge: "Školski start",
-  },
-];
+/** Bundled fallback for share previews of products without images. */
+const DEFAULT_SHARE_IMAGE = 'https://elorikids.rs/elorikids-1.jpg';
 
+/**
+ * Storefront products from the database (admin-managed), via the cached
+ * /api/products endpoint. One shared request per app load: the result is
+ * reused by every component and across client-side navigations.
+ *
+ * `books` is reactive. Pages that need the data during SSR (e.g. for a
+ * 404 or meta tags) should `await ready` first.
+ */
 export function useBooks() {
-  const getBook = (slug: string) => books.find((b) => b.slug === slug);
-  const getRelatedBooks = (slug: string) =>
-    books.filter((b) => b.slug !== slug);
+  // Composables first - none may run after an await.
+  const img = useImage();
+  const mediaBaseUrl = useRuntimeConfig().public.mediaBaseUrl as string;
+  // During SSR this is event.$fetch, which keeps the Cloudflare bindings
+  // (a plain $fetch would reach the API without D1 on Workers).
+  const requestFetch = useRequestFetch();
 
-  return { books, getBook, getRelatedBooks };
+  const asyncData = useAsyncData(
+    'catalog',
+    () => requestFetch<{ products: StorefrontProduct[] }>('/api/products'),
+    {
+      default: () => ({ products: [] as StorefrontProduct[] }),
+      getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
+    },
+  );
+
+  const imageUrl = (key: string, width: number, format = 'webp') =>
+    img(key, { width, format }, { provider: 'media' as any });
+
+  function toBook(p: StorefrontProduct): Book {
+    const firstImage = p.media.find((m) => m.kind === 'image');
+    const media = p.media.map((m): MediaItem => {
+      if (m.kind === 'video') {
+        const posterKey = m.posterKey ?? firstImage?.key;
+        return {
+          type: 'video',
+          src: joinURL(mediaBaseUrl, m.key),
+          poster: posterKey ? imageUrl(posterKey, 800) : undefined,
+          alt: m.alt ?? `Video - ${p.title}`,
+        };
+      }
+      return { type: 'image', src: m.key, provider: 'media', alt: m.alt ?? p.title };
+    });
+
+    return {
+      slug: p.slug,
+      title: p.title,
+      subtitle: p.subtitle,
+      ageRange: p.ageLabel ?? '',
+      ageSlug: p.ageSlug ?? '',
+      category: p.ageLabel ?? p.categoryName ?? '',
+      price: p.price,
+      oldPrice: p.oldPrice,
+      description: p.description,
+      features: p.features,
+      activities: p.activities,
+      sellingPoints: p.sellingPoints,
+      accent: p.accent,
+      badge: p.badge,
+      cover: p.coverKey ? { src: p.coverKey, provider: 'media' } : null,
+      media,
+      shareImage: p.coverKey ? imageUrl(p.coverKey, 1200, 'jpeg') : DEFAULT_SHARE_IMAGE,
+    };
+  }
+
+  const books = computed(() => (asyncData.data.value?.products ?? []).map(toBook));
+
+  const getBook = (slug: string) => books.value.find((b) => b.slug === slug);
+  const getRelatedBooks = (slug: string) => books.value.filter((b) => b.slug !== slug);
+
+  const ready = Promise.resolve(asyncData).then(() => undefined);
+
+  return { books, getBook, getRelatedBooks, ready };
 }

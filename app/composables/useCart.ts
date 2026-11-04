@@ -1,5 +1,3 @@
-import { PRODUCTS } from '~~/shared/utils/products'
-
 export interface CartItem {
   slug: string
   title: string
@@ -13,14 +11,15 @@ interface CartState {
 
 const STORAGE_KEY = 'elorikids-cart'
 
-// Canonical prices - re-syncs stored items so price changes (sales)
-// apply to existing carts. Server re-validates from DB at checkout.
-function syncPrices(items: CartItem[]): CartItem[] {
-  return items.map(i => ({ ...i, price: PRODUCTS[i.slug]?.price ?? i.price }))
-}
-
 export function useCart() {
   const cart = useState<CartState>('cart', () => ({ items: [] }))
+  const { books, getBook } = useBooks()
+
+  // Current catalog prices - re-syncs stored items so price changes
+  // (sales) apply to existing carts. Server re-validates at checkout.
+  function syncPrices(items: CartItem[]): CartItem[] {
+    return items.map(i => ({ ...i, price: getBook(i.slug)?.price ?? i.price }))
+  }
 
   // Hydrate from localStorage on client, after mount (avoids SSR hydration mismatch)
   onMounted(() => {
@@ -42,6 +41,11 @@ export function useCart() {
     watch(cart.value, (val) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(val))
     }, { deep: true })
+
+    // Catalog may arrive after hydration (client-only pages)
+    watch(books, () => {
+      cart.value.items = syncPrices(cart.value.items)
+    })
   })
 
   const count = computed(() => cart.value.items.reduce((sum, i) => sum + i.quantity, 0))

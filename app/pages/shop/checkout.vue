@@ -376,11 +376,14 @@ async function handleSubmit() {
                                                 class="overflow-hidden rounded-lg"
                                             >
                                                 <NuxtImg
-                                                    :src="`/${getBook(item.slug)?.img ?? ''}`"
+                                                    v-if="getBook(item.slug)?.cover"
+                                                    provider="media"
+                                                    :src="getBook(item.slug)!.cover!.src"
                                                     :alt="item.title"
                                                     class="h-16 w-14 object-cover"
                                                     width="56"
                                                     height="64"
+                                                    fit="cover"
                                                     format="webp"
                                                     loading="lazy"
                                                 />

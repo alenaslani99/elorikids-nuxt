@@ -110,11 +110,14 @@ const shippingProgress = computed(() =>
                                 >
                                     <div class="overflow-hidden rounded-xl">
                                         <NuxtImg
-                                            :src="`/${getBook(item.slug)?.img ?? ''}`"
+                                            v-if="getBook(item.slug)?.cover"
+                                            provider="media"
+                                            :src="getBook(item.slug)!.cover!.src"
                                             :alt="item.title"
                                             class="h-24 w-20 object-cover sm:h-28 sm:w-24"
                                             width="96"
                                             height="112"
+                                            fit="cover"
                                             format="webp"
                                             loading="lazy"
                                         />

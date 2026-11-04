@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../../utils/db'
+import { bumpCatalogVersion } from '../../../utils/storefront'
 import { requireElevated } from '../../../utils/admin'
 import {
   getCurrentPrices, requireCategoryExists, requireIdParam, validateOptionalId, validatePricePair, validateText,
@@ -71,5 +72,6 @@ export default defineEventHandler(async (event) => {
   await db.batch(stmts)
 
   console.log(`[admin/products] ${user.email} updated #${id} "${product.slug}" @ ${salePrice ?? price} RSD (active=${active})`)
+  await bumpCatalogVersion(db)
   return { ok: true }
 })

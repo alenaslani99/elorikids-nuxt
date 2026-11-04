@@ -1,12 +1,15 @@
 <script setup lang="ts">
 const route = useRoute();
-const { getBook, getRelatedBooks } = useBooks();
+const { getBook, getRelatedBooks, ready } = useBooks();
 const { isSaved, toggle } = useSaved();
 
 const slug = computed(() => route.params.slug as string);
 const book = computed(() => getBook(slug.value));
 
-// 404 if book doesn't exist
+// Catalog comes from the DB - wait for it before deciding on a 404.
+await ready;
+
+// 404 if the product doesn't exist or is inactive
 if (!book.value) {
     throw createError({
         statusCode: 404,
@@ -16,12 +19,7 @@ if (!book.value) {
 }
 
 const relatedBooks = computed(() => getRelatedBooks(slug.value));
-
-// Gallery/cover from the admin-managed R2 media, falling back to the
-// bundled /public images for products without uploads.
-const { gallery, cover, shareImage } = await useProductMedia();
-const media = computed(() => gallery(book.value!));
-const ogImage = shareImage(book.value!);
+const ogImage = book.value.shareImage;
 
 // view_item on open and when navigating between related books.
 const { viewItem } = useTracking();
@@ -45,7 +43,7 @@ function toggleSave() {
         slug: book.value!.slug,
         title: book.value!.title,
         price: book.value!.price,
-        img: book.value!.img,
+        img: book.value!.cover?.src ?? "",
         ageRange: book.value!.ageRange,
         accent: book.value!.accent,
     });
@@ -198,7 +196,7 @@ useHead({
                 <div class="lg:sticky lg:top-32 lg:self-start">
                     <!-- Video-first media gallery with swipeable lightbox -->
                     <MediaGallery
-                        :media="media"
+                        :media="book.media"
                         :badge="book.badge"
                         :accent="book.accent"
                     />
@@ -589,8 +587,9 @@ useHead({
                             class="aspect-[3/4] w-24 shrink-0 overflow-hidden rounded-xl bg-cloud/30"
                         >
                             <NuxtImg
-                                :src="cover(related).src"
-                                :provider="cover(related).provider"
+                                v-if="related.cover"
+                                :src="related.cover.src"
+                                :provider="related.cover.provider"
                                 :alt="related.title"
                                 width="96"
                                 height="128"

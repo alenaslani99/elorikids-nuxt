@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../../utils/db'
+import { bumpCatalogVersion } from '../../../utils/storefront'
 import { requireElevated } from '../../../utils/admin'
 import {
   isUniqueViolation, requireCategoryExists, requireIdParam, validateOptionalId, validateSlug, validateSortOrder, validateText,
@@ -68,5 +69,6 @@ export default defineEventHandler(async (event) => {
   }
 
   console.log(`[admin/categories] ${user.email} updated #${id} "${slug}"`)
+  await bumpCatalogVersion(db)
   return { ok: true }
 })

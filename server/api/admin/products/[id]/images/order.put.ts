@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../../../../utils/db'
+import { bumpCatalogVersion } from '../../../../../utils/storefront'
 import { requireElevated } from '../../../../../utils/admin'
 import { requireIdParam } from '../../../../../utils/catalog'
 
@@ -33,5 +34,6 @@ export default defineEventHandler(async (event) => {
   await db.batch(ids.map((id, index) =>
     db.prepare('UPDATE product_images SET sort_order = ? WHERE id = ? AND product_id = ?').bind(index, id, productId),
   ))
+  await bumpCatalogVersion(db)
   return { ok: true }
 })

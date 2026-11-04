@@ -1,4 +1,4 @@
-import { books } from '~/composables/useBooks'
+import { getStorefrontCatalog } from '../utils/storefront'
 import { posts } from '~/composables/usePosts'
 
 const SITE = 'https://elorikids.rs'
@@ -27,7 +27,7 @@ function urlEntry(loc: string, priority: string, lastmod?: string) {
   return xml
 }
 
-export default defineEventHandler((event) => {
+export default defineEventHandler(async (event) => {
   const urls: string[] = []
 
   // Static pages
@@ -35,9 +35,13 @@ export default defineEventHandler((event) => {
     urls.push(urlEntry(u.loc, u.priority, u.lastmod))
   }
 
-  // Book product pages (SSR)
-  for (const book of books) {
-    urls.push(urlEntry(`/books/${book.slug}`, '0.9', '2026-08-23'))
+  // Product pages (SSR) - active products from the cached DB catalog
+  const products = await getStorefrontCatalog(event).catch((err) => {
+    console.error('[sitemap] catalog unavailable:', err)
+    return []
+  })
+  for (const product of products) {
+    urls.push(urlEntry(`/books/${product.slug}`, '0.9'))
   }
 
   // Blog posts (SSR)

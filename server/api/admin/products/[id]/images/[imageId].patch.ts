@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readBody } from 'h3'
 import { useDb } from '../../../../../utils/db'
+import { bumpCatalogVersion } from '../../../../../utils/storefront'
 import { requireElevated } from '../../../../../utils/admin'
 import { requireIdParam } from '../../../../../utils/catalog'
 import { validateAlt } from '../../../../../utils/media'
@@ -21,5 +22,6 @@ export default defineEventHandler(async (event) => {
   if (!result.meta.changes) {
     throw createError({ statusCode: 404, statusMessage: 'Slika nije pronađena.' })
   }
+  await bumpCatalogVersion(db)
   return { ok: true }
 })

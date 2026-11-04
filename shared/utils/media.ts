@@ -20,7 +20,7 @@ export const MEDIA_TYPES: MediaType[] = [
   { kind: 'video', contentType: 'video/mp4', ext: 'mp4' },
 ]
 
-/** One gallery item as returned by the public /api/products/media endpoint. */
+/** One gallery item of a product in the storefront catalog (/api/products). */
 export interface PublicProductMedia {
   kind: MediaKind
   /** R2 object key, relative to the media domain. */

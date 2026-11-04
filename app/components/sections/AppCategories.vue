@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { PRODUCTS } from '~~/shared/utils/products'
+// Marketing copy/images below are hand-tuned; prices come from the DB catalog.
+const { getBook } = useBooks();
 
 function goToBook(slug: string) {
     navigateTo(`/books/${slug}`);
@@ -102,12 +103,17 @@ const accentClasses: Record<
     },
 };
 
-const booksWithPrice = books.map((b) => ({
-    ...b,
-    price: PRODUCTS[b.slug]?.price ?? 0,
-    oldPrice: PRODUCTS[b.slug]?.oldPrice ?? 0,
-    productTitle: PRODUCTS[b.slug]?.title ?? b.title,
-}));
+const booksWithPrice = computed(() =>
+    books.map((b) => {
+        const product = getBook(b.slug);
+        return {
+            ...b,
+            price: product?.price ?? 0,
+            oldPrice: product?.oldPrice ?? 0,
+            productTitle: product?.title ?? b.title,
+        };
+    }),
+);
 </script>
 
 <template>

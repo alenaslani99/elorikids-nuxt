@@ -1,5 +1,6 @@
 import { createError, defineEventHandler, readFormData } from 'h3'
 import { useDb } from '../../../../utils/db'
+import { bumpCatalogVersion } from '../../../../utils/storefront'
 import { requireElevated } from '../../../../utils/admin'
 import { requireIdParam } from '../../../../utils/catalog'
 import {
@@ -73,6 +74,7 @@ export default defineEventHandler(async (event) => {
       .first<ProductImageRow>()
 
     console.log(`[admin/media] ${user.email} uploaded ${type.kind} ${key} (${file.size} B) to "${product.slug}"`)
+    await bumpCatalogVersion(db)
     return { ok: true, image: toAdminImage(row!) }
   }
   catch (err) {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { books } from '~/composables/useBooks'
 import { getAccent } from '~/composables/useAccent'
 
-const { cover } = await useProductMedia()
+const { books, ready } = useBooks()
+// Render the product list (and its JSON-LD) server-side.
+await ready
 
 function goToBook(slug: string) {
   navigateTo(`/books/${slug}`)
@@ -41,7 +42,7 @@ useHead({
       innerHTML: JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'ItemList',
-        itemListElement: books.map((book, i) => ({
+        itemListElement: books.value.map((book, i) => ({
           '@type': 'ListItem',
           position: i + 1,
           name: book.title,
@@ -75,10 +76,11 @@ useHead({
             @click="goToBook(book.slug)"
           >
             <!-- Book image -->
-            <div class="overflow-hidden">
+            <div class="aspect-[4/3] overflow-hidden bg-cloud/30">
               <NuxtImg
-                :src="cover(book).src"
-                :provider="cover(book).provider"
+                v-if="book.cover"
+                :src="book.cover.src"
+                :provider="book.cover.provider"
                 :alt="`${book.title} - interaktivna piši-briši knjiga za decu (${book.ageRange})`"
                 class="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 width="400"

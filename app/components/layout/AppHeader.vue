@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { books } from "~/composables/useBooks";
+const { books } = useBooks();
 
 const search = ref("");
 const isSearchOpen = ref(false);
@@ -25,7 +25,7 @@ async function handleLogout() {
 const searchResults = computed(() => {
     const q = search.value.trim().toLowerCase();
     if (!q) return [];
-    return books
+    return books.value
         .filter(
             (b) =>
                 b.title.toLowerCase().includes(q) ||
@@ -172,12 +172,17 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
                                     @click="goToBook(book.slug)"
                                 >
                                     <NuxtImg
-                                        :src="`/${book.img}`"
+                                        v-if="book.cover"
+                                        :src="book.cover.src"
+                                        :provider="book.cover.provider"
                                         :alt="book.title"
                                         width="40"
-                                        height="56"
+                                        height="40"
+                                        fit="cover"
+                                        format="webp"
                                         class="size-10 shrink-0 rounded-lg object-cover"
                                     />
+                                    <span v-else class="size-10 shrink-0 rounded-lg bg-cloud/40" />
                                     <div class="min-w-0">
                                         <p
                                             class="truncate text-sm font-semibold text-navy"
@@ -194,7 +199,10 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
                                                 )
                                             }}
                                             RSD
-                                            <span class="line-through">{{
+                                            <span
+                                                v-if="book.oldPrice > book.price"
+                                                class="line-through"
+                                            >{{
                                                 book.oldPrice.toLocaleString(
                                                     "sr-RS",
                                                 )
@@ -205,7 +213,7 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
                                         v-if="book.oldPrice > book.price"
                                         class="ml-auto shrink-0 rounded-full bg-coral px-2 py-0.5 text-[11px] font-bold text-white"
                                     >
-                                        -10%
+                                        -{{ Math.round((1 - book.price / book.oldPrice) * 100) }}%
                                     </span>
                                 </button>
                             </li>

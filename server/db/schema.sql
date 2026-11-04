@@ -37,21 +37,74 @@ CREATE TABLE IF NOT EXISTS categories (
 
 CREATE INDEX IF NOT EXISTS idx_categories_parent ON categories(parent_id);
 
--- ─── Products ──────────────────────────────────────────────────
--- slug is the public key (matches shared/utils/products.ts).
--- active=0 soft-hides a product without deleting it.
-CREATE TABLE IF NOT EXISTS products (
-  id          INTEGER PRIMARY KEY AUTOINCREMENT,
-  slug        TEXT NOT NULL UNIQUE,
-  title       TEXT NOT NULL,
-  category_id INTEGER REFERENCES categories(id) ON DELETE RESTRICT,
-  active      INTEGER NOT NULL DEFAULT 1,
-  created_at  TEXT NOT NULL DEFAULT (datetime('now')),
-  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+-- ─── Age groups ────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS age_groups (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug       TEXT NOT NULL UNIQUE,            -- '2-3-godine'
+  label      TEXT NOT NULL,                   -- '2–3 godine'
+  sort_order INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
-CREATE INDEX IF NOT EXISTS idx_products_active   ON products(active);
+-- ─── Products ──────────────────────────────────────────────────
+-- slug is the public key (URLs, carts, order snapshots).
+-- active=0 soft-hides a product without deleting it.
+CREATE TABLE IF NOT EXISTS products (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  slug         TEXT NOT NULL UNIQUE,
+  title        TEXT NOT NULL,
+  category_id  INTEGER REFERENCES categories(id) ON DELETE RESTRICT,
+  active       INTEGER NOT NULL DEFAULT 1,
+  created_at   TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at   TEXT NOT NULL DEFAULT (datetime('now')),
+  subtitle     TEXT,
+  description  TEXT,
+  badge        TEXT,                          -- 'Najmlađima'
+  accent       TEXT NOT NULL DEFAULT 'mint' CHECK (accent IN ('mint', 'purple', 'coral')),
+  age_group_id INTEGER REFERENCES age_groups(id) ON DELETE SET NULL,
+  sort_order   INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE INDEX IF NOT EXISTS idx_products_category  ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_products_active    ON products(active);
+CREATE INDEX IF NOT EXISTS idx_products_age_group ON products(age_group_id);
+CREATE INDEX IF NOT EXISTS idx_products_sort      ON products(sort_order, id);
+
+-- ─── Product content lists (ordered child rows) ────────────────
+CREATE TABLE IF NOT EXISTS product_features (        -- '24 stranice'
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  label      TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_product_features_product ON product_features(product_id, sort_order);
+
+CREATE TABLE IF NOT EXISTS product_activities (      -- 'Svet boja' + description
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id  INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  title       TEXT NOT NULL,
+  description TEXT NOT NULL,
+  sort_order  INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_product_activities_product ON product_activities(product_id, sort_order);
+
+CREATE TABLE IF NOT EXISTS product_selling_points (  -- 'Piši-briši sistem' + body
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  title      TEXT NOT NULL,
+  body       TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_product_selling_points_product ON product_selling_points(product_id, sort_order);
+
+-- ─── Settings (key/value) ──────────────────────────────────────
+-- catalog_version is bumped on every admin catalog change; the
+-- storefront cache key includes it, so edits show up immediately.
+CREATE TABLE IF NOT EXISTS settings (
+  key        TEXT PRIMARY KEY,
+  value      TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+INSERT OR IGNORE INTO settings (key, value) VALUES ('catalog_version', '1');
 
 -- ─── Product prices (append-only history) ──────────────────────
 -- Current selling price = newest row with effective_from <= now.
@@ -86,6 +139,35 @@ CREATE TABLE IF NOT EXISTS product_images (
 );
 
 CREATE INDEX IF NOT EXISTS idx_product_images_product ON product_images(product_id, sort_order);
+
+-- ─── Storefront view ───────────────────────────────────────────
+-- One row per product: category, age group, current price (what
+-- checkout charges), regular price (crossed out) and cover image key.
+DROP VIEW IF EXISTS v_storefront_products;
+CREATE VIEW v_storefront_products AS
+SELECT
+  p.id, p.slug, p.title, p.subtitle, p.description, p.badge, p.accent,
+  p.active, p.sort_order,
+  c.slug   AS category_slug,
+  c.name   AS category_name,
+  ag.slug  AS age_slug,
+  ag.label AS age_label,
+  cur.amount  AS price,
+  cur.is_sale AS is_sale,
+  (SELECT amount FROM product_prices
+   WHERE product_id = p.id AND is_sale = 0 AND effective_from <= datetime('now')
+   ORDER BY effective_from DESC, id DESC LIMIT 1) AS regular_price,
+  (SELECT r2_key FROM product_images
+   WHERE product_id = p.id AND kind = 'image'
+   ORDER BY sort_order, id LIMIT 1) AS cover_key
+FROM products p
+LEFT JOIN categories c  ON c.id = p.category_id
+LEFT JOIN age_groups ag ON ag.id = p.age_group_id
+LEFT JOIN product_prices cur ON cur.id = (
+  SELECT id FROM product_prices
+  WHERE product_id = p.id AND effective_from <= datetime('now')
+  ORDER BY effective_from DESC, id DESC LIMIT 1
+);
 
 -- ─── Orders ────────────────────────────────────────────────────
 -- `id`           is the auto-increment integer PK (internal).

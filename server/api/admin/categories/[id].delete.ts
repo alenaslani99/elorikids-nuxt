@@ -1,5 +1,6 @@
 import { createError, defineEventHandler } from 'h3'
 import { useDb } from '../../../utils/db'
+import { bumpCatalogVersion } from '../../../utils/storefront'
 import { requireElevated } from '../../../utils/admin'
 import { requireIdParam } from '../../../utils/catalog'
 
@@ -37,5 +38,6 @@ export default defineEventHandler(async (event) => {
   await db.prepare('DELETE FROM categories WHERE id = ?').bind(id).run()
 
   console.log(`[admin/categories] ${user.email} deleted #${id} "${row.slug}"`)
+  await bumpCatalogVersion(db)
   return { ok: true }
 })
