@@ -1,12 +1,12 @@
 import { defineEventHandler } from 'h3'
 import { useDb } from '../utils/db'
 import { getSessionUser } from '../utils/session'
-import { isOwnerEmail } from '../utils/admin'
 
 /**
  * Returns the currently authenticated user, or null if not logged in.
  * Called on app init to validate the session cookie.
- * Includes `isOwner` so the client middleware can gate /admin without a flash.
+ * Includes `role` so the client middleware can gate /admin without a
+ * flash (a UI hint only - the server re-checks the role on every call).
  */
 export default defineEventHandler(async (event) => {
   const db = useDb(event)
@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     user: user
-      ? { name: user.name, email: user.email, isOwner: isOwnerEmail(event, user.email) }
+      ? { name: user.name, email: user.email, role: user.role }
       : null,
   }
 })

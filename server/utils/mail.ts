@@ -500,39 +500,6 @@ Ovaj mejl ste dobili jer ste se prijavili na elorikids.rs sa adresom ${input.ema
   return { subject, html, text };
 }
 
-// ── Account: password changed (security notice) ─────────────────────
-
-/**
- * Build the "your password was changed" notice. Sent after every
- * password change so the account owner finds out if it wasn't them.
- * Never contains the password itself.
- */
-export function buildPasswordChangedMail(input: { name: string }): {
-  subject: string;
-  html: string;
-  text: string;
-} {
-  const subject = "Vaša elorikids lozinka je promenjena";
-
-  const html = `<div style="font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#123F73;">
-  <h1 style="font-size:20px;margin:0 0 16px;">Lozinka je promenjena</h1>
-  <p style="font-size:15px;line-height:1.6;margin:0 0 12px;">Zdravo ${escapeHtml(input.name)},</p>
-  <p style="font-size:15px;line-height:1.6;margin:0 0 12px;">Lozinka vašeg elorikids naloga je upravo promenjena. Odjavljeni ste sa svih ostalih uređaja.</p>
-  <p style="font-size:15px;line-height:1.6;margin:0 0 12px;">Ako ste to bili vi, ne morate ništa da radite.</p>
-  <p style="font-size:15px;line-height:1.6;margin:0;"><strong>Ako niste vi promenili lozinku</strong>, odmah nam se javite na <a href="https://elorikids.rs/legal/contact" style="color:#0B5CAD;">elorikids.rs/legal/contact</a>.</p>
-</div>`;
-
-  const text = `Zdravo ${input.name},
-
-Lozinka vašeg elorikids naloga je upravo promenjena. Odjavljeni ste sa svih ostalih uređaja.
-
-Ako ste to bili vi, ne morate ništa da radite.
-
-Ako niste vi promenili lozinku, odmah nam se javite: https://elorikids.rs/legal/contact`;
-
-  return { subject, html, text };
-}
-
 // ── Order: confirmation with track number + items ───────────────────
 
 export interface OrderMailItem {

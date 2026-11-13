@@ -1,43 +1,24 @@
 /**
  * Admin authorization helpers.
  *
- * The "owner" is identified by the OWNER_EMAIL env var - no role column
- * needed for a one-man shop. Admin routes require two layers:
+ * The owner is the user whose `users.role` is 'owner' (set by hand in
+ * the database - there is no way to gain it through the site). Admin
+ * routes require two layers:
  *
- *   1. requireOwner()   - valid session + email matches OWNER_EMAIL
- *   2. requireElevated() - owner + recent security-question verification
+ *   1. requireOwner()    - valid session + role 'owner'
+ *   2. requireElevated() - owner + a Google sign-in within the last hour
  *
- * Elevation is stored as `elevated_until` on the session row (1-hour
- * window), so it is automatically revoked on logout / session expiry.
+ * Elevation is stored as `elevated_until` on the session row. It is set
+ * only by the Google sign-in callback, so a stolen session cookie alone
+ * cannot open the admin panel once the hour has passed. It is revoked
+ * on logout / lock / session expiry.
  */
 import type { D1Database } from '@cloudflare/workers-types'
 import type { H3Event } from 'h3'
-import { getSessionUser, getSessionToken, type SessionUser } from './session'
+import { getSessionUser, getSessionTokenHash, type SessionUser } from './session'
 
 /**
- * Read the owner email from the Cloudflare env (production) or
- * process.env (local dev with `nuxt dev`).
- */
-function getOwnerEmail(event: H3Event): string {
-  const cloudflare = (event.context as any).cloudflare
-  // process.env is only available during local dev (nuxt dev on Node).
-  // On Cloudflare Workers, only cloudflare.env is available - globalThis
-  // avoids importing Node types into the worker bundle.
-  return cloudflare?.env?.OWNER_EMAIL
-    || (globalThis as any).process?.env?.OWNER_EMAIL
-    || ''
-}
-
-/**
- * Check if an email belongs to the owner (OWNER_EMAIL env var).
- */
-export function isOwnerEmail(event: H3Event, email: string): boolean {
-  const ownerEmail = getOwnerEmail(event)
-  return !!ownerEmail && email.toLowerCase() === ownerEmail.toLowerCase()
-}
-
-/**
- * Require a valid session whose email matches OWNER_EMAIL.
+ * Require a valid session with the owner role.
  * Throws 401 if not logged in, 403 if not the owner.
  */
 export async function requireOwner(event: H3Event, db: D1Database): Promise<SessionUser> {
@@ -45,7 +26,7 @@ export async function requireOwner(event: H3Event, db: D1Database): Promise<Sess
   if (!user) {
     throw createError({ statusCode: 401, statusMessage: 'Morate biti prijavljeni.' })
   }
-  if (!isOwnerEmail(event, user.email)) {
+  if (user.role !== 'owner') {
     throw createError({ statusCode: 403, statusMessage: 'Pristup odbijen.' })
   }
   return user
@@ -55,19 +36,19 @@ export async function requireOwner(event: H3Event, db: D1Database): Promise<Sess
  * Check whether the current session has an active admin elevation.
  */
 export async function isElevated(event: H3Event, db: D1Database): Promise<boolean> {
-  const token = getSessionToken(event)
-  if (!token) return false
+  const tokenHash = await getSessionTokenHash(event)
+  if (!tokenHash) return false
 
   const result = await db
-    .prepare("SELECT 1 FROM sessions WHERE token = ? AND elevated_until > datetime('now') LIMIT 1")
-    .bind(token)
+    .prepare("SELECT 1 FROM sessions WHERE token_hash = ? AND elevated_until > datetime('now') LIMIT 1")
+    .bind(tokenHash)
     .first()
 
   return !!result
 }
 
 /**
- * Require an elevated owner session (recent security-question verification).
+ * Require an elevated owner session (recent Google sign-in).
  * Throws 401/403 if not owner, 403 if not elevated.
  */
 export async function requireElevated(event: H3Event, db: D1Database): Promise<SessionUser> {
@@ -80,27 +61,14 @@ export async function requireElevated(event: H3Event, db: D1Database): Promise<S
 }
 
 /**
- * Set the admin elevation on the current session (1-hour window).
- */
-export async function setElevated(event: H3Event, db: D1Database): Promise<void> {
-  const token = getSessionToken(event)
-  if (!token) return
-
-  await db
-    .prepare("UPDATE sessions SET elevated_until = datetime('now', '+1 hour') WHERE token = ?")
-    .bind(token)
-    .run()
-}
-
-/**
  * Clear the admin elevation on the current session (lock panel).
  */
 export async function clearElevated(event: H3Event, db: D1Database): Promise<void> {
-  const token = getSessionToken(event)
-  if (!token) return
+  const tokenHash = await getSessionTokenHash(event)
+  if (!tokenHash) return
 
   await db
-    .prepare('UPDATE sessions SET elevated_until = NULL WHERE token = ?')
-    .bind(token)
+    .prepare('UPDATE sessions SET elevated_until = NULL WHERE token_hash = ?')
+    .bind(tokenHash)
     .run()
 }

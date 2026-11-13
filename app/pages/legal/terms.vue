@@ -120,7 +120,7 @@ const { activeSection } = useScrollspy(sections)
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:check" class="mt-0.5 size-5 shrink-0 text-mint" />
-                    <span>Pružaće tačne podatke prilikom registracije i poručivanja.</span>
+                    <span>Pružaće tačne podatke prilikom prijave i poručivanja.</span>
                   </li>
                 </ul>
                 <p class="mt-4 leading-relaxed text-navy/70">
@@ -134,7 +134,7 @@ const { activeSection } = useScrollspy(sections)
                   3. Korisnički nalog
                 </h2>
                 <p class="mt-3 leading-relaxed text-navy/70">
-                  Registracijom na sajtu dobijate pristup svom korisničkom nalogu, koji vam omogućava brže
+                  Prijavom na sajt putem Google naloga dobijate pristup svom korisničkom nalogu, koji vam omogućava brže
                   poručivanje i pregled istorije porudžbina.
                 </p>
                 <ul class="mt-4 space-y-2.5">

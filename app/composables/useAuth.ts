@@ -1,7 +1,7 @@
 export interface User {
   name: string
   email: string
-  isOwner?: boolean
+  role: 'owner' | 'customer'
 }
 
 interface AuthState {
@@ -10,12 +10,24 @@ interface AuthState {
   initialized: boolean
 }
 
+/**
+ * Start Google sign-in. `redirect` is the same-site path to land on
+ * afterwards (validated again on the server). This is a full-page
+ * navigation to an API route, so use it in a plain <a href>.
+ */
+export function googleSignInUrl(redirect?: string): string {
+  return redirect
+    ? `/api/auth/google?redirect=${encodeURIComponent(redirect)}`
+    : '/api/auth/google'
+}
+
 export function useAuth() {
   const auth = useState<AuthState>('auth', () => ({ user: null, initialized: false }))
 
   const isLoggedIn = computed(() => !!auth.value.user)
   const isReady = computed(() => auth.value.initialized)
-  const isOwner = computed(() => !!auth.value.user?.isOwner)
+  // UI hint only - the server checks the role on every admin request
+  const isOwner = computed(() => auth.value.user?.role === 'owner')
 
   /**
    * Validate the existing session cookie against the server.
@@ -36,10 +48,6 @@ export function useAuth() {
     }
   }
 
-  function setUser(user: User) {
-    auth.value.user = user
-  }
-
   async function logout() {
     try {
       await $fetch('/api/logout', { method: 'POST' })
@@ -57,7 +65,6 @@ export function useAuth() {
     isReady,
     isOwner,
     init,
-    setUser,
     logout,
   }
 }

@@ -8,7 +8,6 @@
 export const LIMITS = {
   name: 100,
   email: 254, // RFC 5321 max
-  password: 128,
   phone: 30,
   street: 150,
   streetNumber: 20,
@@ -17,9 +16,6 @@ export const LIMITS = {
   postal: 10,
   note: 500,
   message: 5000, // contact form
-  securityQuestion: 200,
-  securityAnswer: 100,
-  securityAnswerMin: 8,
 } as const
 
 /**
@@ -27,11 +23,7 @@ export const LIMITS = {
  * Used by server/utils/rateLimit.ts.
  */
 export const RATE_LIMITS = {
-  login: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per email+ip
-  loginEmail: { maxAttempts: 20, windowMs: 60 * 60_000 }, // 20 per hour per email, across all ips
-  passwordChange: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per user
-  register: { maxAttempts: 3, windowMs: 60 * 60_000 }, // 3 per hour per ip
-  elevate: { maxAttempts: 5, windowMs: 60 * 60_000 }, // 5 per hour per user (survives re-login)
+  auth: { maxAttempts: 20, windowMs: 15 * 60_000 }, // 20 Google sign-in starts per 15 min per ip
   contact: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per ip
   newsletter: { maxAttempts: 5, windowMs: 60 * 60_000 }, // 5 per hour per ip
   order: { maxAttempts: 10, windowMs: 60 * 60_000 }, // 10 per hour per ip

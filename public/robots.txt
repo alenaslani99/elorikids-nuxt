@@ -25,7 +25,6 @@ Disallow: /shop/cart
 Disallow: /shop/checkout
 Disallow: /shop/saved
 Disallow: /auth/account
-Disallow: /auth/forgot-password
 Disallow: /track-order
 
 # ── All other crawlers ──
@@ -35,7 +34,6 @@ Disallow: /shop/cart
 Disallow: /shop/checkout
 Disallow: /shop/saved
 Disallow: /auth/account
-Disallow: /auth/forgot-password
 Disallow: /track-order
 
 # XML sitemap

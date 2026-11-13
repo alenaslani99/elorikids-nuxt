@@ -4,24 +4,34 @@
 -- ═══════════════════════════════════════════════════════════════════
 
 -- ─── Users (auth) ──────────────────────────────────────────────
+-- Sign-in is Google-only. A user is identified by Google's stable
+-- account id (google_sub). role 'owner' is set by hand in the DB:
+--   UPDATE users SET role = 'owner' WHERE email = '...';
 CREATE TABLE IF NOT EXISTS users (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  google_sub    TEXT NOT NULL UNIQUE,
+  email         TEXT NOT NULL,
   name          TEXT NOT NULL,
-  email         TEXT NOT NULL UNIQUE,
-  password_hash TEXT NOT NULL,           -- PBKDF2 (Web Crypto, edge-safe)
-  created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+  role          TEXT NOT NULL DEFAULT 'customer' CHECK (role IN ('owner', 'customer')),
+  created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+  last_login_at TEXT
 );
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 
 -- ─── Sessions (opaque token revocation) ───────────────────────
+-- Only the SHA-256 of the token is stored; the raw token lives in the
+-- httpOnly cookie. elevated_until = admin window after a Google sign-in.
 CREATE TABLE IF NOT EXISTS sessions (
-  id         INTEGER PRIMARY KEY AUTOINCREMENT,
-  user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  token      TEXT NOT NULL UNIQUE,        -- 32-byte random, base64url
-  created_at TEXT NOT NULL DEFAULT (datetime('now')),
-  expires_at TEXT NOT NULL DEFAULT (datetime('now', '+30 days'))
+  id             INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash     TEXT NOT NULL UNIQUE,
+  created_at     TEXT NOT NULL DEFAULT (datetime('now')),
+  last_used_at   TEXT NOT NULL DEFAULT (datetime('now')),
+  expires_at     TEXT NOT NULL,
+  elevated_until TEXT
 );
 
-CREATE INDEX IF NOT EXISTS idx_sessions_token   ON sessions(token);
 CREATE INDEX IF NOT EXISTS idx_sessions_user   ON sessions(user_id);
 
 -- ─── Categories (self-referential tree) ────────────────────────

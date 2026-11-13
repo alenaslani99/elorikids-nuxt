@@ -117,7 +117,7 @@ const { activeSection } = useScrollspy(sections)
                 <ul class="mt-4 space-y-2.5">
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
-                    <span><strong class="text-navy">Podaci o kupcu</strong> - ime i prezime, adresa e-pošte i broj telefona, prilikom registracije i poručivanja.</span>
+                    <span><strong class="text-navy">Podaci o kupcu</strong> - ime i prezime, adresa e-pošte i broj telefona, prilikom poručivanja. Ako se prijavite putem Google naloga, od kompanije Google dobijamo samo vaše ime i adresu e-pošte - lozinku nikada ne vidimo niti čuvamo.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:dot" class="mt-0.5 size-5 shrink-0 text-blue" />
@@ -157,7 +157,7 @@ const { activeSection } = useScrollspy(sections)
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:check" class="mt-0.5 size-5 shrink-0 text-mint" />
-                    <span>Omogućavanje registracije i pristupa vašem nalogu i istoriji porudžbina.</span>
+                    <span>Omogućavanje prijave i pristupa vašem nalogu i istoriji porudžbina.</span>
                   </li>
                   <li class="flex items-start gap-2 text-navy/70">
                     <Icon name="lucide:check" class="mt-0.5 size-5 shrink-0 text-mint" />

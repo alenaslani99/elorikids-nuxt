@@ -107,12 +107,6 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
                             class="font-medium transition-colors hover:text-sky"
                             >Prijava</NuxtLink
                         >
-                        <span class="text-cloud/50">|</span>
-                        <NuxtLink
-                            to="/auth/register"
-                            class="font-medium transition-colors hover:text-sky"
-                            >Registracija</NuxtLink
-                        >
                     </template>
                 </nav>
             </div>

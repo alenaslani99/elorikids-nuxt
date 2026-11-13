@@ -97,7 +97,7 @@ export default defineNuxtConfig({
     // ── SSR pages (left on by default - SEO-critical, public content) ──
     //   /, /about-us, /faq, /legal/**, /books/**
     //   /blog/** (SEO-critical - blog index and posts must render server-side)
-    //   /auth/login, /auth/register (form renders immediately, no flash)
+    //   /auth/login (Google sign-in button renders immediately, no flash)
     //
     // ── Homepage Link headers (RFC 8288 / RFC 9727 §3) ──────────────────
     //   Points agents to machine-readable resources for discovery.
@@ -107,7 +107,11 @@ export default defineNuxtConfig({
         // HTML must revalidate: prevents stale SSR referencing old hashed
         // /_nuxt/* chunks after a new deploy (Lighthouse 404 BVVkIIX0.js).
         'Cache-Control': 'public, max-age=0, must-revalidate',
-        // Security hardening (Lighthouse best-practices informative).
+      },
+    },
+    // ── Security headers on every server-rendered response ──────────────
+    '/**': {
+      headers: {
         'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
         'X-Frame-Options': 'SAMEORIGIN',
         'Content-Security-Policy': "frame-ancestors 'self'",
@@ -116,6 +120,11 @@ export default defineNuxtConfig({
         'Referrer-Policy': 'strict-origin-when-cross-origin',
       },
     },
+    // ── Auth responses must never be cached ─────────────────────────────
+    '/api/auth/**': { headers: { 'Cache-Control': 'no-store' } },
+    '/api/me': { headers: { 'Cache-Control': 'no-store' } },
+    // Sign-in is Google-only: there is no separate registration page.
+    '/auth/register': { redirect: '/auth/login' },
     // ── Immutable hashed/static assets (1y) ─────────────────────────────
     //   Explicit (Nitro/Cloudflare already defaults _nuxt to immutable,
     //   but explicit guards against regressions and stale-HTML skew).
@@ -133,7 +142,6 @@ export default defineNuxtConfig({
     '/admin/**': { ssr: false },
     '/shop/**': { ssr: false },
     '/auth/account': { ssr: false },
-    '/auth/forgot-password': { ssr: false },
     '/track-order': { ssr: false },
   },
   icon: {

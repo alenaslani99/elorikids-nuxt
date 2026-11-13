@@ -1,24 +1,24 @@
 /**
- * Server-side guard for /admin routes.
+ * Cross-site write protection for the API + server-side guard for /admin.
  *
- * /admin is SPA-only (ssr: false), so Nitro would normally serve the
- * HTML shell with a 200 for everyone - leaking that the page exists.
- * This middleware checks the session on the server and returns a real
- * 404 before the shell is served, so the network tab shows nothing.
+ * 1. Every mutating /api/** request must carry an Origin header matching
+ *    this host (CSRF defense in depth on top of the SameSite=Lax session
+ *    cookie). All our forms post from the site itself, so legitimate
+ *    requests always pass.
  *
- * The API endpoints (requireOwner / requireElevated) remain the real
- * security boundary; this is about the HTTP response code for the page.
- *
- * It also rejects cross-origin writes to /api/admin/** (CSRF defense in
- * depth on top of the SameSite=Lax session cookie): every mutating admin
- * request must carry an Origin header matching this host.
+ * 2. /admin is SPA-only (ssr: false), so Nitro would normally serve the
+ *    HTML shell with a 200 for everyone - leaking that the page exists.
+ *    This middleware checks the session on the server and returns a real
+ *    404 before the shell is served, so the network tab shows nothing.
+ *    The API endpoints (requireOwner / requireElevated) remain the real
+ *    security boundary; this is about the HTTP response code for the page.
  */
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS'])
 
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
 
-  if (url.pathname.startsWith('/api/admin/') && !SAFE_METHODS.has(event.method)) {
+  if (url.pathname.startsWith('/api/') && !SAFE_METHODS.has(event.method)) {
     const origin = getRequestHeader(event, 'origin')
     let originHost: string | null = null
     try {
@@ -38,7 +38,6 @@ export default defineEventHandler(async (event) => {
 
   const { useDb } = await import('~~/server/utils/db')
   const { getSessionUser } = await import('~~/server/utils/session')
-  const { isOwnerEmail } = await import('~~/server/utils/admin')
 
   let user
   try {
@@ -46,12 +45,13 @@ export default defineEventHandler(async (event) => {
     user = await getSessionUser(event, db)
   }
   catch {
-    // D1 not available (local dev without binding) - fall through to
-    // the client-side guard. Production always has the binding.
-    return
+    // D1 not available. In local dev (no binding) fall through to the
+    // client-side guard; in production fail closed.
+    if (import.meta.dev) return
+    throw createError({ statusCode: 404, statusMessage: 'Not Found' })
   }
 
-  if (!user || !isOwnerEmail(event, user.email)) {
+  if (!user || user.role !== 'owner') {
     throw createError({ statusCode: 404, statusMessage: 'Not Found' })
   }
 })

@@ -2,9 +2,9 @@
 /**
  * Admin shell (parent route for /admin/**).
  *
- * Owns the owner status check, the security-question gate and the
- * header/nav. Child pages (<NuxtPage />) only mount once the session is
- * elevated, so they never fire API calls that would 403.
+ * Owns the owner status check, the identity gate (fresh Google sign-in)
+ * and the header/nav. Child pages (<NuxtPage />) only mount once the
+ * session is elevated, so they never fire API calls that would 403.
  */
 useHead({
   title: 'Admin panel - elorikids',
@@ -16,8 +16,6 @@ useHead({
 
 interface AdminStatus {
   isOwner: boolean
-  securitySet: boolean
-  question: string | null
   elevated: boolean
 }
 
@@ -71,20 +69,8 @@ async function handleLogout() {
 
 <template>
   <div class="min-h-screen bg-cream">
-    <!-- Gate: security question not set up yet -->
-    <AdminGate
-      v-if="!status.securitySet"
-      mode="setup"
-      @done="refreshStatus"
-    />
-
-    <!-- Gate: needs elevation -->
-    <AdminGate
-      v-else-if="!status.elevated"
-      mode="verify"
-      :question="status.question ?? undefined"
-      @done="refreshStatus"
-    />
+    <!-- Gate: admin window expired or panel locked -->
+    <AdminGate v-if="!status.elevated" />
 
     <!-- Admin panel -->
     <div v-else>

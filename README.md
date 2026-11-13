@@ -47,11 +47,20 @@ app/
 - `/books/[slug]` - book details
 - `/korpa` - cart
 - `/poruci` - checkout
-- `/prijava` · `/registracija` - auth
+- `/auth/login` - sign-in (Google only; accounts are created on first sign-in)
 - `/sacuvano` - saved items
 - `/kontakt` - contact
 - `/politika-privatnosti` · `/uslovi-koriscenja` - legal
 - `/hvala` - order confirmation
+
+## Auth
+
+Sign-in is Google-only (`server/utils/google.ts`, `server/api/auth/google*`).
+Secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` (see `.env.example`).
+
+Two roles in `users.role`: `customer` (default) and `owner`. The owner is
+promoted by hand in D1 (command in `.env.example`). `/admin` needs the owner
+role plus a Google sign-in within the last hour.
 
 ## Language
 

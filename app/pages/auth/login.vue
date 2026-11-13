@@ -2,76 +2,32 @@
 useHead({
   title: 'Prijava - elorikids',
   meta: [
-    { name: 'description', content: 'Prijavite se na svoj elorikids nalog da biste brže naručivali i pratili porudžbine.' },
+    { name: 'description', content: 'Prijavite se na svoj elorikids nalog putem Google naloga da biste brže naručivali i pratili porudžbine.' },
     { name: 'robots', content: 'noindex, nofollow' },
   ],
 })
 
-const { setUser } = useAuth()
-const router = useRouter()
 const route = useRoute()
 
-const form = reactive({
-  email: '',
-  password: '',
+// Where to land after sign-in (the server only accepts same-site paths)
+const signInUrl = computed(() => {
+  const redirect = route.query.redirect
+  return googleSignInUrl(typeof redirect === 'string' ? redirect : undefined)
 })
 
-const { status, errorMessage, setError, reset, clearStale } = useFormStatus()
-const submitted = ref(false)
-
-const { emailRegex } = useValidation()
-
-const emailError = computed(() => {
-  if (!submitted.value) return ''
-  if (!form.email.trim() || !emailRegex.test(form.email.trim())) return 'Unesite ispravnu adresu e-pošte.'
-  return ''
-})
-const passwordError = computed(() =>
-  submitted.value && (!form.password || form.password.length < 6) ? 'Lozinka mora imati najmanje 6 karaktera.' : '',
-)
-
-// Clear stale error state as soon as the user edits any field
-watch(form, () => {
-  if (submitted.value) submitted.value = false
-  clearStale()
-})
-
-async function handleSubmit() {
-  reset()
-  submitted.value = true
-
-  if (emailError.value || passwordError.value) {
-    return
-  }
-
-  status.value = 'loading'
-
-  try {
-    const res = await $fetch<{ ok: boolean, user?: { name: string, email: string, isOwner?: boolean } }>('/api/login', {
-      method: 'POST',
-      body: {
-        email: form.email,
-        password: form.password,
-      },
-    })
-
-    if (res.ok && res.user) {
-      setUser(res.user)
-      router.push('/auth/account')
-    }
-    else {
-      throw new Error('Neispravan email ili lozinka.')
-    }
-  }
-  catch (e: any) {
-    setError(e?.data?.statusMessage || e?.message || 'Došlo je do greške. Pokušajte ponovo.')
-  }
+const ERROR_MESSAGES: Record<string, string> = {
+  cancelled: 'Prijava je otkazana. Pokušajte ponovo.',
+  state: 'Prijava je istekla. Pokušajte ponovo.',
+  rate: 'Preveliki broj pokušaja. Pokušajte ponovo za nekoliko minuta.',
+  config: 'Prijava trenutno nije dostupna. Pokušajte kasnije.',
+  google: 'Prijava putem Google naloga nije uspela. Pokušajte ponovo.',
 }
 
-// Prefill from query if redirected from register
-if (route.query.email) {
-  form.email = route.query.email as string
-}
+const errorMessage = computed(() => {
+  const code = route.query.error
+  if (typeof code !== 'string') return ''
+  return ERROR_MESSAGES[code] ?? ERROR_MESSAGES.google!
+})
 </script>
 
 <template>
@@ -86,72 +42,37 @@ if (route.query.email) {
               <Icon name="lucide:user" class="size-8 text-blue" />
             </div>
             <h2 class="font-unbounded text-2xl font-bold text-navy">
-              Dobrodošli nazad!
+              Dobrodošli!
             </h2>
             <p class="mt-2 text-navy/60">
               Prijavite se da biste brže naručivali i pratili porudžbine.
             </p>
           </div>
 
-          <form class="space-y-5" @submit.prevent="handleSubmit">
-            <!-- Email -->
-            <AppInput
-              id="email"
-              v-model="form.email"
-              label="Adresa e-pošte"
-              type="email"
-              inputmode="email"
-              autocomplete="email"
-              required
-              placeholder="marko@primer.rs"
-              :disabled="status === 'loading'"
-              :error="emailError"
-            />
+          <!-- Full-page navigation to the API route (not a client route) -->
+          <a
+            :href="signInUrl"
+            class="flex w-full items-center justify-center gap-3 rounded-full border-2 border-cloud bg-white px-6 py-3 font-semibold text-navy transition-colors hover:border-blue hover:bg-sky/10"
+          >
+            <svg class="size-5 shrink-0" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+              <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+              <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+            </svg>
+            Nastavi sa Google nalogom
+          </a>
 
-            <!-- Password -->
-            <AppInput
-              id="password"
-              v-model="form.password"
-              label="Lozinka"
-              type="password"
-              show-password-toggle
-              autocomplete="current-password"
-              required
-              placeholder="••••••••"
-              :disabled="status === 'loading'"
-              :error="passwordError"
-            />
+          <!-- Error (always reserved to avoid CLS) -->
+          <p
+            class="mt-4 min-h-5 text-center text-sm text-coral"
+            role="alert"
+          >
+            {{ errorMessage }}
+          </p>
 
-            <!-- Remember me -->
-            <div class="flex items-center text-sm">
-              <label class="flex items-center gap-2 text-navy/60">
-                <input id="remember" name="remember" type="checkbox" class="size-4 rounded border-cloud text-blue focus:ring-blue/20">
-                Zapamti me
-              </label>
-            </div>
-
-            <!-- Error (always reserved to avoid CLS) -->
-            <p
-              class="min-h-5 text-sm text-coral transition-opacity duration-200"
-              :class="status === 'error' ? 'opacity-100' : 'opacity-0'"
-              role="alert"
-            >
-              {{ errorMessage }}
-            </p>
-
-            <AppSubmitButton
-              :loading="status === 'loading'"
-              label="Prijavi se"
-              loading-label="Prijava..."
-            />
-          </form>
-
-          <!-- Register link -->
-          <p class="mt-6 text-center text-sm text-navy/60">
-            Nemate nalog?
-            <NuxtLink to="/auth/register" class="font-semibold text-blue transition-colors hover:text-navy">
-              Registrujte se
-            </NuxtLink>
+          <p class="mt-4 text-center text-sm text-navy/60">
+            Nemate nalog? Kreira se automatski pri prvoj prijavi. Lozinka vam nije potrebna.
           </p>
         </div>
       </div>
