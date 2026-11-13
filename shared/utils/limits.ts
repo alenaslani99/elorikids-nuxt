@@ -29,6 +29,7 @@ export const LIMITS = {
 export const RATE_LIMITS = {
   login: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per email+ip
   loginEmail: { maxAttempts: 20, windowMs: 60 * 60_000 }, // 20 per hour per email, across all ips
+  passwordChange: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per user
   register: { maxAttempts: 3, windowMs: 60 * 60_000 }, // 3 per hour per ip
   elevate: { maxAttempts: 5, windowMs: 60 * 60_000 }, // 5 per hour per user (survives re-login)
   contact: { maxAttempts: 5, windowMs: 15 * 60_000 }, // 5 per 15 min per ip

@@ -280,6 +280,8 @@ const quickLinks = computed(() => [
               </div>
             </div>
 
+            <AccountPasswordForm />
+
             <!-- Help nudge -->
             <div class="rounded-2xl bg-navy p-6 text-white">
               <div class="flex items-center gap-3">
