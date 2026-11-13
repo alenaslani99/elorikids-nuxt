@@ -104,9 +104,11 @@ onBeforeUnmount(() => document.removeEventListener("click", onClickOutside));
                     <template v-else>
                         <NuxtLink
                             to="/auth/login"
-                            class="font-medium transition-colors hover:text-sky"
-                            >Prijava</NuxtLink
+                            class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 font-semibold transition-colors hover:bg-white/20"
                         >
+                            <Icon name="lucide:user-round" class="size-3.5" />
+                            <span>Prijavi se<span class="hidden sm:inline"> ili napravi nalog</span></span>
+                        </NuxtLink>
                     </template>
                 </nav>
             </div>
