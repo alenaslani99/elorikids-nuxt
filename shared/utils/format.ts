@@ -5,7 +5,7 @@
  * Used by: admin panel, account page, track-order page.
  */
 
-const MONTHS_SHORT = [
+export const MONTHS_SHORT = [
   'jan', 'feb', 'mar', 'apr', 'maj', 'jun',
   'jul', 'avg', 'sep', 'okt', 'nov', 'dec',
 ] as const

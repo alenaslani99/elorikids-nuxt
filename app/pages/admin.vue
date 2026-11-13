@@ -47,6 +47,7 @@ const navItems = [
   { to: '/admin', label: 'Porudžbine', icon: 'lucide:package' },
   { to: '/admin/products', label: 'Proizvodi', icon: 'lucide:book-open' },
   { to: '/admin/categories', label: 'Kategorije', icon: 'lucide:folder-tree' },
+  { to: '/admin/dashboard', label: 'Statistika', icon: 'lucide:chart-column' },
 ]
 
 // ── Lock panel ───────────────────────────────────────────────────
