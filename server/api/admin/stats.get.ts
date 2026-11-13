@@ -13,6 +13,12 @@ export interface StatsTotals {
   cancelled: number
   /** Units sold in non-cancelled orders. */
   itemsSold: number
+  /** Sum of (price - unit_cost) × quantity over lines with a known cost. */
+  profit: number
+  /** Sales value of those same lines - the base for the margin. */
+  costedRevenue: number
+  /** Units sold without a recorded cost (left out of profit). */
+  itemsWithoutCost: number
 }
 
 export interface StatsBucket {
@@ -20,6 +26,7 @@ export interface StatsBucket {
   key: string
   revenue: number
   orders: number
+  profit: number
 }
 
 export interface StatsTopProduct {
@@ -29,6 +36,8 @@ export interface StatsTopProduct {
   quantity: number
   revenue: number
   orders: number
+  /** null when none of its sold units have a recorded cost. */
+  profit: number | null
 }
 
 export interface StatsCity {
@@ -89,10 +98,16 @@ function toSql(date: Date): string {
 const pad = (n: number) => String(n).padStart(2, '0')
 
 interface TotalsRow { orders: number, revenue: number | null, cancelled: number | null }
+interface ItemsRow { items: number, profit: number, costed_revenue: number, items_without_cost: number }
+
+/** Profit of the lines that have a cost snapshot; NULL when none do. */
+const PROFIT_SUM = 'SUM(CASE WHEN oi.unit_cost IS NOT NULL THEN (oi.price - oi.unit_cost) * oi.quantity END)'
 
 /**
  * Sales statistics for the admin dashboard.
- * Revenue and order counts exclude cancelled orders.
+ * Revenue and order counts exclude cancelled orders. Profit is selling
+ * price minus the purchase cost frozen on each order line; lines without
+ * a cost are reported separately instead of counting as pure profit.
  * Requires an elevated owner session.
  *
  * Query params: range = 7d | 30d | 90d | 12m (default 30d)
@@ -140,12 +155,15 @@ export default defineEventHandler(async (event): Promise<AdminStatsResponse> => 
            SUM(status = 'cancelled') AS cancelled
     FROM orders WHERE created_at >= ? AND created_at < ?`
   const itemsSql = `
-    SELECT COALESCE(SUM(oi.quantity), 0) AS items
+    SELECT COALESCE(SUM(oi.quantity), 0) AS items,
+           COALESCE(${PROFIT_SUM}, 0) AS profit,
+           COALESCE(SUM(CASE WHEN oi.unit_cost IS NOT NULL THEN oi.price * oi.quantity END), 0) AS costed_revenue,
+           COALESCE(SUM(CASE WHEN oi.unit_cost IS NULL THEN oi.quantity END), 0) AS items_without_cost
     FROM order_items oi JOIN orders o ON o.id = oi.order_id
     WHERE o.created_at >= ? AND o.created_at < ? AND o.status != 'cancelled'`
 
   // One round trip to D1 for the whole dashboard
-  const [curTotals, prevTotals, curItems, prevItems, hourly, products, statuses, cities] = await db.batch<any>([
+  const [curTotals, prevTotals, curItems, prevItems, hourly, hourlyProfit, products, statuses, cities] = await db.batch<any>([
     db.prepare(totalsSql).bind(...cur),
     db.prepare(totalsSql).bind(...prev),
     db.prepare(itemsSql).bind(...cur),
@@ -157,6 +175,12 @@ export default defineEventHandler(async (event): Promise<AdminStatsResponse> => 
        WHERE created_at >= ? AND created_at < ? AND status != 'cancelled'
        GROUP BY hour`,
     ).bind(...cur),
+    db.prepare(
+      `SELECT strftime('%Y-%m-%d %H', o.created_at) AS hour, COALESCE(${PROFIT_SUM}, 0) AS profit
+       FROM order_items oi JOIN orders o ON o.id = oi.order_id
+       WHERE o.created_at >= ? AND o.created_at < ? AND o.status != 'cancelled'
+       GROUP BY hour`,
+    ).bind(...cur),
     // Grouped by product when still linked, by slug snapshot otherwise
     db.prepare(
       `SELECT COALESCE(p.slug, MAX(oi.slug)) AS slug,
@@ -166,6 +190,7 @@ export default defineEventHandler(async (event): Promise<AdminStatsResponse> => 
                ORDER BY sort_order, id LIMIT 1) AS cover_key,
               SUM(oi.quantity) AS quantity,
               SUM(oi.price * oi.quantity) AS revenue,
+              ${PROFIT_SUM} AS profit,
               COUNT(DISTINCT oi.order_id) AS orders
        FROM order_items oi
        JOIN orders o ON o.id = oi.order_id
@@ -188,26 +213,36 @@ export default defineEventHandler(async (event): Promise<AdminStatsResponse> => 
     ).bind(...cur),
   ])
 
-  const totals = (row: TotalsRow | undefined, items: number | undefined): StatsTotals => ({
+  const totals = (row: TotalsRow | undefined, items: ItemsRow | undefined): StatsTotals => ({
     revenue: row?.revenue ?? 0,
     orders: row?.orders ?? 0,
     cancelled: row?.cancelled ?? 0,
-    itemsSold: items ?? 0,
+    itemsSold: items?.items ?? 0,
+    profit: items?.profit ?? 0,
+    costedRevenue: items?.costed_revenue ?? 0,
+    itemsWithoutCost: items?.items_without_cost ?? 0,
   })
 
   // ── Series: zero-filled buckets so quiet days still show up ──────
   const buckets = new Map<string, StatsBucket>(
-    bucketKeys.map(key => [key, { key, revenue: 0, orders: 0 }]),
+    bucketKeys.map(key => [key, { key, revenue: 0, orders: 0, profit: 0 }]),
   )
-  for (const row of (hourly!.results ?? []) as { hour: string, orders: number, revenue: number }[]) {
-    const local = shopParts(new Date(`${row.hour.replace(' ', 'T')}:00:00Z`))
-    const key = granularity === 'month'
+  /** Shop-local bucket for a UTC 'YYYY-MM-DD HH' hour. */
+  const bucketFor = (hour: string) => {
+    const local = shopParts(new Date(`${hour.replace(' ', 'T')}:00:00Z`))
+    return buckets.get(granularity === 'month'
       ? `${local.y}-${pad(local.m)}`
-      : `${local.y}-${pad(local.m)}-${pad(local.d)}`
-    const bucket = buckets.get(key)
+      : `${local.y}-${pad(local.m)}-${pad(local.d)}`)
+  }
+  for (const row of (hourly!.results ?? []) as { hour: string, orders: number, revenue: number }[]) {
+    const bucket = bucketFor(row.hour)
     if (!bucket) continue
     bucket.revenue += row.revenue
     bucket.orders += row.orders
+  }
+  for (const row of (hourlyProfit!.results ?? []) as { hour: string, profit: number }[]) {
+    const bucket = bucketFor(row.hour)
+    if (bucket) bucket.profit += row.profit
   }
 
   const statusCounts: Record<string, number> = {
@@ -220,8 +255,8 @@ export default defineEventHandler(async (event): Promise<AdminStatsResponse> => 
   return {
     range,
     granularity,
-    current: totals(curTotals!.results?.[0], curItems!.results?.[0]?.items),
-    previous: totals(prevTotals!.results?.[0], prevItems!.results?.[0]?.items),
+    current: totals(curTotals!.results?.[0], curItems!.results?.[0]),
+    previous: totals(prevTotals!.results?.[0], prevItems!.results?.[0]),
     series: [...buckets.values()],
     topProducts: ((products!.results ?? []) as any[]).map(row => ({
       slug: row.slug,
@@ -229,6 +264,7 @@ export default defineEventHandler(async (event): Promise<AdminStatsResponse> => 
       coverKey: row.cover_key,
       quantity: row.quantity,
       revenue: row.revenue,
+      profit: row.profit,
       orders: row.orders,
     })),
     statusCounts,

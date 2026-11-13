@@ -8,7 +8,9 @@ useHead({ title: 'Statistika - Admin panel - elorikids' })
 
 const { errorMessage } = useAdmin()
 
-const EMPTY_TOTALS: StatsTotals = { revenue: 0, orders: 0, cancelled: 0, itemsSold: 0 }
+const EMPTY_TOTALS: StatsTotals = {
+  revenue: 0, orders: 0, cancelled: 0, itemsSold: 0, profit: 0, costedRevenue: 0, itemsWithoutCost: 0,
+}
 
 const rangeOptions: { key: StatsRange, label: string }[] = [
   { key: '7d', label: '7 dana' },
@@ -60,35 +62,65 @@ const comparisonLabel = computed(() =>
   range.value === '12m' ? 'u odnosu na isti period lane' : 'u odnosu na prethodni period',
 )
 
+// ── Profit (selling price − purchase cost frozen on each order line) ──
+/** True once at least one sold unit in the period has a recorded cost. */
+const hasCosts = computed(() => current.value.itemsSold > current.value.itemsWithoutCost)
+const margin = computed(() =>
+  current.value.costedRevenue > 0
+    ? Math.round((current.value.profit / current.value.costedRevenue) * 100)
+    : null,
+)
+
 const tiles = computed(() => [
   {
     label: 'Prihod',
     icon: 'lucide:banknote',
     value: rsd(current.value.revenue),
     change: change(current.value.revenue, previous.value.revenue),
+    note: '',
+  },
+  {
+    label: 'Zarada',
+    icon: 'lucide:piggy-bank',
+    // Without any cost data a "0 RSD" profit would be misleading
+    value: hasCosts.value ? rsd(current.value.profit) : '—',
+    change: hasCosts.value ? change(current.value.profit, previous.value.profit) : null,
+    note: !hasCosts.value
+      ? 'Unesite nabavne cene proizvoda'
+      : margin.value !== null ? `Marža ${margin.value}%` : '',
   },
   {
     label: 'Porudžbine',
     icon: 'lucide:package',
     value: num(current.value.orders),
     change: change(current.value.orders, previous.value.orders),
+    note: '',
   },
   {
     label: 'Prosečna porudžbina',
     icon: 'lucide:receipt',
     value: rsd(avgOrder(current.value)),
     change: change(avgOrder(current.value), avgOrder(previous.value)),
+    note: '',
   },
   {
     label: 'Prodato artikala',
     icon: 'lucide:layers',
     value: num(current.value.itemsSold),
     change: change(current.value.itemsSold, previous.value.itemsSold),
+    note: '',
   },
 ])
 
 // ── Chart (one measure at a time - never two y-scales) ───────────
-const metric = ref<'revenue' | 'orders'>('revenue')
+type Metric = 'revenue' | 'profit' | 'orders'
+const metricOptions: { key: Metric, label: string }[] = [
+  { key: 'revenue', label: 'Prihod' },
+  { key: 'profit', label: 'Zarada' },
+  { key: 'orders', label: 'Porudžbine' },
+]
+const metric = ref<Metric>('revenue')
+const metricLabel = computed(() => metricOptions.find(o => o.key === metric.value)!.label)
 const hovered = ref<number | null>(null)
 watch([range, metric], () => { hovered.value = null })
 
@@ -109,7 +141,8 @@ function axisTick(value: number): string {
 }
 const axisTicks = computed(() => [axisMax.value, axisMax.value / 2, 0].map(axisTick))
 
-const barHeight = (value: number) => (value / axisMax.value) * 100
+// A loss (negative profit) has no bar; the tooltip still shows the number
+const barHeight = (value: number) => (Math.max(0, value) / axisMax.value) * 100
 
 /** Label every Nth bucket, counted from the newest so "today" is always labeled. */
 const labelStep = computed(() => (series.value.length <= 7 ? 1 : Math.ceil(series.value.length / 6)))
@@ -209,7 +242,7 @@ const topCities = computed(() => data.value?.topCities ?? [])
       :class="status === 'pending' ? 'opacity-50' : 'opacity-100'"
     >
       <!-- KPI tiles -->
-      <section class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div
           v-for="tile in tiles"
           :key="tile.label"
@@ -219,8 +252,11 @@ const topCities = computed(() => data.value?.topCities ?? [])
             <Icon :name="tile.icon" class="size-4" />
             {{ tile.label }}
           </div>
-          <p class="mt-3 font-unbounded text-xl font-extrabold text-navy xl:text-2xl">
+          <p class="mt-3 font-unbounded text-xl font-extrabold text-navy">
             {{ tile.value }}
+          </p>
+          <p v-if="tile.note" class="mt-1 text-xs font-semibold text-navy/70">
+            {{ tile.note }}
           </p>
           <p class="mt-2 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-navy/50">
             <span
@@ -241,15 +277,28 @@ const topCities = computed(() => data.value?.topCities ?? [])
         </div>
       </section>
 
+      <!-- Units sold without a purchase cost are not part of the profit -->
+      <div
+        v-if="hasCosts && current.itemsWithoutCost > 0"
+        class="flex items-start gap-2 rounded-xl bg-yellow/15 p-3 text-sm text-navy/70"
+      >
+        <Icon name="lucide:info" class="mt-0.5 size-4 shrink-0 text-navy/50" />
+        <span>
+          Prodatih artikala bez nabavne cene: {{ num(current.itemsWithoutCost) }}. Nisu uračunati u zaradu -
+          <NuxtLink to="/admin/products" class="font-semibold text-blue-dark underline">unesite nabavnu cenu</NuxtLink>
+          da bi se uračunali.
+        </span>
+      </div>
+
       <!-- Sales over time -->
       <section class="rounded-2xl border-2 border-cloud/40 bg-white p-5 shadow-sm">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h3 class="font-unbounded text-sm font-bold text-navy">
-            {{ metric === 'revenue' ? 'Prihod' : 'Porudžbine' }} {{ isMonthly ? 'po mesecima' : 'po danima' }}
+            {{ metricLabel }} {{ isMonthly ? 'po mesecima' : 'po danima' }}
           </h3>
-          <div class="flex gap-2" role="group" aria-label="Prikaz">
+          <div class="flex flex-wrap gap-2" role="group" aria-label="Prikaz">
             <button
-              v-for="option in ([{ key: 'revenue', label: 'Prihod' }, { key: 'orders', label: 'Porudžbine' }] as const)"
+              v-for="option in metricOptions"
               :key="option.key"
               type="button"
               class="rounded-full px-3 py-1 text-xs font-semibold transition-colors"
@@ -311,6 +360,9 @@ const topCities = computed(() => data.value?.topCities ?? [])
                 <p class="mt-1 text-white/80">
                   {{ rsd(tooltip.bucket.revenue) }} · {{ num(tooltip.bucket.orders) }} por.
                 </p>
+                <p v-if="hasCosts" class="mt-1 text-white/80">
+                  Zarada {{ rsd(tooltip.bucket.profit) }}
+                </p>
               </div>
             </div>
 
@@ -340,6 +392,9 @@ const topCities = computed(() => data.value?.topCities ?? [])
               <th scope="col">
                 Porudžbine
               </th>
+              <th scope="col">
+                Zarada
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -349,6 +404,7 @@ const topCities = computed(() => data.value?.topCities ?? [])
               </th>
               <td>{{ rsd(bucket.revenue) }}</td>
               <td>{{ bucket.orders }}</td>
+              <td>{{ rsd(bucket.profit) }}</td>
             </tr>
           </tbody>
         </table>
@@ -405,7 +461,7 @@ const topCities = computed(() => data.value?.topCities ?? [])
                   />
                 </div>
                 <p class="mt-1.5 text-xs text-navy/50">
-                  {{ rsd(product.revenue) }} · {{ num(product.orders) }} porudžbina
+                  {{ rsd(product.revenue) }} · {{ num(product.orders) }} porudžbina<span v-if="product.profit !== null"> · zarada {{ rsd(product.profit) }}</span>
                 </p>
               </div>
             </li>

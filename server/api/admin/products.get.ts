@@ -15,6 +15,8 @@ export interface AdminProduct {
   salePrice: number | null
   /** What checkout charges right now (newest effective row). */
   currentPrice: number | null
+  /** Unit purchase cost (RSD), null when not entered. */
+  cost: number | null
   orderCount: number
   /** R2 key of the first gallery image (storefront cover), if any. */
   coverKey: string | null
@@ -35,7 +37,7 @@ export default defineEventHandler(async (event): Promise<{ products: AdminProduc
   const result = await db
     .prepare(
       `SELECT p.id, p.slug, p.title, p.category_id, c.name AS category_name, p.active,
-              p.created_at, p.updated_at,
+              p.created_at, p.updated_at, p.cost,
               cur.amount AS current_price, cur.is_sale AS current_is_sale,
               (SELECT amount FROM product_prices
                WHERE product_id = p.id AND is_sale = 0 AND effective_from <= datetime('now')
@@ -63,6 +65,7 @@ export default defineEventHandler(async (event): Promise<{ products: AdminProduc
       active: number
       created_at: string
       updated_at: string
+      cost: number | null
       current_price: number | null
       current_is_sale: number | null
       regular_price: number | null
@@ -82,6 +85,7 @@ export default defineEventHandler(async (event): Promise<{ products: AdminProduc
       price: row.regular_price,
       salePrice: row.current_is_sale === 1 ? row.current_price : null,
       currentPrice: row.current_price,
+      cost: row.cost,
       orderCount: row.order_count,
       coverKey: row.cover_key,
       imageCount: row.image_count,

@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
   const placeholders = slugs.map(() => '?').join(', ')
   const priceRows = await db
     .prepare(
-      `SELECT p.id, p.slug, p.title, pr.amount AS price, pr.is_sale
+      `SELECT p.id, p.slug, p.title, p.cost, pr.amount AS price, pr.is_sale
        FROM products p
        LEFT JOIN product_prices pr ON pr.product_id = p.id
          AND pr.id = (
@@ -112,7 +112,7 @@ export default defineEventHandler(async (event) => {
        WHERE p.slug IN (${placeholders}) AND p.active = 1`,
     )
     .bind(...slugs)
-    .all<{ id: number, slug: string, title: string, price: number | null, is_sale: number }>()
+    .all<{ id: number, slug: string, title: string, cost: number | null, price: number | null, is_sale: number }>()
 
   const priceMap = new Map(priceRows.results?.map((r) => [r.slug, r]) ?? [])
 
@@ -127,6 +127,7 @@ export default defineEventHandler(async (event) => {
       slug: product.slug,
       title: product.title,
       price: product.price,
+      unitCost: product.cost,
       quantity,
     }
   })
@@ -165,10 +166,11 @@ export default defineEventHandler(async (event) => {
   // --- Insert order items ---
   // Stores product_id for analytics; slug/title/price are a snapshot
   // so the order history stays intact if a product is later deleted.
+  // unit_cost freezes the purchase cost for profit statistics.
   const itemStmts = validatedItems.map((item) =>
     db
-      .prepare('INSERT INTO order_items (order_id, product_id, slug, title, price, quantity) VALUES (?, ?, ?, ?, ?, ?)')
-      .bind(orderId, item.id, item.slug, item.title, item.price, item.quantity),
+      .prepare('INSERT INTO order_items (order_id, product_id, slug, title, price, quantity, unit_cost) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .bind(orderId, item.id, item.slug, item.title, item.price, item.quantity, item.unitCost),
   )
 
   await db.batch(itemStmts)

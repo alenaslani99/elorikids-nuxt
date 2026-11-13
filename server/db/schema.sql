@@ -61,10 +61,11 @@ CREATE TABLE IF NOT EXISTS products (
   badge        TEXT,                          -- 'Najmlađima'
   accent       TEXT NOT NULL DEFAULT 'mint' CHECK (accent IN ('mint', 'purple', 'coral')),
   age_group_id INTEGER REFERENCES age_groups(id) ON DELETE SET NULL,
-  sort_order   INTEGER NOT NULL DEFAULT 0
+  sort_order   INTEGER NOT NULL DEFAULT 0,
+  cost         INTEGER                        -- current unit purchase cost (RSD), NULL = not entered
 );
 
-CREATE INDEX IF NOT EXISTS idx_products_category  ON products(category_id);
+CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
 CREATE INDEX IF NOT EXISTS idx_products_active    ON products(active);
 CREATE INDEX IF NOT EXISTS idx_products_age_group ON products(age_group_id);
 CREATE INDEX IF NOT EXISTS idx_products_sort      ON products(sort_order, id);
@@ -206,6 +207,8 @@ CREATE INDEX IF NOT EXISTS idx_orders_track_number ON orders(track_number);
 -- `product_id` optionally links to products for sales analytics. It is
 -- nullable + ON DELETE SET NULL so order history survives a product
 -- deletion; the slug/title/price snapshot always stays.
+-- `unit_cost` freezes products.cost at order time (NULL = unknown), so
+-- profit = (price - unit_cost) * quantity survives later cost changes.
 CREATE TABLE IF NOT EXISTS order_items (
   id         INTEGER PRIMARY KEY AUTOINCREMENT,
   order_id   INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -213,7 +216,8 @@ CREATE TABLE IF NOT EXISTS order_items (
   slug       TEXT NOT NULL,
   title      TEXT NOT NULL,
   price      INTEGER NOT NULL,
-  quantity   INTEGER NOT NULL
+  quantity   INTEGER NOT NULL,
+  unit_cost  INTEGER
 );
 
 CREATE INDEX IF NOT EXISTS idx_order_items_order   ON order_items(order_id);

@@ -52,6 +52,20 @@ export function validatePrice(value: unknown, message: string): number {
   return amount
 }
 
+/**
+ * Unit purchase cost from an admin form. `undefined` means "not sent"
+ * (leave the stored cost alone); null/'' clears it; 0 is a valid cost.
+ */
+export function validateCost(value: unknown): number | null | undefined {
+  if (value === undefined) return undefined
+  if (value === null || value === '') return null
+  const amount = Number(value)
+  if (!Number.isInteger(amount) || amount < 0 || amount > CATALOG_LIMITS.priceMax) {
+    throw createError({ statusCode: 400, statusMessage: 'Nabavna cena mora biti ceo broj (RSD).' })
+  }
+  return amount
+}
+
 export function validateSortOrder(value: unknown): number {
   if (value === null || value === undefined || value === '') return 0
   const n = Number(value)

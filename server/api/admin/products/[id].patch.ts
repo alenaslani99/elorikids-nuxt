@@ -4,7 +4,7 @@ import { bumpCatalogVersion } from '../../../utils/storefront'
 import { requireElevated } from '../../../utils/admin'
 import {
   getCurrentPrices, productContentStatements, requireAgeGroupExists, requireCategoryExists, requireIdParam,
-  validateOptionalId, validatePricePair, validateProductContent, validateText,
+  validateCost, validateOptionalId, validatePricePair, validateProductContent, validateText,
 } from '../../../utils/catalog'
 import { CATALOG_LIMITS } from '~~/shared/utils/catalog'
 
@@ -14,6 +14,11 @@ interface ProductBody {
   active?: boolean
   price?: number
   salePrice?: number | null
+  /**
+   * Unit purchase cost (RSD). Optional: when omitted (e.g. the activate
+   * toggle in the list) the stored cost is left untouched.
+   */
+  cost?: number | null
   /**
    * Product page content. Optional: when omitted (e.g. the activate
    * toggle in the list) the existing content is left untouched.
@@ -39,6 +44,7 @@ export default defineEventHandler(async (event) => {
   const categoryId = validateOptionalId(body?.categoryId, 'Neispravna kategorija.')
   const active = body?.active === false ? 0 : 1
   const { price, salePrice } = validatePricePair(body ?? {})
+  const cost = validateCost(body?.cost)
 
   const product = await db.prepare('SELECT slug FROM products WHERE id = ?').bind(id).first<{ slug: string }>()
   if (!product) {
@@ -75,6 +81,20 @@ export default defineEventHandler(async (event) => {
     stmts.push(
       db.prepare('INSERT INTO product_prices (product_id, amount, is_sale) VALUES (?, ?, 0)').bind(id, price),
     )
+  }
+
+  // ── Purchase cost ─────────────────────────────────────────────────
+  // Order lines freeze the cost at order time. Lines that have none yet
+  // (orders placed before a cost was entered) take this one; lines that
+  // already have a cost are never rewritten, so a later cost change only
+  // affects new orders.
+  if (cost !== undefined) {
+    stmts.push(db.prepare('UPDATE products SET cost = ? WHERE id = ?').bind(cost, id))
+    if (cost !== null) {
+      stmts.push(
+        db.prepare('UPDATE order_items SET unit_cost = ? WHERE product_id = ? AND unit_cost IS NULL').bind(cost, id),
+      )
+    }
   }
 
   if (content) stmts.push(...productContentStatements(db, product.slug, content))

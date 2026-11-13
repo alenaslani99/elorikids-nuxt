@@ -86,6 +86,7 @@ const form = reactive({
   categoryId: '' as string,
   price: '',
   salePrice: '',
+  cost: '',
   active: true,
 })
 const slugTouched = ref(false)
@@ -205,10 +206,17 @@ const salePriceError = computed(() => {
   if (isValidPrice(form.price) && Number(form.salePrice) >= Number(form.price)) return 'Mora biti niža od redovne cene.'
   return ''
 })
+// Purchase cost is optional; 0 is allowed
+const costError = computed(() => {
+  const value = form.cost.trim()
+  if (!submitted.value || !value) return ''
+  if (!/^\d+$/.test(value) || Number(value) > CATALOG_LIMITS.priceMax) return 'Unesite ceo broj u dinarima.'
+  return ''
+})
 
 function startCreate() {
   editingId.value = null
-  Object.assign(form, { title: '', slug: '', categoryId: '', price: '', salePrice: '', active: true })
+  Object.assign(form, { title: '', slug: '', categoryId: '', price: '', salePrice: '', cost: '', active: true })
   Object.assign(content, emptyContent())
   contentLoading.value = false
   slugTouched.value = false
@@ -224,6 +232,7 @@ async function startEdit(p: AdminProduct) {
     categoryId: p.categoryId === null ? '' : String(p.categoryId),
     price: p.price === null ? '' : String(p.price),
     salePrice: p.salePrice === null ? '' : String(p.salePrice),
+    cost: p.cost === null ? '' : String(p.cost),
     active: p.active,
   })
   submitted.value = false
@@ -248,7 +257,7 @@ async function startEdit(p: AdminProduct) {
 async function handleSubmit() {
   reset()
   submitted.value = true
-  if (titleError.value || slugError.value || priceError.value || salePriceError.value) return
+  if (titleError.value || slugError.value || priceError.value || salePriceError.value || costError.value) return
 
   if (contentLoading.value) return
   status.value = 'loading'
@@ -258,6 +267,7 @@ async function handleSubmit() {
     active: form.active,
     price: Number(form.price),
     salePrice: form.salePrice.trim() ? Number(form.salePrice) : null,
+    cost: form.cost.trim() ? Number(form.cost) : null,
     content: contentPayload(),
   }
   try {
@@ -463,6 +473,22 @@ function formatPrice(amount: number): string {
                 :disabled="status === 'loading'"
                 :error="salePriceError"
               />
+            </div>
+
+            <div>
+              <AppInput
+                id="product-cost"
+                v-model="form.cost"
+                label="Nabavna cena"
+                placeholder="opciono"
+                inputmode="numeric"
+                :disabled="status === 'loading'"
+                :error="costError"
+              />
+              <p class="mt-1.5 text-xs text-navy/50">
+                Koliko vas košta jedan komad. Koristi se samo za statistiku zarade - kupci je ne vide.
+                Izmena važi za nove porudžbine; stare zadržavaju cenu koja je tada važila.
+              </p>
             </div>
 
             <label class="flex cursor-pointer items-center gap-3 rounded-xl bg-cream p-3">
@@ -739,6 +765,9 @@ function formatPrice(amount: number): string {
                   </p>
                   <p v-if="p.salePrice !== null && p.price !== null" class="text-sm text-navy/40 line-through">
                     {{ formatPrice(p.price) }}
+                  </p>
+                  <p v-if="p.cost !== null" class="mt-1 text-xs text-navy/50">
+                    Nabavna {{ formatPrice(p.cost) }}<span v-if="p.currentPrice !== null"> · zarada {{ formatPrice(p.currentPrice - p.cost) }}</span>
                   </p>
                 </div>
 

@@ -3,7 +3,7 @@ import { useDb } from '../../utils/db'
 import { bumpCatalogVersion } from '../../utils/storefront'
 import { requireElevated } from '../../utils/admin'
 import {
-  isUniqueViolation, productContentStatements, requireAgeGroupExists, requireCategoryExists, validateOptionalId,
+  isUniqueViolation, productContentStatements, requireAgeGroupExists, requireCategoryExists, validateCost, validateOptionalId,
   validatePricePair, validateProductContent, validateSlug, validateText,
 } from '../../utils/catalog'
 import { CATALOG_LIMITS } from '~~/shared/utils/catalog'
@@ -15,6 +15,8 @@ interface ProductBody {
   active?: boolean
   price?: number
   salePrice?: number | null
+  /** Unit purchase cost (RSD), used for profit statistics. Optional. */
+  cost?: number | null
   /** Product page content (subtitle, description, lists...). Optional. */
   content?: unknown
 }
@@ -34,6 +36,7 @@ export default defineEventHandler(async (event) => {
   const categoryId = validateOptionalId(body?.categoryId, 'Neispravna kategorija.')
   const active = body?.active === false ? 0 : 1
   const { price, salePrice } = validatePricePair(body ?? {})
+  const cost = validateCost(body?.cost) ?? null
 
   const content = body?.content === undefined ? null : validateProductContent(body.content)
 
@@ -43,8 +46,8 @@ export default defineEventHandler(async (event) => {
   // Price rows reference the new product by slug, so the whole create
   // is a single transaction - no orphan product without a price.
   const stmts = [
-    db.prepare('INSERT INTO products (slug, title, category_id, active) VALUES (?, ?, ?, ?)')
-      .bind(slug, title, categoryId, active),
+    db.prepare('INSERT INTO products (slug, title, category_id, active, cost) VALUES (?, ?, ?, ?, ?)')
+      .bind(slug, title, categoryId, active, cost),
     db.prepare(`INSERT INTO product_prices (product_id, amount, is_sale)
                 SELECT id, ?, 0 FROM products WHERE slug = ?`)
       .bind(price, slug),
