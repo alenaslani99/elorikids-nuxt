@@ -70,7 +70,7 @@ const nameError = computed(() =>
 const phoneError = computed(() =>
     submitted.value &&
     (!form.phone.trim() || !phoneRegex.test(form.phone.trim()))
-        ? "Format: +381 6X XXX XXXX"
+        ? "Format: +381 6X XXX XXXX ili 06X XXX XXXX"
         : "",
 );
 const emailError = computed(() => {

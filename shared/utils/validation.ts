@@ -11,8 +11,8 @@ export const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 /** Permissive phone format: optional + prefix, digits, spaces, dashes, slashes. */
 export const phoneRegex = /^\+?\d[\d\s/-]{6,}$/
 
-/** Serbian mobile phone format: +381 6X XXX XXXX */
-export const serbianPhoneRegex = /^\+381\s?6[1-9](\s?\d){6,7}$/
+/** Serbian mobile phone format: +381 6X XXX XXXX or 06X XXX XXXX */
+export const serbianPhoneRegex = /^(\+381\s?|0)6[1-9](\s?\d){6,7}$/
 
 /** Serbian postal code: 6 digits, cannot start with zero. */
 export const postalRegex = /^[1-9]\d{4}$/
